@@ -1,8 +1,27 @@
-<p>this is a room</p>
-<p>the id is <span ng-bind="roomID"></span></p>
 
-<button ng-click="playCard()">Play Card</button>
+<p>the room id is <span ng-bind="roomID"></span></p>
 
-<p ng-bind="playedCard"></p>
+<div ng-repeat="num in partySize track by $index">
+	Pokemon <span ng-bind="num"></span>: <input ng-model="party[$index]" ng-keyup="findRelMons($index)"></input>
 
+
+	<!-- <input ng-model="pokemon{{$index}}" ng-keyup="findRelMoves($event)" id="pokemon{{$index}}"></input> -->
+
+</div>
+
+
+<!-- Pokemon 1: <input ng-model="pokemon1" ng-keyup="findRelMons($event)" id="pokemon1"></input>
+
+Pokemon 2: <input ng-model="pokemon2" ng-keyup="findRelMons($event)" id="pokemon2"></input> -->
+
+
+<div ng-repeat="mon in r.pokedex">
+  <table>
+    <tr>
+      <td><a href="" ng-click="fillInput(mon.species)"><span ng-bind="mon.species"></span></a></td>
+    </tr>
+  </table>
+</div>
+
+<br />
 <textarea rows="30" cols="50" ng-keyup="gDocsIt($event)" ng-model="text"></textarea>

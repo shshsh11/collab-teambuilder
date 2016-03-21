@@ -5,10 +5,64 @@ var mongoose = require("mongoose");
 
 var Room = mongoose.model("Room");
 
+var pokes = require("../public/data/pokedex");
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index',{});
 });
+
+router.get("/pokedex", function(req, res, next)
+{
+	var pokedex = [];
+	for (var mon in pokes.BattlePokedex)
+	{
+		delete pokes.BattlePokedex[mon]['heightm'];
+		delete pokes.BattlePokedex[mon]['weightkg'];
+		delete pokes.BattlePokedex[mon]['genderRatio'];
+		delete pokes.BattlePokedex[mon]['eggGroups'];
+		delete pokes.BattlePokedex[mon]['color'];
+		delete pokes.BattlePokedex[mon]['evos'];
+		delete pokes.BattlePokedex[mon]['prevo'];
+		delete pokes.BattlePokedex[mon]['evoLevel'];
+		pokedex.push(pokes.BattlePokedex[mon]);
+
+	}
+	res.send(pokedex);
+});
+
+router.post("/updateParty", function(req, res, next)
+{
+	console.log("updatin party");
+
+	var obj = 
+	{
+		party:
+		{
+			pokemon1: [],
+			pokemon2: [],
+			pokemon3: [],
+			pokemon4: [],
+			pokemon5: [],
+			pokemon6: []
+		}
+	};
+	obj.party[req.body.currentInput] = req.body.mon;
+	
+	Room.findOneAndUpdate(
+	{
+		_id: req.body.room
+	},
+	{
+		$set: obj
+	},
+	function(err, docs)
+	{
+		if (err) throw err;
+		console.log("this is new room: \n" + docs);
+	});
+
+})
 
 router.get("/restful/rooms", function(req, res, next)
 {

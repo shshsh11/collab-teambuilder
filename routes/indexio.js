@@ -7,13 +7,6 @@ module.exports = function(io)
 	{
 		console.log("indexio user connexted at: " + socket.handshake.url);
 
-
-		socket.on("play", function(card)
-		{
-			console.log("card: " + card);
-			io.emit("played", card);
-		});
-
 		socket.on("type", function(text)
 		{
 			//console.log(text);
@@ -21,7 +14,11 @@ module.exports = function(io)
 		});
 
 
-
+		socket.on("mon selection", function(data)
+		{
+			console.log(data);
+			io.emit("update mon selection", data);
+		})
 
 
 

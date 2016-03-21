@@ -68,30 +68,105 @@ app.controller("MainCtrl", function($scope, createRoom)
 });
 
 
-app.controller("RoomCtrl", function($scope, rooms, post)
+
+
+
+
+
+
+app.factory("dex", function($http)
+{
+	var obj = 
+	{
+		dex: [],
+		moves: []
+	}
+
+	obj.updateParty = function(data)
+	{
+		$http.post("/updateParty",  data, {}).success(function(data)
+		{
+
+		});
+	}
+
+
+
+	obj.getAll = function()
+	{
+		$http.get("/pokedex").success(function(data)
+		{
+			angular.copy(data, obj.dex);
+		});
+	}
+
+	return obj;
+
+
+})
+
+
+
+
+app.controller("RoomCtrl", function($scope, rooms, post, dex)
 {
 
+	var pokedex = dex.dex;
+
+	$scope.party = [];
 
 	$scope.roomID = post._id;
 	$scope.playedCard = "not played yet";
+
+	$scope.partySize = ["1", "2", "3", "4", "5", "6"];
 
 
 	var howManyKeystrokes = 0;
 
 	var socket = io();
 
-
-	$scope.playCard = function()
+	var currentInput = "";
+	$scope.findRelMons = function(index)
 	{
-		//alert("card played");
-		socket.emit("play", "test in room " + post._id);
+
+		//currentInput = event.target.id;
+		
+		currentInput = index;
+
+		$scope.r.pokedex = [];
+
+		var q = $scope.party[currentInput];
+	
+
+		for (var i = 0; i < pokedex.length; i++)
+		{
+			if (pokedex[i].species.indexOf(q) > -1 || pokedex[i].species.toLowerCase().indexOf(q) > -1)
+			{
+				
+				if (q.length >= 2)
+				{
+					$scope.r.pokedex.push(pokedex[i]);
+				}
+			}
+		}
+
 	}
 
-	socket.on("played", function(card)
+	$scope.fillInput = function(name)
 	{
-		$scope.$apply(function() 
+		$scope.party[currentInput] = name;
+		$scope.r.pokedex = [];
+		var data = {room: post._id, currentInput: currentInput, mon: name};
+		dex.updateParty(data);
+		socket.emit("mon selection", data);
+	}
+
+	socket.on("update mon selection", function(data)
+	{
+	
+		$scope.$apply(function()
 		{
-			$scope.playedCard = card;
+			$scope.party[data.currentInput] = data.mon;
 		});
 	});
 
@@ -151,6 +226,10 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider)
 			{
 				
 				return rooms.getByID($stateParams.roomID);
+			}],
+			postPromise: ["dex", function(dex)
+			{
+				return dex.getAll();
 			}]
 		}
 	})
