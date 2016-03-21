@@ -123,7 +123,14 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	var howManyKeystrokes = 0;
 
-	var socket = io();
+	var socket = io("/test-namespace");
+
+
+	socket.on("connect", function()
+	{
+		socket.emit("room id", post._id);
+	});
+	
 
 	var currentInput = "";
 	$scope.findRelMons = function(index)
