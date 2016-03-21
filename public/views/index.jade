@@ -1,0 +1,29 @@
+doctype html
+html(ng-app="collabteambuilder")
+	head
+		title Collaborative Teambuilder
+	body
+
+		a(href="/") Home
+
+		div(ui-view)
+
+
+
+		//- link(rel="stylesheet" href="/javascripts/angular-spinkit/build/angular-spinkit.min.css")
+		link(rel='stylesheet' href='/stylesheets/style.css')
+		script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js')
+		script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-animate.js')
+		script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-aria.js')
+		script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-sanitize.js')
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.18/angular-ui-router.js')
+		script(src='https://ajax.googleapis.com/ajax/libs/angular_material/1.0.3/angular-material.js')
+		script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.js')
+		//- script(src="/javascripts/angular-spinkit/build/angular-spinkit.min.js")
+		//- script(src="https://platform.twitter.com/widgets.js")
+		//- script(src="/javascripts/angular-socialshare/angular-socialshare.min.js")
+		//- script(src="https://raw.githubusercontent.com/krisk/fuse/master/src/fuse.min.js")
+		//- script(src="https://ocappa.herokuapp.com/javascripts/fuse.min.js")
+		//- script(src="/javascripts/fuse.min.js")
+		script(src="https://cdn.socket.io/socket.io-1.4.5.js")
+		script(src='/javascripts/collabteambuilder.js')
