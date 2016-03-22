@@ -216,7 +216,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	
 		$scope.$apply(function()
 		{
-			$scope.party[data.currentInput] = data.mon;
+			$scope.party["pokemon" + (parseInt(data.currentInput) + 1)] = data.mon;
 		});
 	});
 
