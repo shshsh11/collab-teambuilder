@@ -1,3 +1,1 @@
-# ffcardgame
-
-I want to use sockets
+pokemon collaborative teambuilder
