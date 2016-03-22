@@ -15,7 +15,7 @@ var app = express();
 
 var mongoose = require("mongoose");
 
-// require("./env.js")
+require("./env.js")
 
 
 var dburi = process.env.DBURI;
@@ -30,24 +30,7 @@ var socket_io = require("socket.io");
 var io = socket_io();
 app.io = io;
 
-
-
 var routesio = require("./routes/indexio")(io);
-
-
-
-// var socket_io = require("socket.io");
-
-// var io = socket_io();
-// app.io = io;
-
-// var routesio = require("./routes/indexio")(io);
-
-// io.on("connection", function(socket)
-// {
-//   console.log("a user connexted");
-// });
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'public/views'));

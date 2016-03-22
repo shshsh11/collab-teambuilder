@@ -2,7 +2,7 @@
 <p>the room id is <span ng-bind="roomID"></span></p>
 
 <div ng-repeat="num in partySize track by $index">
-	Pokemon <span ng-bind="num"></span>: <input ng-model="party[$index]" ng-keyup="findRelMons($index)"></input>
+	Pokemon <span ng-bind="num"></span>: <input ng-model="party['pokemon' + ($index + 1)]" ng-keyup="findRelMons($index)"></input>
 
 
 	<!-- <input ng-model="pokemon{{$index}}" ng-keyup="findRelMoves($event)" id="pokemon{{$index}}"></input> -->

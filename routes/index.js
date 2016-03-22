@@ -35,32 +35,25 @@ router.post("/updateParty", function(req, res, next)
 {
 	console.log("updatin party");
 
-	var obj = 
-	{
-		party:
-		{
-			pokemon1: [],
-			pokemon2: [],
-			pokemon3: [],
-			pokemon4: [],
-			pokemon5: [],
-			pokemon6: []
-		}
-	};
-	obj.party[req.body.currentInput] = req.body.mon;
-	
-	Room.findOneAndUpdate(
-	{
-		_id: req.body.room
-	},
-	{
-		$set: obj
-	},
-	function(err, docs)
+
+	Room.findById(req.body.room, function(err, docs)
 	{
 		if (err) throw err;
-		console.log("this is new room: \n" + docs);
+
+
+
+		docs.party["pokemon" + (parseInt(req.body.currentInput) + 1)] = req.body.mon;
+
+		docs.save(function(err)
+		{
+			if (err) throw err;
+			res.send("updated team successfully");
+		});
+
+
 	});
+
+
 
 })
 
@@ -100,7 +93,7 @@ router.param("room", function(req, res, next, roomID)
 	console.log(roomID);
 	var query = Room.findById(roomID);
 
-	query.select("_id dateCreated");
+	//query.select("_id dateCreated");
 
 	query.exec(function(err, room)
 	{

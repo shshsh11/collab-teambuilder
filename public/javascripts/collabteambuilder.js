@@ -50,6 +50,32 @@ app.factory("rooms", function($http)
 	return o;
 })
 
+// app.factory("teamInfo", function($http)
+// {
+// 	var o =  
+// 	{
+// 		party:
+// 		{
+// 			pokemon1: [],
+// 			pokemon2: [],
+// 			pokemon3: [],
+// 			pokemon4: [],
+// 			pokemon5: [],
+// 			pokemon6: []
+// 		}
+// 	}
+
+// 	o.getTeam = function(room)
+// 	{
+// 		return $http.get("/restful/rooms" + room).success(function(data)
+// 		{
+
+// 		})
+// 	}
+
+// 	return o;
+// })
+
 app.controller("MainCtrl", function($scope, createRoom)
 {
 
@@ -92,6 +118,7 @@ app.factory("dex", function($http)
 
 
 
+
 	obj.getAll = function()
 	{
 		$http.get("/pokedex").success(function(data)
@@ -111,9 +138,21 @@ app.factory("dex", function($http)
 app.controller("RoomCtrl", function($scope, rooms, post, dex)
 {
 
+	//alert(post.toSource());
 	var pokedex = dex.dex;
 
 	$scope.party = [];
+
+	$scope.party = post.party;
+
+	// $scope.party[0] = post.party.pokemon1;
+	// $scope.party[1] = post.party.pokemon2;
+	// $scope.party[2] = post.party.pokemon3;
+	// $scope.party[3] = post.party.pokemon4;
+	// $scope.party[4] = post.party.pokemon5;
+	// $scope.party[5] = post.party.pokemon6;
+
+	//alert(post.party.pokemon1);
 
 	$scope.roomID = post._id;
 	$scope.playedCard = "not played yet";
@@ -129,6 +168,10 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	socket.on("connect", function()
 	{
 		socket.emit("room id", post._id);
+
+
+
+
 	});
 	
 
@@ -142,8 +185,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 		$scope.r.pokedex = [];
 
-		var q = $scope.party[currentInput];
-	
+		var q = $scope.party["pokemon" + (parseInt(currentInput) + 1)];
+		
 
 		for (var i = 0; i < pokedex.length; i++)
 		{
@@ -161,7 +204,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	$scope.fillInput = function(name)
 	{
-		$scope.party[currentInput] = name;
+		$scope.party["pokemon" + (parseInt(currentInput) + 1)] = name;
 		$scope.r.pokedex = [];
 		var data = {room: post._id, currentInput: currentInput, mon: name};
 		dex.updateParty(data);
