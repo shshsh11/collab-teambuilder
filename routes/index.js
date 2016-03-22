@@ -6,6 +6,7 @@ var mongoose = require("mongoose");
 var Room = mongoose.model("Room");
 
 var pokes = require("../public/data/pokedex");
+var formats = require("../public/data/formats-data");
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -17,6 +18,7 @@ router.get("/pokedex", function(req, res, next)
 	var pokedex = [];
 	for (var mon in pokes.BattlePokedex)
 	{
+		pokes.BattlePokedex[mon].tier = formats.BattleFormatsData[mon].tier;
 		delete pokes.BattlePokedex[mon]['heightm'];
 		delete pokes.BattlePokedex[mon]['weightkg'];
 		delete pokes.BattlePokedex[mon]['genderRatio'];

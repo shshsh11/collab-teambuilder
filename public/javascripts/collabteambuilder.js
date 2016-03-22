@@ -154,6 +154,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	//alert(post.party.pokemon1);
 
+	
+
 	$scope.roomID = post._id;
 	$scope.playedCard = "not played yet";
 
@@ -196,6 +198,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 				if (q.length >= 2)
 				{
 					$scope.r.pokedex.push(pokedex[i]);
+
 				}
 			}
 		}

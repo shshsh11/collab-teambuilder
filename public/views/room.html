@@ -1,6 +1,24 @@
 
 <p>the room id is <span ng-bind="roomID"></span></p>
 
+<p>tier: 
+
+
+	<select ng-model="tiers">
+		<option value="Ubers">Ubers</option>
+		<option value="OU">OU</option>
+		<option value="UU">UU</option>
+		<option value="RU">RU</option>
+		<option value="NU">NU</option>
+		<option value="PU">PU</option>
+
+	</select>
+
+<span ng-bind="tiers"></span>
+
+
+</p>
+
 <div ng-repeat="num in partySize track by $index">
 	Pokemon <span ng-bind="num"></span>: <input ng-model="party['pokemon' + ($index + 1)]" ng-keyup="findRelMons($index)"></input>
 
@@ -18,7 +36,13 @@ Pokemon 2: <input ng-model="pokemon2" ng-keyup="findRelMons($event)" id="pokemon
 <div ng-repeat="mon in r.pokedex">
   <table>
     <tr>
-      <td><a href="" ng-click="fillInput(mon.species)"><span ng-bind="mon.species"></span></a></td>
+      <td>
+      	<a href="" ng-click="fillInput(mon.species)"><span ng-bind="mon.species"></span></a>
+      </td>
+
+      <td>
+      	<span ng-bind="mon.tier"></span>
+      </td>
     </tr>
   </table>
 </div>
