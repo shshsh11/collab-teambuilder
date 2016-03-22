@@ -16,8 +16,7 @@ var app = express();
 var mongoose = require("mongoose");
 
 require("./env.js")
-var dbuser = process.env.USER;
-var dbpass = process.env.PASS;
+
 
 var dburi = process.env.DBURI;
 // var dburi = "mongodb://127.0.0.1:27017/ineffablue";
