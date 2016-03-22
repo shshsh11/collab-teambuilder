@@ -88,6 +88,7 @@ router.post("/createroom", function(req, res, next)
 	newRoom.save(function(err)
 	{
 		if (err) throw err;
+		res.send("new room made");
 		
 	})
 
