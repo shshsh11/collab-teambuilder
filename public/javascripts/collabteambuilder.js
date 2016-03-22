@@ -143,7 +143,11 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	$scope.party = [];
 
-	$scope.party = post.party;
+	if (post.party)
+	{
+		$scope.party = post.party;
+	}
+	
 
 	// $scope.party[0] = post.party.pokemon1;
 	// $scope.party[1] = post.party.pokemon2;
@@ -154,7 +158,39 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	//alert(post.party.pokemon1);
 
-	
+	$scope.tierSort = function(mon)
+	{
+		//ordering should also depend on current tier
+		//ie if RU, then the tiers above don't display at all
+		if (mon.tier === $scope.tiers) return 0;
+		else 
+		{
+			if (mon.tier === "OU") return 1;
+			if (mon.tier === "UU") return 3;
+			if (mon.tier === "RU") return 5;
+			if (mon.tier === "NU") return 7;
+			if (mon.tier === "PU") return 9;
+			if (mon.tier === "LC") return 11;
+			if (mon.tier === "NFE") return 13;
+			else return 15;
+		}
+	}
+
+	$scope.showMons = function(tier)
+	{
+
+		$scope.r.pokedex = [];
+		for (var i = 0; i < pokedex.length; i++)
+		{
+			
+			if (pokedex[i].tier === tier)
+			{
+
+				$scope.r.pokedex.push(pokedex[i]);
+			}
+		}
+	}
+
 
 	$scope.roomID = post._id;
 	$scope.playedCard = "not played yet";
@@ -170,9 +206,6 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	socket.on("connect", function()
 	{
 		socket.emit("room id", post._id);
-
-
-
 
 	});
 	
@@ -208,7 +241,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.fillInput = function(name)
 	{
 		$scope.party["pokemon" + (parseInt(currentInput) + 1)] = name;
-		$scope.r.pokedex = [];
+		$scope.showMons($scope.tiers);
+		// $scope.r.pokedex = [];
 		var data = {room: post._id, currentInput: currentInput, mon: name};
 		dex.updateParty(data);
 		socket.emit("mon selection", data);

@@ -5,17 +5,14 @@
 
 
 	<select ng-model="tiers">
-		<option value="Ubers">Ubers</option>
-		<option value="OU">OU</option>
-		<option value="UU">UU</option>
-		<option value="RU">RU</option>
-		<option value="NU">NU</option>
-		<option value="PU">PU</option>
-
+		<option value="Uber" ng-click="showMons('Uber')">Uber</option>
+		<option value="OU" ng-click="showMons('OU')">OU</option>
+		<option value="UU" ng-click="showMons('UU')">UU</option>
+		<option value="RU" ng-click="showMons('RU')">RU</option>
+		<option value="NU" ng-click="showMons('NU')">NU</option>
+		<option value="PU" ng-click="showMons('PU')">PU</option>
+		<option value="LC" ng-click="showMons('LC')">LC</option>
 	</select>
-
-<span ng-bind="tiers"></span>
-
 
 </p>
 
@@ -33,7 +30,7 @@
 Pokemon 2: <input ng-model="pokemon2" ng-keyup="findRelMons($event)" id="pokemon2"></input> -->
 
 
-<div ng-repeat="mon in r.pokedex">
+<div ng-repeat="mon in r.pokedex | orderBy:tierSort">
   <table>
     <tr>
       <td>
