@@ -19,7 +19,7 @@ var mongoose = require("mongoose");
 
 
 var dburi = process.env.DBURI;
-// var dburi = "mongodb://127.0.0.1:27017/ineffablue";
+
 var connextion = mongoose.connect(dburi);
 var db = connextion.connection;
 
@@ -29,6 +29,9 @@ var socket_io = require("socket.io");
 
 var io = socket_io();
 app.io = io;
+
+io.set('transports', ['xhr-polling']);
+io.set('polling duration', 10);
 
 var routesio = require("./routes/indexio")(io);
 
