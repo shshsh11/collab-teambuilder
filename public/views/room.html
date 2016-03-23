@@ -56,7 +56,7 @@
 			EVs: 
 			<span ng-repeat="ev in evs track by $index">
 				<span ng-bind="ev"></span>: 
-				<input size="3" ng-model="party['pokemon' + $parent.num].EVs[$index]" ng-keyup="fillEVs($parent.num, $index)"></input> 
+				<input size="3" ng-model="party['pokemon' + $parent.num].EVs[ev]" ng-keyup="fillEVs($parent.num, ev)"></input> 
 				
 			</span>
 		</div>

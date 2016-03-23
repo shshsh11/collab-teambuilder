@@ -153,6 +153,13 @@ app.factory("dex", function($http)
 app.controller("RoomCtrl", function($scope, rooms, post, dex)
 {
 
+	var socket = io("/test-namespace");
+
+	socket.on("connect", function()
+	{
+		socket.emit("room id", post._id);
+
+	});
 
 	var pokedex = dex.dex;
 	var movedex = dex.moves;
@@ -169,6 +176,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	{
 
 		$scope.party = post.party;
+
 
 	}
 	$scope.selectedTier = post.tier;
@@ -248,26 +256,36 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		else return "";
 		
 	}
-
-	$scope.fillEVs = function(monNum, whichEV)
+	
+	$scope.fillEVs = function(whichPoke, whichEV)
 	{
-		var data = {pokemonNumber: monNum, whichEV: whichEV};
+		var amount = $scope.party["pokemon" + whichPoke].EVs[whichEV];
+
+		var dataToSend = {room: post._id, currentInput: currentInput, amount: amount, tier: $scope.selectedTier};
+		dex.updateParty(data);
+
+
+		var data = {pokemonNumber: whichPoke, whichEV: whichEV, amount: amount};
 		setTimeout(function()
 		{
 			socket.emit("fill EVs", data);
 		}, 1000);
 	}
 
+	socket.on("EVs filled", function(data)
+	{
+		$scope.$apply(function()
+		{
+			$scope.party["pokemon" + data.pokemonNumber].EVs[data.whichEV] = data.amount;
+		});
+	});
+
 	var howManyKeystrokes = 0;
 
-	var socket = io("/test-namespace");
 
 
-	socket.on("connect", function()
-	{
-		socket.emit("room id", post._id);
 
-	});
+
 	
 	var currentInput = "";
 	$scope.currentInput = [];

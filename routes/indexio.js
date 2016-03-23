@@ -26,6 +26,10 @@ module.exports = function(io)
 			nsp.emit("typed", text);
 		});
 
+		socket.on("fill EVs", function(data)
+		{
+			nsp.emit("EVs filled", data);
+		})
 
 		socket.on("mon selection", function(data)
 		{
