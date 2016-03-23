@@ -14,24 +14,36 @@
 		<option value="LC" ng-click="showMons('LC')">LC</option>
 	</select> -->
 
-	<select ng-options="t for t in tiers" ng-model="selectedTier"></select>
+	<select ng-options="t for t in tiers | filter: '!BL'" ng-model="selectedTier"></select>
 	 <!-- ng-change="showMons()" -->
 
 	<span ng-bind="selectedTier.name"></span>
 
 
 </p>
+<div>
+	<table>
+		<tr>
 
-<span ng-repeat="ind in partySize">
-	<a href="" ng-click="changeWhichMon(ind)" ng-bind="party['pokemon' + ind] || 'Pokemon' + ind"></a>
+			
+				<!-- <td><img ng-src="https://play.pokemonshowdown.com/sprites/bw/sneasel.png" /></td> -->
+				<td ng-repeat="ind in partySize"><img ng-src="{{getPokeSprite(ind)}}" /></td>
+		</tr>
+
+		<tr>
+			
+				<td ng-repeat="ind in partySize"><a href="" ng-click="changeWhichMon(ind)" ng-bind="party['pokemon' + ind].name || 'Pokemon' + ind"></a></td>
+			
 
 
-</span>
-
+		</tr>
+	</table>
+</div>
+<br />
 <div ng-repeat="num in partySize track by $index">
 	
 	<span ng-show="num === whichMonToShow">
-		Pokemon <span ng-bind="num"></span>: <input ng-model="party['pokemon' + ($index + 1)]" ng-keyup="findRelMons($index)"></input>
+		Pokemon <span ng-bind="num"></span>: <input ng-model="party['pokemon' + ($index + 1)].name" ng-keyup="findRelMons($index)"></input>
 
 		<div ng-repeat="moveNum in moveSize track by $index">
 

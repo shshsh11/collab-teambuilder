@@ -44,7 +44,7 @@ router.post("/updateParty", function(req, res, next)
 
 
 
-		docs.party["pokemon" + (parseInt(req.body.currentInput) + 1)] = req.body.mon;
+		docs.party["pokemon" + (parseInt(req.body.currentInput) + 1)].name = req.body.mon;
 		docs.tier = req.body.tier;
 		docs.save(function(err)
 		{

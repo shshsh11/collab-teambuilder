@@ -7,12 +7,72 @@ var RoomSchema = new mongoose.Schema(
 	tier: String,
 	party:
 	{
-		pokemon1: String,
-		pokemon2: String,
-		pokemon3: String,
-		pokemon4: String,
-		pokemon5: String,
-		pokemon6: String
+		pokemon1: 
+		{
+			name: String,
+			item: String,
+			move1: String,
+			move2: String,
+			move3: String,
+			move4: String,
+			EVs: [Number],
+			Nature: String
+		},
+		pokemon2: 
+		{
+			name: String,
+			item: String,
+			move1: String,
+			move2: String,
+			move3: String,
+			move4: String,
+			EVs: [Number],
+			Nature: String
+		},
+		pokemon3: 
+		{
+			name: String,
+			item: String,
+			move1: String,
+			move2: String,
+			move3: String,
+			move4: String,
+			EVs: [Number],
+			Nature: String
+		},
+		pokemon4: 
+		{
+			name: String,
+			item: String,
+			move1: String,
+			move2: String,
+			move3: String,
+			move4: String,
+			EVs: [Number],
+			Nature: String
+		},
+		pokemon5: 
+		{
+			name: String,
+			item: String,
+			move1: String,
+			move2: String,
+			move3: String,
+			move4: String,
+			EVs: [Number],
+			Nature: String
+		},
+		pokemon6: 
+		{
+			name: String,
+			item: String,
+			move1: String,
+			move2: String,
+			move3: String,
+			move4: String,
+			EVs: [Number],
+			Nature: String
+		}
 	}
 });
 

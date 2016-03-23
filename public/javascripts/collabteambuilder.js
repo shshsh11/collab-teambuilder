@@ -140,14 +140,14 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 
 	var pokedex = dex.dex;
-
-	$scope.tiers = ["Uber", "OU", "BL", "UU"];
+	$scope.spriteBaseURL = "https://play.pokemonshowdown.com/sprites/bw/";
+	$scope.tiers = ["Uber", "OU", "BL", "UU", "BL2", "RU", "BL3", "NU", "BL4", "PU", "LC", "NFE"];
 
 	//[{name: "Uber"}, {name: "OU"}, {name: "BL"}, {name: "UU"}, {name: "BL2"}, {name: "RU"}, {name: "BL3"}, {name: "NU"}, {name: "BL4"}, {name: "PU"}, {name: "LC"}, {name: "NFE"}];
 
 	$scope.party = [];
 
-	if (post.party)
+	if (post.party.pokemon1.name)
 	{
 		$scope.party = post.party;
 
@@ -162,14 +162,9 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		if (mon.tier === $scope.selectedTier) return 0;
 		else 
 		{
-			if (mon.tier === "OU") return 1;
-			if (mon.tier === "UU") return 3;
-			if (mon.tier === "RU") return 5;
-			if (mon.tier === "NU") return 7;
-			if (mon.tier === "PU") return 9;
-			if (mon.tier === "LC") return 11;
-			if (mon.tier === "NFE") return 13;
-			else return 15;
+			if ($scope.tiers.indexOf(mon.tier) === -1) return 100;
+			else return $scope.tiers.indexOf(mon.tier) + 1;
+
 		}
 	}
 
@@ -199,6 +194,22 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	{
 		$scope.whichMonToShow = which;
 	}
+	
+
+	$scope.getPokeSprite = function(index)
+	{
+		if ($scope.party["pokemon" + index].name.length > 0)
+		{
+			return "http://www.smogon.com/dex/media/sprites/xyicons/" + $scope.party["pokemon" + index].name.toLowerCase() + ".png";
+		}	
+		else
+		{
+			return "http://www.smogon.com/dex/media/sprites/xyicons/ditto.png";
+
+		}
+
+		//return $scope.spriteBaseURL + $scope.party["pokemon" + index].toLowerCase() + ".png";
+	}
 
 	var howManyKeystrokes = 0;
 
@@ -222,7 +233,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 		$scope.r.pokedex = [];
 
-		var q = $scope.party["pokemon" + (parseInt(currentInput) + 1)];
+		var q = $scope.party["pokemon" + (parseInt(currentInput) + 1)].name;
 		
 
 		for (var i = 0; i < pokedex.length; i++)
@@ -242,7 +253,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	$scope.fillInput = function(name)
 	{
-		$scope.party["pokemon" + (parseInt(currentInput) + 1)] = name;
+		$scope.party["pokemon" + (parseInt(currentInput) + 1)].name = name;
 		// $scope.showMons($scope.selectedTier);
 		$scope.r.pokedex = [];
 		var data = {room: post._id, currentInput: currentInput, mon: name, tier: $scope.selectedTier};
@@ -255,7 +266,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	
 		$scope.$apply(function()
 		{
-			$scope.party["pokemon" + (parseInt(data.currentInput) + 1)] = data.mon;
+			$scope.party["pokemon" + (parseInt(data.currentInput) + 1)].name = data.mon;
 		});
 	});
 
