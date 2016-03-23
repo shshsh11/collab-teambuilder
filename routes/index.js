@@ -65,8 +65,11 @@ router.post("/updateParty", function(req, res, next)
 	{
 		if (err) throw err;
 
+
+
 		if (req.body.move)
 		{
+			console.log("updating move");
 			var ci = req.body.currentInput;
 
 			docs.party["pokemon" + ci.substring(0, 1)]["move" + ci.substring(1)] = req.body.move;
@@ -76,13 +79,25 @@ router.post("/updateParty", function(req, res, next)
 				res.send("updated move successfully");
 			});
 		}
+		else if (req.body.item)
+		{
+			console.log("updating item");
+			var ci = req.body.currentInput;
 
+			docs.party["pokemon" + ci].item = req.body.item;
+			docs.save(function(err)
+			{
+				if (err) throw err;
+				res.send("updated item successfully");
+			});
+		}
 		else if (req.body.mon)
 		{
 
-
+			console.log("updating mon");
 			docs.party["pokemon" + req.body.currentInput].name = req.body.mon;
 			docs.tier = req.body.tier;
+			console.log(docs);
 			docs.save(function(err)
 			{
 				if (err) throw err;

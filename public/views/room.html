@@ -43,11 +43,28 @@
 <div ng-repeat="num in partySize track by $index">
 	
 	<span ng-show="num === whichMonToShow">
-		Pokemon <span ng-bind="num"></span>: <input ng-model="party['pokemon' + num].name" ng-keyup="findRelMons(num)"></input>
+		<div>
+			Pokemon <span ng-bind="num"></span>: <input ng-model="party['pokemon' + num].name" ng-keyup="findRelMons(num)"></input> @ Item: <input ng-model="party['pokemon' + num].item" ng-keyup="findRelItems(num)"></input>
+		</div>
 
-		<br />
 
-		Item: <input ng-model="party['pokemon' + num].item" ng-keyup="findRelItems(num)"></input>
+		<div>
+			Ability: <span ng-bind="getAbility(0, num)"></span> / <span ng-bind="getAbility(1, num)"></span> / <span ng-bind="getAbility(H, num)"></span>
+		</div>
+
+		<div>
+			EVs: 
+			<span ng-repeat="ev in evs track by $index">
+				<span ng-bind="ev"></span>: 
+				<input size="3" ng-model="party['pokemon' + $parent.num].EVs[$index]" ng-keyup="fillEVs($parent.num, $index)"></input> 
+				
+			</span>
+		</div>
+
+		<div>
+			<input></input> Nature
+		</div>
+		
 
 		<div ng-repeat="moveNum in moveSize track by $index">
 
@@ -82,7 +99,7 @@
   <table>
     <tr>
       <td>
-      	<a href="" ng-click="fillInput(mon.species)"><span ng-bind="item.name"></span></a>
+      	<a href="" ng-click="fillInputItem(item.name)"><span ng-bind="item.name"></span></a>
       </td>
 
     </tr>

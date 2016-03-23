@@ -10,7 +10,9 @@ var RoomSchema = new mongoose.Schema(
 		pokemon1: 
 		{
 			name: String,
-			item: String,
+			id: String,
+			item: String, 
+			ability: String,
 			move1: String,
 			move2: String,
 			move3: String,
@@ -21,7 +23,9 @@ var RoomSchema = new mongoose.Schema(
 		pokemon2: 
 		{
 			name: String,
-			item: String,
+			id: String,
+			item: String,			 
+			ability: String,
 			move1: String,
 			move2: String,
 			move3: String,
@@ -32,7 +36,9 @@ var RoomSchema = new mongoose.Schema(
 		pokemon3: 
 		{
 			name: String,
-			item: String,
+			id: String,
+			item: String,			 
+			ability: String,
 			move1: String,
 			move2: String,
 			move3: String,
@@ -43,7 +49,9 @@ var RoomSchema = new mongoose.Schema(
 		pokemon4: 
 		{
 			name: String,
-			item: String,
+			id: String,
+			item: String,			 
+			ability: String,
 			move1: String,
 			move2: String,
 			move3: String,
@@ -54,7 +62,9 @@ var RoomSchema = new mongoose.Schema(
 		pokemon5: 
 		{
 			name: String,
-			item: String,
+			id: String,
+			item: String,			 
+			ability: String,
 			move1: String,
 			move2: String,
 			move3: String,
@@ -65,7 +75,9 @@ var RoomSchema = new mongoose.Schema(
 		pokemon6: 
 		{
 			name: String,
-			item: String,
+			id: String,
+			item: String,			 
+			ability: String,
 			move1: String,
 			move2: String,
 			move3: String,
