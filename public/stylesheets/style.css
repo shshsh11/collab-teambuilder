@@ -18,3 +18,8 @@ div
 {
 	margin-top: 10px;
 }
+
+textarea
+{
+  font: 14px "Ubuntu", Helvetica, Arial, sans-serif;	
+}

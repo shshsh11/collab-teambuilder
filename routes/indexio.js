@@ -23,12 +23,12 @@ module.exports = function(io)
 		socket.on("type", function(text)
 		{
 			//console.log(text);
-			nsp.emit("typed", text);
+			nsp.to(roomID).emit("typed", text);
 		});
 
 		socket.on("fill EVs", function(data)
 		{
-			nsp.emit("EVs filled", data);
+			nsp.to(roomID).emit("EVs filled", data);
 		})
 
 		socket.on("mon selection", function(data)
@@ -48,6 +48,10 @@ module.exports = function(io)
 			nsp.to(roomID).emit("update move selection", data);
 		})
 
+		socket.on("nature selection", function(data)
+		{
+			nsp.to(roomID).emit("update nature selection", data);
+		})
 
 
 		socket.on("disconnect", function()

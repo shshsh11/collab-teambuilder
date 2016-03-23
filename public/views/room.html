@@ -17,7 +17,7 @@
 	<select ng-options="t for t in tiers | filter: '!BL'" ng-model="selectedTier"></select>
 	 <!-- ng-change="showMons()" -->
 
-	<span ng-bind="selectedTier.name"></span>
+	<!-- <span ng-bind="selectedTier.name"></span> -->
 
 
 </p>
@@ -62,7 +62,7 @@
 		</div>
 
 		<div>
-			<input></input> Nature
+			<select ng-options="n for n in natures" ng-model="party['pokemon' + num].nature" ng-change="doNatures(num, party['pokemon' + num].nature)"></select> Nature 
 		</div>
 		
 

@@ -26,7 +26,7 @@ var RoomSchema = new mongoose.Schema(
 				SpD: Number,
 				Spe: Number
 			},
-			Nature: String
+			nature: String
 		},
 		pokemon2: 
 		{
@@ -47,7 +47,7 @@ var RoomSchema = new mongoose.Schema(
 				SpD: Number,
 				Spe: Number
 			},
-			Nature: String
+			nature: String
 		},
 		pokemon3: 
 		{
@@ -68,7 +68,7 @@ var RoomSchema = new mongoose.Schema(
 				SpD: Number,
 				Spe: Number
 			},
-			Nature: String
+			nature: String
 		},
 		pokemon4: 
 		{
@@ -89,7 +89,7 @@ var RoomSchema = new mongoose.Schema(
 				SpD: Number,
 				Spe: Number
 			},
-			Nature: String
+			nature: String
 		},
 		pokemon5: 
 		{
@@ -110,7 +110,7 @@ var RoomSchema = new mongoose.Schema(
 				SpD: Number,
 				Spe: Number
 			},
-			Nature: String
+			nature: String
 		},
 		pokemon6: 
 		{
@@ -131,7 +131,7 @@ var RoomSchema = new mongoose.Schema(
 				SpD: Number,
 				Spe: Number
 			},
-			Nature: String
+			nature: String
 		}
 	}
 });

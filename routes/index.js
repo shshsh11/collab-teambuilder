@@ -105,6 +105,31 @@ router.post("/updateParty", function(req, res, next)
 			});
 		}
 
+		else if (req.body.whichEV)
+		{
+
+			console.log("updating evs");
+			console.log(docs.party["pokemon" + req.body.currentInput.substring(0, 1)])
+			docs.party["pokemon" + req.body.currentInput.substring(0, 1)].EVs[req.body.whichEV] = req.body.amount;
+			docs.save(function(err)
+			{
+				if (err) throw err;
+				res.send("updated EV " + req.body.whichEV + " successfully");
+			});
+		}
+
+		else if (req.body.nature)
+		{
+			console.log("updating nature");
+			
+			docs.party["pokemon" + req.body.currentInput.substring(0, 1)].nature = req.body.nature;
+			docs.save(function(err)
+			{
+				if (err) throw err;
+				res.send("updated nature");
+			});
+		}
+
 	});
 
 

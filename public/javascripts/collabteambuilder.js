@@ -164,11 +164,12 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	var pokedex = dex.dex;
 	var movedex = dex.moves;
 	var itemdex = dex.items;
+	var currentInput = "";
 	$scope.spriteBaseURL = "https://play.pokemonshowdown.com/sprites/bw/";
 	$scope.tiers = ["Uber", "OU", "BL", "UU", "BL2", "RU", "BL3", "NU", "BL4", "PU", "LC", "NFE"];
 	$scope.evs = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
 	//[{name: "Uber"}, {name: "OU"}, {name: "BL"}, {name: "UU"}, {name: "BL2"}, {name: "RU"}, {name: "BL3"}, {name: "NU"}, {name: "BL4"}, {name: "PU"}, {name: "LC"}, {name: "NFE"}];
-
+	$scope.natures = ["Adamant", "Jolly", "Modest", "Timid", "Bold", "Calm"];
 	$scope.party = [];
 
 
@@ -219,6 +220,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	$scope.changeWhichMon = function(which)
 	{
+		currentInput = which;
 		$scope.whichMonToShow = which;
 	}
 	
@@ -261,19 +263,25 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	{
 		var amount = $scope.party["pokemon" + whichPoke].EVs[whichEV];
 
-		var dataToSend = {room: post._id, currentInput: currentInput, amount: amount, tier: $scope.selectedTier};
-		dex.updateParty(data);
-
-
+		var dataToSend = {room: post._id, currentInput: currentInput, whichEV: whichEV, amount: amount, tier: $scope.selectedTier};
+		
+		
 		var data = {pokemonNumber: whichPoke, whichEV: whichEV, amount: amount};
 		setTimeout(function()
 		{
 			socket.emit("fill EVs", data);
 		}, 1000);
+
+		if (amount.length >= 3)
+		{
+			dex.updateParty(dataToSend);
+		}
+
 	}
 
 	socket.on("EVs filled", function(data)
 	{
+		
 		$scope.$apply(function()
 		{
 			$scope.party["pokemon" + data.pokemonNumber].EVs[data.whichEV] = data.amount;
@@ -284,10 +292,22 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 
 
+	$scope.doNatures = function(whichPoke, nature)
+	{
+		var dataToSend = {room: post._id, currentInput: currentInput, nature: nature, tier: $scope.selectedTier};
+		dex.updateParty(dataToSend);
+		socket.emit("nature selection", dataToSend);
 
+	}
 
-	
-	var currentInput = "";
+	socket.on("update nature selection", function(data)
+	{
+		$scope.$apply(function()
+		{
+			$scope.party["pokemon" + data.currentInput.substring(0, 1)].nature = data.nature;
+		})
+	})
+
 	$scope.currentInput = [];
 
 {
@@ -337,13 +357,12 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	{
 		
 
-		//currentInput = event.target.id;
 		currentInput = "";
 		currentInput = index;
 
 		$scope.r.pokedex = [];
 
-		var q = $scope.party["pokemon" + currentInput].name;
+		var q = $scope.party["pokemon" + currentInput.substring(0, 1)].name;
 		
 
 		for (var i = 0; i < pokedex.length; i++)
@@ -365,13 +384,13 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	{
 		
 
-		//currentInput = event.target.id;
+		
 		currentInput = "";
 		currentInput = index;
 
 		$scope.r.itemdex = [];
 
-		var q = $scope.party["pokemon" + currentInput].item;
+		var q = $scope.party["pokemon" + currentInput.substring(0, 1)].item;
 		
 
 		for (var i = 0; i < itemdex.length; i++)
@@ -420,7 +439,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.fillInput = function(name)
 	{
 
-		$scope.party["pokemon" + currentInput].name = name;
+		$scope.party["pokemon" + currentInput.substring(0, 1)].name = name;
 		// $scope.showMons($scope.selectedTier);
 		$scope.r.pokedex = [];
 		var data = {room: post._id, currentInput: currentInput, mon: name, tier: $scope.selectedTier};
@@ -430,7 +449,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	$scope.fillInputItem = function(item)
 	{
-		$scope.party["pokemon" + currentInput].item = item;
+		$scope.party["pokemon" + currentInput.substring(0, 1)].item = item;
 		$scope.r.itemdex = [];
 		var data = {room: post._id, currentInput: currentInput, item: item, tier: $scope.selectedTier};
 		dex.updateParty(data);
@@ -451,7 +470,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	
 		$scope.$apply(function()
 		{
-			$scope.party["pokemon" + data.currentInput].name = data.mon;
+			$scope.party["pokemon" + data.currentInput.substring(0, 1)].name = data.mon;
 		});
 	});
 
@@ -459,7 +478,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	{
 		$scope.$apply(function()
 		{
-			$scope.party["pokemon" + data.currentInput].item = data.item;
+			$scope.party["pokemon" + data.currentInput.substring(0, 1)].item = data.item;
 		})
 	})
 
