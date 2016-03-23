@@ -154,6 +154,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 {
 
 	var socket = io("/test-namespace");
+	$scope.evs = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
 
 	socket.on("connect", function()
 	{
@@ -162,6 +163,10 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		for (var i = 0; i < 6; i++)
 		{
 			$scope["howManyViewing" + i] = "";
+			// for (var ev in $scope.evs)
+			// {
+			// 	$scope.party["pokemon" + (i + 1)].EVs[ev] = 0;
+			// }
 		}
 
 	});
@@ -172,7 +177,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	var currentInput = "";
 	$scope.spriteBaseURL = "https://play.pokemonshowdown.com/sprites/bw/";
 	$scope.tiers = ["Uber", "OU", "BL", "UU", "BL2", "RU", "BL3", "NU", "BL4", "PU", "LC", "NFE"];
-	$scope.evs = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
+	
 	//[{name: "Uber"}, {name: "OU"}, {name: "BL"}, {name: "UU"}, {name: "BL2"}, {name: "RU"}, {name: "BL3"}, {name: "NU"}, {name: "BL4"}, {name: "PU"}, {name: "LC"}, {name: "NFE"}];
 	$scope.natures = ["Adamant", "Jolly", "Modest", "Timid", "Bold", "Calm"];
 	$scope.party = [];
@@ -206,6 +211,39 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			else return $scope.tiers.indexOf(mon.tier) + 1;
 
 		}
+	}
+
+	$scope.export = function()
+	{
+		$scope.exported = "";
+		var toExport = "";
+		for (var poke in $scope.party)
+		{
+
+			toExport += $scope.party[poke].name + " @ " + $scope.party[poke].item + "<br />";
+			toExport += "Ability: " + "<br />";
+			toExport += "EVs: ";
+			for (var ev in $scope.party[poke].EVs)
+			{
+				toExport += $scope.party[poke].EVs[ev] + " " + ev + " / ";
+			}
+			toExport = toExport.substring(0, toExport.length - 3);
+			toExport += "<br />";
+			toExport += $scope.party[poke].nature + " Nature <br />";
+			//possible restructure of moves
+			toExport += "- " + $scope.party[poke].move1 + "<br />";
+			toExport += "- " + $scope.party[poke].move2 + "<br />";
+			toExport += "- " + $scope.party[poke].move3 + "<br />";
+			toExport += "- " + $scope.party[poke].move4 + "<br />";
+
+
+
+
+			toExport += "<br />";
+		}
+
+
+		$scope.exported = toExport;
 	}
 
 	// $scope.showMons = function()

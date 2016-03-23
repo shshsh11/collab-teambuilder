@@ -46,6 +46,9 @@
 		</tr>
 	</table>
 </div>
+
+
+
 <br />
 <div ng-repeat="num in partySize track by $index">
 	
@@ -86,7 +89,8 @@
 
 </div>
 
-
+<a href="" ng-click="export()">Export</a>
+<div ng-bind-html="exported"></div>
 
 <div ng-repeat="mon in r.pokedex | orderBy:tierSort">
   <table>
