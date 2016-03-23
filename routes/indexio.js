@@ -34,6 +34,10 @@ module.exports = function(io)
 			nsp.to(roomID).emit("update mon selection", data);
 		})
 
+		socket.on("move selection", function(data)
+		{
+			nsp.to(roomID).emit("update move selection", data);
+		})
 
 
 

@@ -105,7 +105,8 @@ app.factory("dex", function($http)
 	var obj = 
 	{
 		dex: [],
-		moves: []
+		moves: [],
+		items: []
 	}
 
 	obj.updateParty = function(data)
@@ -116,14 +117,28 @@ app.factory("dex", function($http)
 		});
 	}
 
-
+	obj.getAllMoves = function()
+	{
+		
+	}
 
 
 	obj.getAll = function()
 	{
-		$http.get("/pokedex").success(function(data)
+		$http.get("/pokedex").success(function(monData)
 		{
-			angular.copy(data, obj.dex);
+			$http.get("/movedex").success(function(data)
+			{
+				$http.get("/itemdex").success(function(itemData)
+				{
+					angular.copy(monData, obj.dex);
+					angular.copy(data, obj.moves);
+					angular.copy(itemData, obj.items);
+				})
+
+				
+			});
+
 		});
 	}
 
@@ -140,6 +155,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 
 	var pokedex = dex.dex;
+	var movedex = dex.moves;
+	var itemdex = dex.items;
 	$scope.spriteBaseURL = "https://play.pokemonshowdown.com/sprites/bw/";
 	$scope.tiers = ["Uber", "OU", "BL", "UU", "BL2", "RU", "BL3", "NU", "BL4", "PU", "LC", "NFE"];
 
@@ -222,18 +239,63 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	});
 	
-
 	var currentInput = "";
+	$scope.currentInput = [];
+
+{
+	// $scope.findRelevant = function(index)
+	// {
+	// 	$scope.currentInput = [];
+	// 	$scope.r.displayDex = [];
+
+	// 	if (index.length === 1)
+	// 	{
+	// 		$scope.currentInput[0] = "pokemon" + index;
+	// 		var q = $scope.party[$scope.currentInput[0]].name;
+
+	// 		for(var i = 0; i < pokedex.length; i++)
+	// 		{
+	// 			if (pokedex[i].species.indexOf(q) > -1 || pokedex[i].species.toLowerCase().indexOf(q) > -1)
+	// 			{
+					
+	// 				if (q.length >= 2)
+	// 				{
+	// 					$scope.r.displayDex.push(pokedex[i]);
+
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// }
+
+	// $scope.fillInputSpecial = function(item)
+	// {
+		
+	// 	$scope.party[$scope.currentInput[0]].name = item.species;
+	// 	$scope.displayDex = [];
+	// 	var data = {room: post._id, currentInput: currentInput, mon: name, tier: $scope.selectedTier};
+	// 	dex.updateParty(data);
+	// 	socket.emit("mon selection", data);
+
+	// 	// $scope.party["pokemon" + currentInput].name = name;
+	// 	// // $scope.showMons($scope.selectedTier);
+	// 	// $scope.r.pokedex = [];
+	// 	// var data = {room: post._id, currentInput: currentInput, mon: name, tier: $scope.selectedTier};
+	// 	// dex.updateParty(data);
+	// 	// socket.emit("mon selection", data);
+	// }
+}
 	$scope.findRelMons = function(index)
 	{
+		
 
 		//currentInput = event.target.id;
-		
+		currentInput = "";
 		currentInput = index;
 
 		$scope.r.pokedex = [];
 
-		var q = $scope.party["pokemon" + (parseInt(currentInput) + 1)].name;
+		var q = $scope.party["pokemon" + currentInput].name;
 		
 
 		for (var i = 0; i < pokedex.length; i++)
@@ -251,9 +313,65 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	}
 
+	$scope.findRelItems = function(index)
+	{
+		
+
+		//currentInput = event.target.id;
+		currentInput = "";
+		currentInput = index;
+
+		$scope.r.itemdex = [];
+
+		var q = $scope.party["pokemon" + currentInput].item;
+		
+
+		for (var i = 0; i < itemdex.length; i++)
+		{
+			if (itemdex[i].name.indexOf(q) > -1 || itemdex[i].id.indexOf(q) > -1)
+			{
+				
+				if (q.length >= 2)
+				{
+					$scope.r.itemdex.push(itemdex[i]);
+
+				}
+			}
+		}
+
+	}
+
+	$scope.findRelMoves = function(index)
+	{
+		
+
+		currentInput = "";
+		currentInput = index; //"pokemon" + index.substring(0, 1) + "." + "move" + index.substring(1);
+	
+
+		$scope.r.movedex = [];
+
+		var q = $scope.party["pokemon" + index.substring(0, 1)]["move" + index.substring(1)];
+		
+
+		for (var i = 0; i < movedex.length; i++)
+		{
+			if (movedex[i].name.indexOf(q) > -1 || movedex[i].name.toLowerCase().indexOf(q) > -1)
+			{
+				
+				if (q.length >= 2)
+				{
+					$scope.r.movedex.push(movedex[i]);
+
+				}
+			}
+		}
+
+	}
+
 	$scope.fillInput = function(name)
 	{
-		$scope.party["pokemon" + (parseInt(currentInput) + 1)].name = name;
+		$scope.party["pokemon" + currentInput].name = name;
 		// $scope.showMons($scope.selectedTier);
 		$scope.r.pokedex = [];
 		var data = {room: post._id, currentInput: currentInput, mon: name, tier: $scope.selectedTier};
@@ -261,15 +379,31 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		socket.emit("mon selection", data);
 	}
 
+	$scope.fillInputMove = function(move)
+	{
+		$scope.party["pokemon" + currentInput.substring(0, 1)]["move" + currentInput.substring(1)] = move;
+		$scope.r.movedex = [];
+		var data = {room: post._id, currentInput: currentInput, move: move, tier: $scope.selectedTier};
+		dex.updateParty(data);
+		socket.emit("move selection", data);
+	}
+
 	socket.on("update mon selection", function(data)
 	{
 	
 		$scope.$apply(function()
 		{
-			$scope.party["pokemon" + (parseInt(data.currentInput) + 1)].name = data.mon;
+			$scope.party["pokemon" + data.currentInput].name = data.mon;
 		});
 	});
 
+	socket.on("update move selection", function(data)
+	{
+		$scope.$apply(function()
+		{
+			$scope.party["pokemon" + data.currentInput.substring(0, 1)]["move" + data.currentInput.substring(1)] = data.move;
+		})
+	})
 
 	$scope.gDocsIt = function(event)
 	{
@@ -331,6 +465,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider)
 			{
 				return dex.getAll();
 			}]
+
 		}
 	})
 

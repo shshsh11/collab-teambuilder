@@ -6,6 +6,8 @@ var mongoose = require("mongoose");
 var Room = mongoose.model("Room");
 
 var pokes = require("../public/data/pokedex");
+var moves = require("../public/data/moves");
+var items = require("../public/data/items");
 var formats = require("../public/data/formats-data");
 
 /* GET home page. */
@@ -33,6 +35,27 @@ router.get("/pokedex", function(req, res, next)
 	res.send(pokedex);
 });
 
+router.get("/itemdex", function(req, res, renx)
+{
+	var itemdex = [];
+	for (var item in items.BattleItems)
+	{
+		itemdex.push(items.BattleItems[item]);
+	}
+	res.send(itemdex);
+})
+
+router.get("/movedex", function(req, res, next)
+{
+	var movedex = [];
+	for (var move in moves.BattleMovedex)
+	{
+		delete moves.BattleMovedex[move]['desc'];
+		movedex.push(moves.BattleMovedex[move]);
+	}
+	res.send(movedex);
+});
+
 router.post("/updateParty", function(req, res, next)
 {
 	console.log("updatin party");
@@ -42,16 +65,30 @@ router.post("/updateParty", function(req, res, next)
 	{
 		if (err) throw err;
 
-
-
-		docs.party["pokemon" + (parseInt(req.body.currentInput) + 1)].name = req.body.mon;
-		docs.tier = req.body.tier;
-		docs.save(function(err)
+		if (req.body.move)
 		{
-			if (err) throw err;
-			res.send("updated team successfully");
-		});
+			var ci = req.body.currentInput;
 
+			docs.party["pokemon" + ci.substring(0, 1)]["move" + ci.substring(1)] = req.body.move;
+			docs.save(function(err)
+			{
+				if (err) throw err;
+				res.send("updated move successfully");
+			});
+		}
+
+		else if (req.body.mon)
+		{
+
+
+			docs.party["pokemon" + req.body.currentInput].name = req.body.mon;
+			docs.tier = req.body.tier;
+			docs.save(function(err)
+			{
+				if (err) throw err;
+				res.send("updated team successfully");
+			});
+		}
 
 	});
 
