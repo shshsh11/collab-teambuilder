@@ -18,7 +18,15 @@ module.exports = function(io)
 			socket.join(roomID);
 		});
 
-		
+		socket.on("viewing", function(data)
+		{
+			nsp.to(roomID).emit("show view", data);
+		})
+
+		socket.on("remove viewing", function(data)
+		{
+			nsp.to(roomID).emit("removing viewing", data);
+		})
 
 		socket.on("type", function(text)
 		{

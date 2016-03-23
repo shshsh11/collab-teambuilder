@@ -1,6 +1,8 @@
 
 <p>the room id is <span ng-bind="roomID"></span></p>
-<p ng-bind="currentInput"></p>
+<div ng-style="randCol()">
+	Your current color
+</div>
 <p>tier: 
 
 
@@ -23,6 +25,11 @@
 </p>
 <div>
 	<table>
+
+		<tr>
+			<td ng-repeat="ind in partySize"><span ng-style="viewing{{ind}}"><span ng-bind="howManyViewing{{ind}}"></span></span></td>
+		</tr>
+
 		<tr>
 
 			
@@ -118,4 +125,6 @@
 </div>
 
 <br />
+<p>"Chat" (basically just really bad google docs)</p>
+
 <textarea rows="30" cols="50" ng-keyup="gDocsIt($event)" ng-model="text"></textarea>

@@ -159,6 +159,11 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	{
 		socket.emit("room id", post._id);
 
+		for (var i = 0; i < 6; i++)
+		{
+			$scope["howManyViewing" + i] = "";
+		}
+
 	});
 
 	var pokedex = dex.dex;
@@ -172,6 +177,13 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.natures = ["Adamant", "Jolly", "Modest", "Timid", "Bold", "Calm"];
 	$scope.party = [];
 
+	$scope.colors = ["blue", "purple", "green", "red", "orange", "gray"];
+	$scope.yourCol = $scope.colors[Math.floor(Math.random() * 6)];
+
+	$scope.randCol = function()
+	{
+		return {'color' : $scope.yourCol};
+	}
 
 	if (post.tier)
 	{
@@ -218,11 +230,42 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.partySize = ["1", "2", "3", "4", "5", "6"];
 	$scope.moveSize = ["1", "2", "3", "4"];
 
+
+	var mostRecentModded = "";
 	$scope.changeWhichMon = function(which)
 	{
+		$scope["howManyViewing" + mostRecentModded] = "";
 		currentInput = which;
 		$scope.whichMonToShow = which;
+		var data = {color: $scope.yourCol, whichMon: which};
+		
+		socket.emit("viewing", data);
+		socket.emit("remove viewing", mostRecentModded);
+		mostRecentModded = which;
+
+
 	}
+
+	socket.on("show view", function(data)
+	{
+		$scope.$apply(function()
+		{
+			$scope["howManyViewing" + mostRecentModded] = "";
+			$scope["howManyViewing" + data.whichMon] = "being modified";
+			$scope["viewing" + data.whichMon] = {'color' : data.color};
+		});
+		
+	})
+
+	socket.on("removing viewing", function(data)
+	{
+		$scope.$apply(function()
+		{
+			$scope["howManyViewing" + data] = "";
+
+		});
+		
+	})
 	
 
 	$scope.getPokeSprite = function(index)
