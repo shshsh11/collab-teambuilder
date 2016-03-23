@@ -22,8 +22,23 @@
 
 </p>
 
+<span ng-repeat="ind in partySize">
+	<a href="" ng-click="changeWhichMon(ind)" ng-bind="party['pokemon' + ind] || 'Pokemon' + ind"></a>
+
+
+</span>
+
 <div ng-repeat="num in partySize track by $index">
-	Pokemon <span ng-bind="num"></span>: <input ng-model="party['pokemon' + ($index + 1)]" ng-keyup="findRelMons($index)"></input>
+	
+	<span ng-show="num === whichMonToShow">
+		Pokemon <span ng-bind="num"></span>: <input ng-model="party['pokemon' + ($index + 1)]" ng-keyup="findRelMons($index)"></input>
+
+		<div ng-repeat="moveNum in moveSize track by $index">
+
+			Move <span ng-bind="moveNum"></span>: <input ng-model="move['pokemon' + moveNum]" ng-keyup="findRelMoves(moveNum)"></input>
+
+		</div>
+	</span>
 
 </div>
 

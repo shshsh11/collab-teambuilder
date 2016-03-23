@@ -138,7 +138,7 @@ app.factory("dex", function($http)
 app.controller("RoomCtrl", function($scope, rooms, post, dex)
 {
 
-	//alert(post.toSource());
+
 	var pokedex = dex.dex;
 
 	$scope.tiers = ["Uber", "OU", "BL", "UU"];
@@ -153,16 +153,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	}
 	$scope.selectedTier = post.tier;
-	//$scope.tiers = post.tier;	
 
-	// $scope.party[0] = post.party.pokemon1;
-	// $scope.party[1] = post.party.pokemon2;
-	// $scope.party[2] = post.party.pokemon3;
-	// $scope.party[3] = post.party.pokemon4;
-	// $scope.party[4] = post.party.pokemon5;
-	// $scope.party[5] = post.party.pokemon6;
-
-	//alert(post.party.pokemon1);
 
 	$scope.tierSort = function(mon)
 	{
@@ -202,7 +193,12 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.playedCard = "not played yet";
 
 	$scope.partySize = ["1", "2", "3", "4", "5", "6"];
+	$scope.moveSize = ["1", "2", "3", "4"];
 
+	$scope.changeWhichMon = function(which)
+	{
+		$scope.whichMonToShow = which;
+	}
 
 	var howManyKeystrokes = 0;
 
