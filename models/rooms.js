@@ -4,6 +4,7 @@ var RoomSchema = new mongoose.Schema(
 {
 	_id: String,
 	dateCreated: String,
+	tier: String,
 	party:
 	{
 		pokemon1: String,

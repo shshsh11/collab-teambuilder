@@ -4,7 +4,7 @@
 <p>tier: 
 
 
-	<select ng-model="tiers">
+<!-- 	<select ng-model="tiers">
 		<option value="Uber" ng-click="showMons('Uber')">Uber</option>
 		<option value="OU" ng-click="showMons('OU')">OU</option>
 		<option value="UU" ng-click="showMons('UU')">UU</option>
@@ -12,22 +12,23 @@
 		<option value="NU" ng-click="showMons('NU')">NU</option>
 		<option value="PU" ng-click="showMons('PU')">PU</option>
 		<option value="LC" ng-click="showMons('LC')">LC</option>
-	</select>
+	</select> -->
+
+	<select ng-options="t for t in tiers" ng-model="selectedTier"></select>
+	 <!-- ng-change="showMons()" -->
+
+	<span ng-bind="selectedTier.name"></span>
+
 
 </p>
 
 <div ng-repeat="num in partySize track by $index">
 	Pokemon <span ng-bind="num"></span>: <input ng-model="party['pokemon' + ($index + 1)]" ng-keyup="findRelMons($index)"></input>
 
-
-	<!-- <input ng-model="pokemon{{$index}}" ng-keyup="findRelMoves($event)" id="pokemon{{$index}}"></input> -->
-
 </div>
 
 
-<!-- Pokemon 1: <input ng-model="pokemon1" ng-keyup="findRelMons($event)" id="pokemon1"></input>
 
-Pokemon 2: <input ng-model="pokemon2" ng-keyup="findRelMons($event)" id="pokemon2"></input> -->
 
 
 <div ng-repeat="mon in r.pokedex | orderBy:tierSort">

@@ -1,8 +1,15 @@
-html, body {
+html, body 
+{
   padding: 50px;
   font: 14px "Ubuntu", Helvetica, Arial, sans-serif;
 }
 
-a {
+a 
+{
   color: #00B7FF;
+}
+
+td 
+{
+	width: 150px;
 }

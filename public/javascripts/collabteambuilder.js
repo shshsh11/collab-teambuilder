@@ -141,13 +141,19 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	//alert(post.toSource());
 	var pokedex = dex.dex;
 
+	$scope.tiers = ["Uber", "OU", "BL", "UU"];
+
+	//[{name: "Uber"}, {name: "OU"}, {name: "BL"}, {name: "UU"}, {name: "BL2"}, {name: "RU"}, {name: "BL3"}, {name: "NU"}, {name: "BL4"}, {name: "PU"}, {name: "LC"}, {name: "NFE"}];
+
 	$scope.party = [];
 
 	if (post.party)
 	{
 		$scope.party = post.party;
+
 	}
-	
+	$scope.selectedTier = post.tier;
+	//$scope.tiers = post.tier;	
 
 	// $scope.party[0] = post.party.pokemon1;
 	// $scope.party[1] = post.party.pokemon2;
@@ -162,7 +168,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	{
 		//ordering should also depend on current tier
 		//ie if RU, then the tiers above don't display at all
-		if (mon.tier === $scope.tiers) return 0;
+		if (mon.tier === $scope.selectedTier) return 0;
 		else 
 		{
 			if (mon.tier === "OU") return 1;
@@ -176,20 +182,20 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		}
 	}
 
-	$scope.showMons = function(tier)
-	{
-
-		$scope.r.pokedex = [];
-		for (var i = 0; i < pokedex.length; i++)
-		{
+	// $scope.showMons = function()
+	// {
+	
+	// 	$scope.r.pokedex = [];
+	// 	for (var i = 0; i < pokedex.length; i++)
+	// 	{
 			
-			if (pokedex[i].tier === tier)
-			{
+	// 		if (pokedex[i].tier === $scope.selectedTier)
+	// 		{
 
-				$scope.r.pokedex.push(pokedex[i]);
-			}
-		}
-	}
+	// 			$scope.r.pokedex.push(pokedex[i]);
+	// 		}
+	// 	}
+	// }
 
 
 	$scope.roomID = post._id;
@@ -241,9 +247,9 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.fillInput = function(name)
 	{
 		$scope.party["pokemon" + (parseInt(currentInput) + 1)] = name;
-		$scope.showMons($scope.tiers);
-		// $scope.r.pokedex = [];
-		var data = {room: post._id, currentInput: currentInput, mon: name};
+		// $scope.showMons($scope.selectedTier);
+		$scope.r.pokedex = [];
+		var data = {room: post._id, currentInput: currentInput, mon: name, tier: $scope.selectedTier};
 		dex.updateParty(data);
 		socket.emit("mon selection", data);
 	}
