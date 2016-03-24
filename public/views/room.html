@@ -59,7 +59,7 @@
 
 
 		<div>
-			Ability: <span ng-bind="getAbility(0, num)"></span> / <span ng-bind="getAbility(1, num)"></span> / <span ng-bind="getAbility(H, num)"></span>
+			Ability: <span ng-bind="getAbility(0, num)"></span> / <span ng-bind="getAbility(1, num)"></span> / <span ng-bind="getAbility(H, num)"></span> (current just here so you can see the abilities)
 		</div>
 
 		<div>
@@ -68,7 +68,7 @@
 				<span ng-bind="ev"></span>: 
 				<input size="3" ng-model="party['pokemon' + $parent.num].EVs[ev]" ng-keyup="fillEVs($parent.num, ev)"></input> 
 				
-			</span>
+			</span> (slightly boggy, will "lag". Cool change in the works)
 		</div>
 
 		<div>

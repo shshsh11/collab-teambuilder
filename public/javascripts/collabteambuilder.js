@@ -182,8 +182,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.natures = ["Adamant", "Jolly", "Modest", "Timid", "Bold", "Calm"];
 	$scope.party = [];
 
-	$scope.colors = ["blue", "purple", "green", "red", "orange", "gray"];
-	$scope.yourCol = $scope.colors[Math.floor(Math.random() * 6)];
+	$scope.colors = ["aqua", "purple", "green", "red", "orange", "gray", "cyan", "black", "magenta", "violet", "#9932CC", "#00CED1"];
+	$scope.yourCol = $scope.colors[Math.floor(Math.random() * $scope.colors.length)];
 
 	$scope.randCol = function()
 	{
@@ -334,7 +334,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			{
 				if (pokedex[i].species === mon) break;
 			}
-			return pokedex[i].abilities[which];
+
+			return pokedex[i].abilities[which] || pokedex[i].abilities.H;
 		}
 		else return "";
 		
@@ -352,8 +353,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		{
 			socket.emit("fill EVs", data);
 		}, 1000);
-
-		if (amount.length >= 3)
+		
+		if (parseInt(amount) % 4 === 0)
 		{
 			dex.updateParty(dataToSend);
 		}
