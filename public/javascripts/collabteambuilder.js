@@ -289,8 +289,14 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		$scope.$apply(function()
 		{
 			$scope["howManyViewing" + mostRecentModded] = "";
-			$scope["howManyViewing" + data.whichMon] = "being modified";
-			$scope["viewing" + data.whichMon] = {'color' : data.color};
+
+			if (!($scope.whichMonToShow === data.whichMon))
+			{
+				$scope["howManyViewing" + data.whichMon] = "being modified";
+				$scope["viewing" + data.whichMon] = {'color' : data.color};
+			}
+
+			
 		});
 		
 	})
