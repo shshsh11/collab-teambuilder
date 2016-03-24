@@ -162,7 +162,9 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 		for (var i = 0; i < 6; i++)
 		{
+			
 			$scope["howManyViewing" + i] = "";
+
 			// for (var ev in $scope.evs)
 			// {
 			// 	$scope.party["pokemon" + (i + 1)].EVs[ev] = 0;
@@ -170,6 +172,140 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		}
 
 	});
+
+	{
+	$scope.party = [];
+	// {
+	// 	pokemon1: 
+	// 	{
+	// 		name: "place",
+	// 		id: "place",
+	// 		item: "place", 
+	// 		ability: "place",
+	// 		move1: "place",
+	// 		move2: "place",
+	// 		move3: "place",
+	// 		move4: "place",
+	// 		EVs: 
+	// 		{
+	// 			HP: 0,
+	// 			Atk: 0,
+	// 			Def: 0,
+	// 			SpA: 0,
+	// 			SpD: 0,
+	// 			Spe: 0
+	// 		},
+	// 		nature: "place"
+	// 	},
+	// 	pokemon2: 
+	// 	{
+	// 		name: "place",
+	// 		id: "place",
+	// 		item: "place",			 
+	// 		ability: "place",
+	// 		move1: "place",
+	// 		move2: "place",
+	// 		move3: "place",
+	// 		move4: "place",
+	// 		EVs: 
+	// 		{
+	// 			HP: 0,
+	// 			Atk: 0,
+	// 			Def: 0,
+	// 			SpA: 0,
+	// 			SpD: 0,
+	// 			Spe: 0
+	// 		},
+	// 		nature: "place"
+	// 	},
+	// 	pokemon3: 
+	// 	{
+	// 		name: "place",
+	// 		id: "place",
+	// 		item: "place",			 
+	// 		ability: "place",
+	// 		move1: "place",
+	// 		move2: "place",
+	// 		move3: "place",
+	// 		move4: "place",
+	// 		EVs: 
+	// 		{
+	// 			HP: 0,
+	// 			Atk: 0,
+	// 			Def: 0,
+	// 			SpA: 0,
+	// 			SpD: 0,
+	// 			Spe: 0
+	// 		},
+	// 		nature: "place"
+	// 	},
+	// 	pokemon4: 
+	// 	{
+	// 		name: "place",
+	// 		id: "place",
+	// 		item: "place",			 
+	// 		ability: "place",
+	// 		move1: "place",
+	// 		move2: "place",
+	// 		move3: "place",
+	// 		move4: "place",
+	// 		EVs: 
+	// 		{
+	// 			HP: 0,
+	// 			Atk: 0,
+	// 			Def: 0,
+	// 			SpA: 0,
+	// 			SpD: 0,
+	// 			Spe: 0
+	// 		},
+	// 		nature: "place"
+	// 	},
+	// 	pokemon5: 
+	// 	{
+	// 		name: "place",
+	// 		id: "place",
+	// 		item: "place",			 
+	// 		ability: "place",
+	// 		move1: "place",
+	// 		move2: "place",
+	// 		move3: "place",
+	// 		move4: "place",
+	// 		EVs: 
+	// 		{
+	// 			HP: 0,
+	// 			Atk: 0,
+	// 			Def: 0,
+	// 			SpA: 0,
+	// 			SpD: 0,
+	// 			Spe: 0
+	// 		},
+	// 		nature: "place"
+	// 	},
+	// 	pokemon6: 
+	// 	{
+	// 		name: "place",
+	// 		id: "place",
+	// 		item: "place",			 
+	// 		ability: "place",
+	// 		move1: "place",
+	// 		move2: "place",
+	// 		move3: "place",
+	// 		move4: "place",
+	// 		EVs: 
+	// 		{
+	// 			HP: 0,
+	// 			Atk: 0,
+	// 			Def: 0,
+	// 			SpA: 0,
+	// 			SpD: 0,
+	// 			Spe: 0
+	// 		},
+	// 		nature: "place"
+	// 	}
+	// }
+	}
+
+
 
 	var pokedex = dex.dex;
 	var movedex = dex.moves;
@@ -180,7 +316,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	
 	//[{name: "Uber"}, {name: "OU"}, {name: "BL"}, {name: "UU"}, {name: "BL2"}, {name: "RU"}, {name: "BL3"}, {name: "NU"}, {name: "BL4"}, {name: "PU"}, {name: "LC"}, {name: "NFE"}];
 	$scope.natures = ["Adamant", "Jolly", "Modest", "Timid", "Bold", "Calm"];
-	$scope.party = [];
+	//$scope.party = [];
 
 	$scope.colors = ["aqua", "purple", "green", "red", "orange", "gray", "cyan", "black", "magenta", "violet", "#9932CC", "#00CED1"];
 	$scope.yourCol = $scope.colors[Math.floor(Math.random() * $scope.colors.length)];
@@ -190,13 +326,12 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		return {'color' : $scope.yourCol};
 	}
 
-	if (post.tier)
-	{
+	
 
-		$scope.party = post.party;
+	$scope.party = post.party;
 
 
-	}
+	
 	$scope.selectedTier = post.tier;
 
 
@@ -398,7 +533,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	$scope.currentInput = [];
 
-{
+	{
 	// $scope.findRelevant = function(index)
 	// {
 	// 	$scope.currentInput = [];
@@ -440,7 +575,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	// 	// dex.updateParty(data);
 	// 	// socket.emit("mon selection", data);
 	// }
-}
+	}
 	$scope.findRelMons = function(index)
 	{
 		
@@ -555,7 +690,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	socket.on("update mon selection", function(data)
 	{
-	
+
+		
 		$scope.$apply(function()
 		{
 			$scope.party["pokemon" + data.currentInput.substring(0, 1)].name = data.mon;

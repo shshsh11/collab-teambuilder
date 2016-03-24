@@ -157,6 +157,138 @@ router.post("/createroom", function(req, res, next)
 	newRoom.dateCreated = req.body.dateCreated;
 	newRoom._id = req.body._id;
 
+	newRoom.party = 	
+	{
+		pokemon1: 
+		{
+			name: "place",
+			id: "place",
+			item: "place", 
+			ability: "place",
+			move1: "place",
+			move2: "place",
+			move3: "place",
+			move4: "place",
+			EVs: 
+			{
+				HP: 0,
+				Atk: 0,
+				Def: 0,
+				SpA: 0,
+				SpD: 0,
+				Spe: 0
+			},
+			nature: "place"
+		},
+		pokemon2: 
+		{
+			name: "place",
+			id: "place",
+			item: "place",			 
+			ability: "place",
+			move1: "place",
+			move2: "place",
+			move3: "place",
+			move4: "place",
+			EVs: 
+			{
+				HP: 0,
+				Atk: 0,
+				Def: 0,
+				SpA: 0,
+				SpD: 0,
+				Spe: 0
+			},
+			nature: "place"
+		},
+		pokemon3: 
+		{
+			name: "place",
+			id: "place",
+			item: "place",			 
+			ability: "place",
+			move1: "place",
+			move2: "place",
+			move3: "place",
+			move4: "place",
+			EVs: 
+			{
+				HP: 0,
+				Atk: 0,
+				Def: 0,
+				SpA: 0,
+				SpD: 0,
+				Spe: 0
+			},
+			nature: "place"
+		},
+		pokemon4: 
+		{
+			name: "place",
+			id: "place",
+			item: "place",			 
+			ability: "place",
+			move1: "place",
+			move2: "place",
+			move3: "place",
+			move4: "place",
+			EVs: 
+			{
+				HP: 0,
+				Atk: 0,
+				Def: 0,
+				SpA: 0,
+				SpD: 0,
+				Spe: 0
+			},
+			nature: "place"
+		},
+		pokemon5: 
+		{
+			name: "place",
+			id: "place",
+			item: "place",			 
+			ability: "place",
+			move1: "place",
+			move2: "place",
+			move3: "place",
+			move4: "place",
+			EVs: 
+			{
+				HP: 0,
+				Atk: 0,
+				Def: 0,
+				SpA: 0,
+				SpD: 0,
+				Spe: 0
+			},
+			nature: "place"
+		},
+		pokemon6: 
+		{
+			name: "place",
+			id: "place",
+			item: "place",			 
+			ability: "place",
+			move1: "place",
+			move2: "place",
+			move3: "place",
+			move4: "place",
+			EVs: 
+			{
+				HP: 0,
+				Atk: 0,
+				Def: 0,
+				SpA: 0,
+				SpD: 0,
+				Spe: 0
+			},
+			nature: "place"
+		}
+	}
+
+	console.log(newRoom);
+
 	newRoom.save(function(err)
 	{
 		if (err) throw err;

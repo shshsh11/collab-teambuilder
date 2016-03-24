@@ -39,7 +39,7 @@
 
 		<tr>
 			
-				<td></td><td ng-repeat="ind in partySize"><a href="" ng-click="changeWhichMon(ind)" ng-bind="party['pokemon' + ind].name || 'Pokemon' + ind"></a></td>
+				<td></td><td ng-repeat="ind in partySize"><a href="" ng-click="changeWhichMon(ind)" ng-bind="party['pokemon' + ind].name || 'Pokemon ' + ind"></a></td>
 			
 
 
@@ -89,8 +89,7 @@
 
 </div>
 
-<a href="" ng-click="export()">Export</a>
-<div ng-bind-html="exported"></div>
+
 
 <div ng-repeat="mon in r.pokedex | orderBy:tierSort">
   <table>
@@ -128,7 +127,11 @@
   </table>
 </div>
 
+
+
 <br />
+<a href="" ng-click="export()">Export</a>
+<div ng-bind-html="exported"></div>
 <p>"Chat" (basically just really bad google docs)</p>
 
 <textarea rows="30" cols="50" ng-keyup="gDocsIt($event)" ng-model="text"></textarea>
