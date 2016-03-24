@@ -7,7 +7,7 @@ To dos
 - make the EV editor easier to use
 - chat
 - make it look pretty
-- 
+
 
 
 data such as Pokemon, moves, items, formats, are taken from pokemonshowdown
