@@ -141,15 +141,22 @@
 
 <!-- <textarea rows="30" cols="50" ng-keyup="gDocsIt($event)" ng-model="text"></textarea> -->
 
+<div class="showChat" ng-show="hideChat">
+	<a href="" ng-click="hideChat = !hideChat">Show</a>
+</div>
+<div class="wholeChat" ng-hide="hideChat">
 
-<div class="wholeChat">
+	<span>Name: <span><input ng-model="userNick"></input> <a href="" ng-click="hideChat = !hideChat">Hide</a>
 
-	Name: <input ng-model="userNick"></input>
-
-	<div class="chat" ng-bind-html="messages">
+	<div class="chat" id="cheating">
+			
+		<ul ng-bind-html="messages">
 		
+		</ul>
+
+
 	</div>
 
-	<input ng-model="chatMessage" ng-keydown="sendMessage($event)"></input>
+	<input class="inputMes" ng-model="chatMessage" ng-keydown="sendMessage($event)"></input>
 
 </div>

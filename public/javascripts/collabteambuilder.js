@@ -156,6 +156,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	var socket = io("/test-namespace");
 	$scope.evs = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
 
+	$scope.hideChat = false;
+
 	$scope.messages = "";
 
 	socket.on("connect", function()
@@ -716,13 +718,14 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		})
 	})
 
-	
+
+
 	$scope.sendMessage = function(event)
 	{
 		if (event.keyCode === 13)
 		{
 			// $scope.messages += "<li>" + $scope.userNick + ": " + $scope.chatMessage + "</li>";
-			var message = "<li>" + $scope.userNick + ": " + $scope.chatMessage + "</li>";
+			var message = "<li>" + "<u>" + $scope.userNick + "</u>" + ": " + $scope.chatMessage + "</li>";
 			$scope.chatMessage = "";
 			setTimeout(function()
 			{
@@ -733,10 +736,13 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	socket.on("receive message", function(mes)
 	{
+		
 		$scope.$apply(function()
 		{
 				$scope.messages += mes;
 		});
+		var el = document.getElementById("cheating");
+		el.scrollTop = el.scrollHeight;
 	});
 
 
