@@ -482,40 +482,74 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	function calcStat(base, EV, level, nature)
 	{
-		return (((2 * base + 31 + EV / 4) * level) / 100 + 5) * nature;
+		return Math.floor((((2 * base + 31 + EV / 4) * level) / 100 + 5)) * nature;
 	}
 
+	function damageCalc(level, offense, defense, bp, modifier)
+	{
+		var res = Math.floor(((((((2 * level) + 10) / 250) * offense) / defense) * bp + 2));
+		for (var i = 0; i < modifier.length; i++)
+		{
+			res = Math.floor(res * modifier[i]);
+		}
+		return res;
+		//return Math.floor(((((((2 * level) + 10) / 250) * offense) / defense) * bp + 2)) * modifier;
+	}
+
+
 	$scope.natureBoost = 1;
+
+	$scope.defNatureBoost = 1;
+	$scope.defHPEVs = 0;
+	$scope.dEVs = 0;
+
+	$scope.howEffective = [0.25, 0.5, 1, 2, 4];
+	$scope.effectiveness = 1;
+
+	$scope.itemEff = [1, 1.1, 1.3, 1.5];
+	$scope.itemEffectiveness = 1;
 
 	$scope.refreshCalcs = function()
 	{
 		var mon = $scope.party["pokemon" + currentInput.substring(0, 1)].name;
 
-		var move1 = 
+		var moves =
 		{
-			name: [],
-			bp: []
-		}
-		var move2 = 
-		{
-			name: [],
-			bp: []
-		}
-		var move3 = 
-		{
-			name: [],
-			bp: []
-		}
-		var move4 = 
-		{
-			name: [],
-			bp: []
+
+			move1:
+			{
+				name: [],
+				bp: [],
+				cat: [],
+				type: []
+			},
+			move2:
+			{
+				name: [],
+				bp: [],
+				cat: [],
+				type: []
+			},
+			move3:
+			{
+				name: [],
+				bp: [],
+				cat: [],
+				type: []
+			},
+			move4:
+			{
+				name: [],
+				bp: [],
+				cat: [],
+				type: []
+			}
 		}
 
-		move1.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move1;
-		move2.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move2;
-		move3.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move3;
-		move4.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move4;
+		moves.move1.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move1;
+		moves.move2.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move2;
+		moves.move3.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move3;
+		moves.move4.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move4;
 		var AtkEV = $scope.party["pokemon" + currentInput.substring(0, 1)].EVs.Atk;
 		var SpAEV = $scope.party["pokemon" + currentInput.substring(0, 1)].EVs.SpA;
 		var baseAtk = 0;
@@ -534,31 +568,100 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		if ($scope.selectedTier === "LC") level = 5;
 
 		var AtkStat = Math.floor(calcStat(baseAtk, AtkEV, level, $scope.natureBoost));
-		var SpAStat = 0;
-
+		var SpAStat = Math.floor(calcStat(baseSpA, SpAEV, level, $scope.natureBoost));
+		
 		for (var move in movedex)
 		{
-			if (move1.name === movedex[move].name)
+			for (var i in moves)
 			{
-				move1.bp = movedex[move].basePower;
+				if (moves[i].name === movedex[move].name)
+				{
+					moves[i].bp = movedex[move].basePower;
+					moves[i].cat = movedex[move].category;
+					moves[i].type = movedex[move].type;
+				}
 			}
-			if (move2.name === movedex[move].name)
-			{
-				move2.bp = movedex[move].basePower;
-			}
-			if (move3.name === movedex[move].name)
-			{
-				move3.bp = movedex[move].basePower;
-			}
-			if (move4.name === movedex[move].name)
-			{
-				move4.bp = movedex[move].basePower;
-			}
+
+			// if (moves.move1.name === movedex[move].name)
+			// {
+			// 	moves.move1.bp = movedex[move].basePower;
+			// 	moves.move1.cat = movedex[move].category;
+
+			// }
+			// if (moves.move2.name === movedex[move].name)
+			// {
+			// 	moves.move2.bp = movedex[move].basePower;
+			// 	moves.move2.cat = movedex[move].category;
+			// }
+			// if (moves.move3.name === movedex[move].name)
+			// {
+			// 	moves.move3.bp = movedex[move].basePower;
+			// 	moves.move3.cat = movedex[move].category;
+			// }
+			// if (moves.move4.name === movedex[move].name)
+			// {
+			// 	moves.move4.bp = movedex[move].basePower;
+			// 	moves.move4.cat = movedex[move].category;
+			// }
 		}
-		$scope.damageCalculations = "Typing: " + types + " Atk stat: " + AtkStat + " " + move1.bp;
 
+		//$scope.damageCalculations = "Typing: " + types + " Atk stat: " + AtkStat + "<br />";
+		//$scope.damageCalculations += "moves: " + move1.name + " " + move2.name + " " + move3.name + " " + move4.name;
+		var baseDef = 0;
+		var baseSpD = 0;
+		var baseHP = 0;
+		if ($scope.defenderName.length >= 3)
+		{
+			
+			for (var poke in pokedex)
+			{
+				if ($scope.defenderName === pokedex[poke].species || $scope.defenderName === pokedex[poke].species.toLowerCase())
+				{
+					baseDef = pokedex[poke].baseStats.def;
+					baseSpD = pokedex[poke].baseStats.spd;
+					baseHP = pokedex[poke].baseStats.hp;
+					//types = pokedex[poke].types;
+				}
+			}
+			
+			var defenderHP = calcHP(baseHP, parseInt($scope.defHPEVs), level);
+			var DefStat = calcStat(baseDef, parseInt($scope.dEVs), level, $scope.defNatureBoost);
+			var SpDStat = calcStat(baseSpD, parseInt($scope.dEVs), level, $scope.defNatureBoost);
+			var damage = "";
+			$scope.defstat = DefStat;
+			
+			for (var mov in moves)
+			{
+				var mod = [1];
+				mod.push($scope.effectiveness);
+				mod.push($scope.itemEffectiveness);
+				
+				if (moves[mov].cat === "Physical")
+				{
 
+					if (types.indexOf(moves[mov].type) > -1)
+					{
+						mod.push(1.5);
+					}
+					damage += moves[mov].name + ": " + Math.floor(damageCalc(level, AtkStat, DefStat, moves[mov].bp, mod)) + " <br />";
+
+				}
+				else
+				{
+					if (types.indexOf(moves[mov].type) > -1)
+					{
+						mod.push(1.5);
+					}
+					damage += moves[mov].name + ": " + Math.floor(damageCalc(level, SpAStat, SpDStat, moves[mov].bp, mod)) + " <br />";
+
+				}
+			}
+			$scope.damageCalculations = damage;
+		}
+
+		
 	}
+
 
 	$scope.roomID = post._id;
 	$scope.playedCard = "not played yet";
