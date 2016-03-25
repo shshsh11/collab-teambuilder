@@ -725,7 +725,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		if (event.keyCode === 13)
 		{
 			// $scope.messages += "<li>" + $scope.userNick + ": " + $scope.chatMessage + "</li>";
-			var message = "<li>" + "<u>" + $scope.userNick + "</u>" + ": " + $scope.chatMessage + "</li>";
+			var message = "<li>" + "<strong style='color:" + $scope.yourCol + "'>" + $scope.userNick + "</strong>" + ": " + $scope.chatMessage + "</li>";
 			$scope.chatMessage = "";
 			setTimeout(function()
 			{
