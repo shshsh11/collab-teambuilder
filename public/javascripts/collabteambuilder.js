@@ -468,9 +468,45 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 
 
+	$scope.getAbs = function(num)
+	{
+		var mon = $scope.party["pokemon" + num].name;
+		var abs = [];
+		if (pokedex) 
+		{
+			var i = 0;
+			for (i = 0; i < pokedex.length; i++)
+			{
+				if (pokedex[i].species === mon)
+				{
+					for (var abili in pokedex[i].abilities)
+					{
+						abs.push(pokedex[i].abilities[abili]);
+					}
+				}
+			}
+		}
+		return abs;
+	}
+
+	$scope.selectAbility = function(num, whichAb, abName)
+	{
+		var dataToSend = {room: post._id, currentInput: currentInput, abName: abName, whichAb: whichAb, tier: $scope.selectedTier};
+		dex.updateParty(dataToSend);
+		socket.emit("ability selection", dataToSend);
+	}
+
+	socket.on("update ability selection", function(data)
+	{
+		$scope.$apply(function()
+		{
+			$scope.party["pokemon" + currentInput.substring(0, 1)].ability = data.abName;
+		});
+	});
+
 	$scope.getAbility = function(which, num)
 	{
-		
+	
 		var mon = $scope.party["pokemon" + num].name;
 		if (pokedex) 
 		{
@@ -480,7 +516,9 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 				if (pokedex[i].species === mon) break;
 			}
 
-			return pokedex[i].abilities[which] || pokedex[i].abilities.H;
+			return pokedex[i].abilities[which]; 
+
+			
 		}
 		else return "";
 		

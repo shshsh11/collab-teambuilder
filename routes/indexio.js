@@ -66,8 +66,12 @@ module.exports = function(io)
 		socket.on("nature selection", function(data)
 		{
 			nsp.to(roomID).emit("update nature selection", data);
-		})
+		});
 
+		socket.on("ability selection", function(data)
+		{
+			nsp.to(roomID).emit("update ability selection", data);
+		});
 
 		socket.on("disconnect", function()
 		{

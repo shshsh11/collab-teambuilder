@@ -130,6 +130,18 @@ router.post("/updateParty", function(req, res, next)
 			});
 		}
 
+		else if (req.body.abName)
+		{
+			console.log("updating ability");
+
+			docs.party["pokemon" + req.body.currentInput.substring(0, 1)].ability = req.body.abName;
+			docs.save(function(err)
+			{
+				if (err) throw err;
+				res.send("updated ability");
+			});
+		}
+
 	});
 
 
