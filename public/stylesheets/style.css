@@ -48,6 +48,12 @@ textarea
 	margin: 0px 0px 10px 10px;*/
 }
 
+.topRight
+{
+	float: right;
+	margin-right: 5px;
+}
+
 .showChat
 {
 	position: fixed;

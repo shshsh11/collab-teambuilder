@@ -1,7 +1,8 @@
 
 
 
-<p>the room id is <span ng-bind="roomID"></span></p>
+<p>The room is <a><span ng-bind="roomID"></span></a>.</p>
+
 <div ng-style="randCol()">
 	Your current color
 </div>
@@ -74,7 +75,8 @@
 			EVs: 
 			<span ng-repeat="ev in evs track by $index">
 				<span ng-bind="ev"></span>: 
-				<input size="3" ng-model="party['pokemon' + $parent.num].EVs[ev]" ng-keyup="fillEVs($parent.num, ev)"></input> 
+				<select ng-options="n for n in evNums[num][ev]" ng-model="party['pokemon' + $parent.num].EVs[ev]" ng-change="chooseEV($parent.num, ev)"></select>
+				<!-- <input size="3" ng-model="party['pokemon' + $parent.num].EVs[ev]" ng-keyup="fillEVs($parent.num, ev)"></input>  -->
 				
 			</span> (slightly boggy, will "lag". Cool change in the works)
 		</div>
@@ -155,15 +157,16 @@
 
 	
 <div class="showChat" ng-show="hideChat">
-	<a href="" ng-click="hideChat = !hideChat">Show</a>
+	<a href="" ng-click="hideChat = !hideChat">Show Chat</a>
 </div>
 <div class="wholeChat" ng-hide="hideChat">
 	<div class="export">
 		<a href="" ng-click="export()"><span ng-show="exporting">Hide</span> Export Team</a>
+		<a href="" ng-click="hideChat = !hideChat" class="topRight">Hide Chat</a>
 	</div>
 
 
-	<span>Name: <span><input ng-model="userNick"></input> <a href="" ng-click="hideChat = !hideChat">Hide</a>
+	<span>Name: <span><input ng-model="userNick"></input> 
 
 	<div class="chat" id="cheating">
 			

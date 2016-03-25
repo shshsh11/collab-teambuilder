@@ -308,8 +308,68 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	// 	}
 	// }
 	}
+	$scope.evNums = 
+	{
+		"1":
+		{
+			HP: [],
+			Atk: [],
+			Def: [],
+			SpA: [],
+			SpD: [],
+			Spe: []
+		},
+		"2":
+		{
+			HP: [],
+			Atk: [],
+			Def: [],
+			SpA: [],
+			SpD: [],
+			Spe: []
+		},
+		"3":
+		{
+			HP: [],
+			Atk: [],
+			Def: [],
+			SpA: [],
+			SpD: [],
+			Spe: []
+		},
+		"4":
+		{
+			HP: [],
+			Atk: [],
+			Def: [],
+			SpA: [],
+			SpD: [],
+			Spe: []
+		},
+		"5":
+		{
+			HP: [],
+			Atk: [],
+			Def: [],
+			SpA: [],
+			SpD: [],
+			Spe: []
+		},
+		"6":
+		{
+			HP: [],
+			Atk: [],
+			Def: [],
+			SpA: [],
+			SpD: [],
+			Spe: []
+		},
+	};
+	$scope.fullEVs = [4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,0];
 
 
+	
+	
 
 	var pokedex = dex.dex;
 	var movedex = dex.moves;
@@ -438,6 +498,12 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	var mostRecentModded = "";
 	$scope.changeWhichMon = function(which)
 	{
+
+		for (var ev in $scope.evNums[which])
+		{
+			$scope["evNums"][which][ev] = [4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,0];
+
+		}
 		$scope["howManyViewing" + mostRecentModded] = "";
 		currentInput = which;
 		$scope.whichMonToShow = which;
@@ -551,6 +617,57 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		
 	}
 	
+	function lessThan(x)
+	{
+		return function(element)
+		{
+			return element <= x;
+		}
+	}
+
+	$scope.chooseEV = function(whichPoke, whichEV)
+	{
+		var amount = $scope.party["pokemon" + whichPoke].EVs[whichEV];
+		var totalEVs = 0;
+		for (var ev in $scope.evNums)
+		{
+			totalEVs += $scope.party["pokemon" + whichPoke].EVs[ev];
+		}
+		var max = 508 - totalEVs;
+		
+		for (var ev in $scope.evNums)
+		{
+			if ($scope.party["pokemon" + whichPoke].EVs[ev] === 0)
+			{
+				$scope.evNums[ev] = $scope.fullEVs.filter(lessThan(max));
+			}
+		}
+		
+		
+		//alert(amount);
+		var dataToSend = {room: post._id, currentInput: currentInput, whichEV: whichEV, amount: amount};
+		
+		
+		var data = {pokemonNumber: whichPoke, whichEV: whichEV, amount: amount};
+		
+		dex.updateParty(dataToSend);
+		socket.emit("fill EVs", dataToSend);
+
+	}
+
+	socket.on("EVs filled", function(data)
+	{
+		
+		$scope.$apply(function()
+		{
+			for (var ev in $scope.evNums)
+			{
+				$scope.evNums[ev] = $scope.fullEVs;
+			}
+			$scope.party["pokemon" + data.pokemonNumber].EVs[data.whichEV] = data.amount;
+		});
+	});
+
 	$scope.fillEVs = function(whichPoke, whichEV)
 	{
 		var amount = $scope.party["pokemon" + whichPoke].EVs[whichEV];
@@ -571,14 +688,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	}
 
-	socket.on("EVs filled", function(data)
-	{
-		
-		$scope.$apply(function()
-		{
-			$scope.party["pokemon" + data.pokemonNumber].EVs[data.whichEV] = data.amount;
-		});
-	});
+
 
 	var howManyKeystrokes = 0;
 
