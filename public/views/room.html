@@ -160,23 +160,55 @@
 	<a href="" ng-click="hideChat = !hideChat">Show Chat</a>
 </div>
 <div class="wholeChat" ng-hide="hideChat">
+
 	<div class="export">
 		<a href="" ng-click="export()"><span ng-show="exporting">Hide</span> Export Team</a>
 		<a href="" ng-click="hideChat = !hideChat" class="topRight">Hide Chat</a>
 	</div>
 
+	<div ng-hide="damageCalcActive">
 
-	<span>Name: <span><input ng-model="userNick"></input> 
 
-	<div class="chat" id="cheating">
+		<div class="chatNav">
+			<a href="" ng-click="damageCalcActive = false">Chat</a> 
+			<a href="" ng-mousedown="damageCalcActive = true" ng-mouseup="refreshCalcs()">Damage Calc</a>
+		</div>
+
+
+		<span>Name: <span><input ng-model="userNick"></input> 
+
+		<div class="chat" id="cheating">
+				
+			<ul ng-bind-html="messages">
 			
-		<ul ng-bind-html="messages">
-		
-		</ul>
+			</ul>
+
+
+		</div>
+
+		<input class="inputMes" ng-model="chatMessage" ng-keydown="sendMessage($event)"></input>
+	</div>
+	<div ng-show="damageCalcActive">
+		<div class="chatNav">
+			<a href="" ng-click="damageCalcActive = false">Chat</a> 
+			<a href="" ng-mousedown="damageCalcActive = true" ng-mouseup="refreshCalcs()">Damage Calc</a>
+		</div>
+		<input style="visibility: hidden;"></input> 
+		<div class="damageCalc">
+			<label>
+				<input type="checkbox" ng-model="natureBoost" ng-true-value="1.1" ng-false-value="1" ng-click="refreshCalcs()"></input>
+				Positive Nature
+			</label>
+			<div ng-bind-html="damageCalculations">
+
+			</div>
+
+
+		</div>
+
+		<input style="visibility: hidden;" class="inputMes"></input>
 
 
 	</div>
-
-	<input class="inputMes" ng-model="chatMessage" ng-keydown="sendMessage($event)"></input>
 
 </div>

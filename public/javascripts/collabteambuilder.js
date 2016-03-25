@@ -374,6 +374,9 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	var pokedex = dex.dex;
 	var movedex = dex.moves;
 	var itemdex = dex.items;
+
+
+
 	var currentInput = "";
 	$scope.spriteBaseURL = "https://play.pokemonshowdown.com/sprites/bw/";
 	$scope.tiers = ["Uber", "OU", "BL", "UU", "BL2", "RU", "BL3", "NU", "BL4", "PU", "LC", "NFE"];
@@ -472,21 +475,90 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		$scope.exported = toExport;
 	}
 
-	// $scope.showMons = function()
-	// {
-	
-	// 	$scope.r.pokedex = [];
-	// 	for (var i = 0; i < pokedex.length; i++)
-	// 	{
-			
-	// 		if (pokedex[i].tier === $scope.selectedTier)
-	// 		{
+	function calcHP(base, EV, level)
+	{
+		//HP = ((2*Base + IV + EV/4 + 100) * Level) / 100 + 10
+	}
 
-	// 			$scope.r.pokedex.push(pokedex[i]);
-	// 		}
-	// 	}
-	// }
+	function calcStat(base, EV, level, nature)
+	{
+		return (((2 * base + 31 + EV / 4) * level) / 100 + 5) * nature;
+	}
 
+	$scope.natureBoost = 1;
+
+	$scope.refreshCalcs = function()
+	{
+		var mon = $scope.party["pokemon" + currentInput.substring(0, 1)].name;
+
+		var move1 = 
+		{
+			name: [],
+			bp: []
+		}
+		var move2 = 
+		{
+			name: [],
+			bp: []
+		}
+		var move3 = 
+		{
+			name: [],
+			bp: []
+		}
+		var move4 = 
+		{
+			name: [],
+			bp: []
+		}
+
+		move1.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move1;
+		move2.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move2;
+		move3.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move3;
+		move4.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move4;
+		var AtkEV = $scope.party["pokemon" + currentInput.substring(0, 1)].EVs.Atk;
+		var SpAEV = $scope.party["pokemon" + currentInput.substring(0, 1)].EVs.SpA;
+		var baseAtk = 0;
+		var baseSpA = 0;
+		var types = [];
+		for (var poke in pokedex)
+		{
+			if (mon === pokedex[poke].species)
+			{
+				baseAtk = pokedex[poke].baseStats.atk;
+				baseSpA = pokedex[poke].baseStats.spa;
+				types = pokedex[poke].types;
+			}
+		}
+		var level = 100;
+		if ($scope.selectedTier === "LC") level = 5;
+
+		var AtkStat = Math.floor(calcStat(baseAtk, AtkEV, level, $scope.natureBoost));
+		var SpAStat = 0;
+
+		for (var move in movedex)
+		{
+			if (move1.name === movedex[move].name)
+			{
+				move1.bp = movedex[move].basePower;
+			}
+			if (move2.name === movedex[move].name)
+			{
+				move2.bp = movedex[move].basePower;
+			}
+			if (move3.name === movedex[move].name)
+			{
+				move3.bp = movedex[move].basePower;
+			}
+			if (move4.name === movedex[move].name)
+			{
+				move4.bp = movedex[move].basePower;
+			}
+		}
+		$scope.damageCalculations = "Typing: " + types + " Atk stat: " + AtkStat + " " + move1.bp;
+
+
+	}
 
 	$scope.roomID = post._id;
 	$scope.playedCard = "not played yet";
@@ -537,7 +609,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		socket.emit("viewing", data);
 		socket.emit("remove viewing", mostRecentModded);
 		mostRecentModded = which;
-
+		$scope.refreshCalcs();
 
 	}
 
