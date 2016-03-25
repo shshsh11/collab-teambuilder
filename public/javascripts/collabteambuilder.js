@@ -447,7 +447,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		{
 
 			toExport += $scope.party[poke].name + " @ " + $scope.party[poke].item + "\n";
-			toExport += "Ability: " + "\n";
+			toExport += "Ability: " + $scope.party[poke].ability + "\n";
 			toExport += "EVs: ";
 			for (var ev in $scope.party[poke].EVs)
 			{
@@ -529,6 +529,9 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		$scope["howManyViewing" + mostRecentModded] = "";
 		currentInput = which;
 		$scope.whichMonToShow = which;
+
+
+
 		var data = {color: $scope.yourCol, whichMon: which};
 		
 		socket.emit("viewing", data);
@@ -871,6 +874,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	{
 
 		$scope.party["pokemon" + currentInput.substring(0, 1)].name = name;
+		$scope.party["pokemon" + currentInput.substring(0, 1)].ability = "";
 		// $scope.showMons($scope.selectedTier);
 		$scope.r.pokedex = [];
 		var data = {room: post._id, currentInput: currentInput, mon: name};
