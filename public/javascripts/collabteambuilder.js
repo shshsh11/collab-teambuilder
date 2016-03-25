@@ -1,4 +1,4 @@
-var app = angular.module("collabteambuilder", ["ui.router", "ngSanitize", "sticky"]);
+var app = angular.module("collabteambuilder", ["ui.router", "ngSanitize", "sticky", "ngclipboard", "angular-clipboard"]);
 
 
 app.factory("createRoom", function($http, $window)
@@ -157,7 +157,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.evs = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
 
 	$scope.hideChat = false;
-
+	$scope.exporting = false;
 	$scope.messages = "";
 
 	socket.on("connect", function()
@@ -339,6 +339,26 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.selectedTier = post.tier;
 
 
+	$scope.chooseTier = function(tier)
+	{
+		var data = {room: post._id, tier: tier};
+		dex.updateParty(data);
+		socket.emit("tier selection", data);
+	}
+
+	socket.on("update tier selection", function(data)
+	{
+		$scope.$apply(function()
+		{
+			$scope.selectedTier = data.tier;
+		});
+	});
+
+	$scope.copied = function()
+	{
+		$scope.copied2clip = "Copied!";
+	}
+
 	$scope.tierSort = function(mon)
 	{
 		//ordering should also depend on current tier
@@ -354,31 +374,38 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	$scope.export = function()
 	{
+
+		if ($scope.exporting === true)
+		{
+			$scope.copied2clip = "";
+		}
+
+		$scope.exporting = !$scope.exporting;
 		$scope.exported = "";
 		var toExport = "";
 		for (var poke in $scope.party)
 		{
 
-			toExport += $scope.party[poke].name + " @ " + $scope.party[poke].item + "<br />";
-			toExport += "Ability: " + "<br />";
+			toExport += $scope.party[poke].name + " @ " + $scope.party[poke].item + "\n";
+			toExport += "Ability: " + "\n";
 			toExport += "EVs: ";
 			for (var ev in $scope.party[poke].EVs)
 			{
 				toExport += $scope.party[poke].EVs[ev] + " " + ev + " / ";
 			}
 			toExport = toExport.substring(0, toExport.length - 3);
-			toExport += "<br />";
-			toExport += $scope.party[poke].nature + " Nature <br />";
+			toExport += "\n";
+			toExport += $scope.party[poke].nature + " Nature \n";
 			//possible restructure of moves
-			toExport += "- " + $scope.party[poke].move1 + "<br />";
-			toExport += "- " + $scope.party[poke].move2 + "<br />";
-			toExport += "- " + $scope.party[poke].move3 + "<br />";
-			toExport += "- " + $scope.party[poke].move4 + "<br />";
+			toExport += "- " + $scope.party[poke].move1 + "\n";
+			toExport += "- " + $scope.party[poke].move2 + "\n";
+			toExport += "- " + $scope.party[poke].move3 + "\n";
+			toExport += "- " + $scope.party[poke].move4 + "\n";
 
 
 
 
-			toExport += "<br />";
+			toExport += "\n";
 		}
 
 
@@ -491,7 +518,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	$scope.selectAbility = function(num, whichAb, abName)
 	{
-		var dataToSend = {room: post._id, currentInput: currentInput, abName: abName, whichAb: whichAb, tier: $scope.selectedTier};
+		var dataToSend = {room: post._id, currentInput: currentInput, abName: abName, whichAb: whichAb};
 		dex.updateParty(dataToSend);
 		socket.emit("ability selection", dataToSend);
 	}
@@ -528,7 +555,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	{
 		var amount = $scope.party["pokemon" + whichPoke].EVs[whichEV];
 
-		var dataToSend = {room: post._id, currentInput: currentInput, whichEV: whichEV, amount: amount, tier: $scope.selectedTier};
+		var dataToSend = {room: post._id, currentInput: currentInput, whichEV: whichEV, amount: amount};
 		
 		
 		var data = {pokemonNumber: whichPoke, whichEV: whichEV, amount: amount};
@@ -559,7 +586,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	$scope.doNatures = function(whichPoke, nature)
 	{
-		var dataToSend = {room: post._id, currentInput: currentInput, nature: nature, tier: $scope.selectedTier};
+		var dataToSend = {room: post._id, currentInput: currentInput, nature: nature};
 		dex.updateParty(dataToSend);
 		socket.emit("nature selection", dataToSend);
 
@@ -707,7 +734,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		$scope.party["pokemon" + currentInput.substring(0, 1)].name = name;
 		// $scope.showMons($scope.selectedTier);
 		$scope.r.pokedex = [];
-		var data = {room: post._id, currentInput: currentInput, mon: name, tier: $scope.selectedTier};
+		var data = {room: post._id, currentInput: currentInput, mon: name};
 		dex.updateParty(data);
 		socket.emit("mon selection", data);
 	}
@@ -716,7 +743,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	{
 		$scope.party["pokemon" + currentInput.substring(0, 1)].item = item;
 		$scope.r.itemdex = [];
-		var data = {room: post._id, currentInput: currentInput, item: item, tier: $scope.selectedTier};
+		var data = {room: post._id, currentInput: currentInput, item: item};
 		dex.updateParty(data);
 		socket.emit("item selection", data);
 	}
@@ -725,7 +752,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	{
 		$scope.party["pokemon" + currentInput.substring(0, 1)]["move" + currentInput.substring(1)] = move;
 		$scope.r.movedex = [];
-		var data = {room: post._id, currentInput: currentInput, move: move, tier: $scope.selectedTier};
+		var data = {room: post._id, currentInput: currentInput, move: move};
 		dex.updateParty(data);
 		socket.emit("move selection", data);
 	}

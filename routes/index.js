@@ -66,8 +66,17 @@ router.post("/updateParty", function(req, res, next)
 		if (err) throw err;
 
 
-
-		if (req.body.move)
+		if (req.body.tier)
+		{
+			console.log("updating tier");
+			docs.tier = req.body.tier;
+			docs.save(function(err)
+			{
+				if (err) throw err;
+				res.send("updated tier");
+			});
+		}
+		else if (req.body.move)
 		{
 			console.log("updating move");
 			var ci = req.body.currentInput;
@@ -96,7 +105,6 @@ router.post("/updateParty", function(req, res, next)
 
 			console.log("updating mon");
 			docs.party["pokemon" + req.body.currentInput].name = req.body.mon;
-			docs.tier = req.body.tier;
 			console.log(docs);
 			docs.save(function(err)
 			{
@@ -168,7 +176,7 @@ router.post("/createroom", function(req, res, next)
 	var newRoom = new Room();
 	newRoom.dateCreated = req.body.dateCreated;
 	newRoom._id = req.body._id;
-
+	newRoom.tier = "";
 	newRoom.party = 	
 	{
 		pokemon1: 

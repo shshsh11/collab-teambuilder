@@ -5,7 +5,7 @@
 <div ng-style="randCol()">
 	Your current color
 </div>
-<p>tier: 
+<p>Tier: 
 
 
 <!-- 	<select ng-model="tiers">
@@ -18,7 +18,7 @@
 		<option value="LC" ng-click="showMons('LC')">LC</option>
 	</select> -->
 
-	<select ng-options="t for t in tiers | filter: '!BL'" ng-model="selectedTier"></select>
+	<select ng-options="t for t in tiers | filter: '!BL'" ng-model="selectedTier" ng-change="chooseTier(selectedTier)"></select>
 	 <!-- ng-change="showMons()" -->
 
 	<!-- <span ng-bind="selectedTier.name"></span> -->
@@ -64,7 +64,7 @@
 
 
 		<div>
-			Ability: <span ng-bind="party['pokemon' + num].ability"></span> <!-- <span ng-bind="getAbility(0, num)"></span> / <span ng-bind="getAbility(1, num)"></span> / <span ng-bind="getAbility(H, num)"></span> (currently just here so you can see the abilities) -->
+			Ability: <strong><span ng-bind="party['pokemon' + num].ability"></span></strong> <!-- <span ng-bind="getAbility(0, num)"></span> / <span ng-bind="getAbility(1, num)"></span> / <span ng-bind="getAbility(H, num)"></span> (currently just here so you can see the abilities) -->
 
 			| <span ng-repeat="ab in getAbs(num) track by $index"><a href="" ng-bind="ab" ng-click="selectAbility(num, $index, ab)" ng-style="abilitySel{{$index}}"></a> | </span>
 
@@ -102,6 +102,11 @@
 <div ng-repeat="mon in r.pokedex | orderBy:tierSort">
   <table>
     <tr>
+
+    	<td>
+    		<img ng-src="http://www.smogon.com/dex/media/sprites/xyicons/{{mon.species.toLowerCase()}}.png" />
+    	</td>
+
       <td>
       	<a href="" ng-click="fillInput(mon.species)"><span ng-bind="mon.species"></span></a>
       </td>
@@ -136,18 +141,27 @@
 </div>
 
 
-
 <br />
-<a href="" ng-click="export()">Export</a>
-<div ng-bind-html="exported"></div>
 
+<span ng-show="exporting">
+	<!-- <a href="" ngclipboard data-clipboard-target="#cptarget">Copy to Clipboard</a> -->
+	<a clipboard text="exported" on-copied="copied()" href="">Copy to Clipboard</a>
+	<span ng-bind="copied2clip"></span>
+	<br />
+	<textarea rows="30" cols="50" ng-bind="exported" id="cptarget"></textarea>
+</span>
 
 <!-- <textarea rows="30" cols="50" ng-keyup="gDocsIt($event)" ng-model="text"></textarea> -->
 
+	
 <div class="showChat" ng-show="hideChat">
 	<a href="" ng-click="hideChat = !hideChat">Show</a>
 </div>
 <div class="wholeChat" ng-hide="hideChat">
+	<div class="export">
+		<a href="" ng-click="export()"><span ng-show="exporting">Hide</span> Export Team</a>
+	</div>
+
 
 	<span>Name: <span><input ng-model="userNick"></input> <a href="" ng-click="hideChat = !hideChat">Hide</a>
 

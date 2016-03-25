@@ -18,6 +18,11 @@ module.exports = function(io)
 			socket.join(roomID);
 		});
 
+		socket.on("tier selection", function(data)
+		{
+			nsp.to(roomID).emit("update tier selection", data);
+		})
+
 		socket.on("viewing", function(data)
 		{
 			nsp.to(roomID).emit("show view", data);
