@@ -1,4 +1,6 @@
 
+
+
 <p>the room id is <span ng-bind="roomID"></span></p>
 <div ng-style="randCol()">
 	Your current color
@@ -20,9 +22,12 @@
 	 <!-- ng-change="showMons()" -->
 
 	<!-- <span ng-bind="selectedTier.name"></span> -->
-
-
 </p>
+
+
+
+
+
 <div>
 	<table>
 
@@ -132,6 +137,19 @@
 <br />
 <a href="" ng-click="export()">Export</a>
 <div ng-bind-html="exported"></div>
-<p>"Chat" (basically just really bad google docs)</p>
+<p>Chat (reeeeeaaaaaaalllllllllyyyyyyyyyyyy laggy)</p>
 
-<textarea rows="30" cols="50" ng-keyup="gDocsIt($event)" ng-model="text"></textarea>
+<!-- <textarea rows="30" cols="50" ng-keyup="gDocsIt($event)" ng-model="text"></textarea> -->
+
+
+<div class="wholeChat">
+
+	Name: <input ng-model="userNick"></input>
+
+	<div class="chat" ng-bind-html="messages">
+		
+	</div>
+
+	<input ng-model="chatMessage" ng-keydown="sendMessage($event)"></input>
+
+</div>

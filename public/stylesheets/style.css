@@ -1,6 +1,6 @@
 html, body 
 {
-  padding: 50px;
+  padding: 25px;
   font: 14px "Ubuntu", Helvetica, Arial, sans-serif;
 }
 
@@ -22,4 +22,30 @@ div
 textarea
 {
   font: 14px "Ubuntu", Helvetica, Arial, sans-serif;	
+}
+
+.wholeChat
+{
+	background-color: #f0f0f0;
+
+
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	z-index: 300;
+	margin: 0px 10px 20px 0px;
+}
+
+.wholeChat input
+{
+
+}
+
+.chat
+{
+	width: 250px;
+	height: 300px;
+	overflow: scroll;
+
+
 }

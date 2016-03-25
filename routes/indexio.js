@@ -28,6 +28,13 @@ module.exports = function(io)
 			nsp.to(roomID).emit("removing viewing", data);
 		})
 
+
+		socket.on("send message", function(data)
+		{
+			console.log("received chat message");
+			nsp.to(roomID).emit("receive message", data);
+		})
+
 		socket.on("type", function(text)
 		{
 			//console.log(text);

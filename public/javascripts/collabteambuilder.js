@@ -1,4 +1,4 @@
-var app = angular.module("collabteambuilder", ["ui.router", "ngSanitize"]);
+var app = angular.module("collabteambuilder", ["ui.router", "ngSanitize", "sticky"]);
 
 
 app.factory("createRoom", function($http, $window)
@@ -155,6 +155,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	var socket = io("/test-namespace");
 	$scope.evs = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
+
+	$scope.messages = "";
 
 	socket.on("connect", function()
 	{
@@ -318,7 +320,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.natures = ["Adamant", "Jolly", "Modest", "Timid", "Bold", "Calm"];
 	//$scope.party = [];
 
-	$scope.colors = ["aqua", "purple", "green", "red", "orange", "gray", "cyan", "black", "magenta", "violet", "#9932CC", "#00CED1"];
+	$scope.colors = ["aqua", "purple", "green", "red", "orange", "gray", "cyan", "black", "magenta", "violet", "darkorchid", "darkturquoise"];
 	$scope.yourCol = $scope.colors[Math.floor(Math.random() * $scope.colors.length)];
 
 	$scope.randCol = function()
@@ -326,7 +328,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		return {'color' : $scope.yourCol};
 	}
 
-	
+	$scope.userNick = $scope.yourCol;
 
 	$scope.party = post.party;
 
@@ -714,26 +716,26 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		})
 	})
 
-	$scope.gDocsIt = function(event)
+	
+	$scope.sendMessage = function(event)
 	{
-		//howManyKeystrokes++;
-		//if (howManyKeystrokes >= 20)
-		//if (event.keyCode === 13)
+		if (event.keyCode === 13)
 		{
+			// $scope.messages += "<li>" + $scope.userNick + ": " + $scope.chatMessage + "</li>";
+			var message = "<li>" + $scope.userNick + ": " + $scope.chatMessage + "</li>";
+			$scope.chatMessage = "";
 			setTimeout(function()
 			{
-				socket.emit("type", $scope.text);
-			}, 1000);
-			//howManyKeystrokes = 0;
+				socket.emit("send message", message);
+			}, 100)
 		}
-		
 	}
 
-	socket.on("typed", function(text)
+	socket.on("receive message", function(mes)
 	{
 		$scope.$apply(function()
 		{
-			$scope.text = text;
+				$scope.messages += mes;
 		});
 	});
 

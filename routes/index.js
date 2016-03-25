@@ -161,14 +161,14 @@ router.post("/createroom", function(req, res, next)
 	{
 		pokemon1: 
 		{
-			name: "place",
-			id: "place",
-			item: "place", 
-			ability: "place",
-			move1: "place",
-			move2: "place",
-			move3: "place",
-			move4: "place",
+			name: "",
+			id: "",
+			item: "", 
+			ability: "",
+			move1: "",
+			move2: "",
+			move3: "",
+			move4: "",
 			EVs: 
 			{
 				HP: 0,
@@ -178,18 +178,18 @@ router.post("/createroom", function(req, res, next)
 				SpD: 0,
 				Spe: 0
 			},
-			nature: "place"
+			nature: ""
 		},
 		pokemon2: 
 		{
-			name: "place",
-			id: "place",
-			item: "place",			 
-			ability: "place",
-			move1: "place",
-			move2: "place",
-			move3: "place",
-			move4: "place",
+			name: "",
+			id: "",
+			item: "",			 
+			ability: "",
+			move1: "",
+			move2: "",
+			move3: "",
+			move4: "",
 			EVs: 
 			{
 				HP: 0,
@@ -199,18 +199,18 @@ router.post("/createroom", function(req, res, next)
 				SpD: 0,
 				Spe: 0
 			},
-			nature: "place"
+			nature: ""
 		},
 		pokemon3: 
 		{
-			name: "place",
-			id: "place",
-			item: "place",			 
-			ability: "place",
-			move1: "place",
-			move2: "place",
-			move3: "place",
-			move4: "place",
+			name: "",
+			id: "",
+			item: "",			 
+			ability: "",
+			move1: "",
+			move2: "",
+			move3: "",
+			move4: "",
 			EVs: 
 			{
 				HP: 0,
@@ -220,18 +220,18 @@ router.post("/createroom", function(req, res, next)
 				SpD: 0,
 				Spe: 0
 			},
-			nature: "place"
+			nature: ""
 		},
 		pokemon4: 
 		{
-			name: "place",
-			id: "place",
-			item: "place",			 
-			ability: "place",
-			move1: "place",
-			move2: "place",
-			move3: "place",
-			move4: "place",
+			name: "",
+			id: "",
+			item: "",			 
+			ability: "",
+			move1: "",
+			move2: "",
+			move3: "",
+			move4: "",
 			EVs: 
 			{
 				HP: 0,
@@ -241,18 +241,18 @@ router.post("/createroom", function(req, res, next)
 				SpD: 0,
 				Spe: 0
 			},
-			nature: "place"
+			nature: ""
 		},
 		pokemon5: 
 		{
-			name: "place",
-			id: "place",
-			item: "place",			 
-			ability: "place",
-			move1: "place",
-			move2: "place",
-			move3: "place",
-			move4: "place",
+			name: "",
+			id: "",
+			item: "",			 
+			ability: "",
+			move1: "",
+			move2: "",
+			move3: "",
+			move4: "",
 			EVs: 
 			{
 				HP: 0,
@@ -262,18 +262,18 @@ router.post("/createroom", function(req, res, next)
 				SpD: 0,
 				Spe: 0
 			},
-			nature: "place"
+			nature: ""
 		},
 		pokemon6: 
 		{
-			name: "place",
-			id: "place",
-			item: "place",			 
-			ability: "place",
-			move1: "place",
-			move2: "place",
-			move3: "place",
-			move4: "place",
+			name: "",
+			id: "",
+			item: "",			 
+			ability: "",
+			move1: "",
+			move2: "",
+			move3: "",
+			move4: "",
 			EVs: 
 			{
 				HP: 0,
@@ -283,7 +283,7 @@ router.post("/createroom", function(req, res, next)
 				SpD: 0,
 				Spe: 0
 			},
-			nature: "place"
+			nature: ""
 		}
 	}
 
