@@ -195,21 +195,37 @@
 		</div>
 		<input style="visibility: hidden;"></input> 
 		<div class="damageCalc">
-			
+			<span ng-bind="test"></span>
+			<span ng-bind="basepower"></span>
 			<label>
 				<input type="checkbox" ng-model="natureBoost" ng-true-value="1.1" ng-false-value="1" ng-click="refreshCalcs()"></input>
 				Attacker Positive Nature
 			</label>
+
 			<br />
-			<select ng-options="h for h in howEffective" ng-model="effectiveness" ng-change="refreshCalcs()"></select> Effectiveness
+			<select ng-options="b for b in bpMods" ng-model="bpMod" ng-change="refreshCalcs()"></select> Base Power Modifier
 
 			<br />
 
+			<select ng-options="s for s in atkStatMods" ng-model="atkStatMod" ng-change="refreshCalcs()"></select> Offensive Stat Modifier
+
+			<br />
+
+			<select ng-options="d for d in damageMods" ng-model="damageMod" ng-change="refreshCalcs()"></select> Damage Modifier
+
+
+
+			<br />
+
+ 			<select ng-options="h for h in howEffective" ng-model="effectiveness" ng-change="refreshCalcs()"></select> Effectiveness
+
+			<br />
+			<!--
 			<select ng-options="i for i in itemEff" ng-model="itemEffectiveness" ng-change="refreshCalcs()"></select> Item Modifier
 
 			<br />
 
-			<select ng-options="a for a in abEff" ng-model="abilityEffectiveness" ng-change="refreshCalcs()"></select> Ability Modifier
+			<select ng-options="a for a in abEff" ng-model="abilityEffectiveness" ng-change="refreshCalcs()"></select> Ability Modifier -->
 
 			<br />
 
@@ -222,7 +238,7 @@
 			<input type="checkbox" ng-model="defNatureBoost" ng-true-value="1.1" ng-false-value="1" ng-click="refreshCalcs()"></input>
 				Defender Positive Nature
 
-				<div ng-bind="defstat"></div>
+				<span ng-bind="atkstat"></span> vs <span ng-bind="defstat"></span>
 			<div ng-bind-html="damageCalculations">
 
 			</div>

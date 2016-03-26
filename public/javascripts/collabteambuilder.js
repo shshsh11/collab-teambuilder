@@ -482,21 +482,83 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	function calcStat(base, EV, level, nature)
 	{
+		//natures is actually calculated elsewhere
 		return Math.floor(((2 * base + 31 + EV / 4) * level) / 100 + 5) * nature;
 	}
 
-	function damageCalc(level, offense, defense, bp, modifier)
+	//types is what types the attacker is
+	function damageCalc(move, types, level, offense, defense, bp, modifier)
 	{
-		var res = ((((2 * level) / 5 + 2) * offense / defense * bp) / 50 + 2);
-		var min = (85 / 100 * res);
-		for (var i = 0; i < modifier.length; i++)
+
+	
+		var baseDamage;
+		var minDamage;
+
+		var mods = [];
+
+		var currentPoke = $scope.party["pokemon" + currentInput];
+
+		var stabMod;		
+		//spread, weather, gravity, crit
+		//random
+		baseDamage = Math.floor(Math.floor((Math.floor((2 * level) / 5 + 2) * offense) / defense * bp) / 50 + 2);
+		minDamage = Math.floor(85 / 100 * baseDamage);
+		//STAB
+	
+		if (types.indexOf(move.type) > -1 && currentPoke.ability === "Adaptability")
 		{
-			min = Math.floor(min * modifier[i])
-			res = Math.floor(res * modifier[i]);
+			stabMod = 0x2000;
 		}
-		return [Math.floor(min), Math.floor(res)];
+		else if (types.indexOf(move.type) > -1 && !(currentPoke.ability === "Adaptability"))
+		{
+			stabMod = 0x1800;
+		}
+		else stabMod = 0x1000;
+
+		//$scope.test = "typing: " + types + " move type: " + move.type + " stab mod: " + stabMod / 0x1000;
+		
+		//mods.push(decToPokeHex($scope.damageMod));
+
+		if (currentPoke.item === "Life Orb")
+		{
+			
+			mods.push(0x14CC);
+		}
+
+		var finalMod = chainMods(mods);
+		minDamage = pokeRound(minDamage * stabMod / 0x1000);
+		minDamage = Math.floor(minDamage * $scope.effectiveness);
+		minDamage = Math.max(1, minDamage);
+		minDamage = pokeRound(minDamage * finalMod / 0x1000);
+
+		baseDamage = pokeRound(baseDamage * stabMod / 0x1000);
+		baseDamage = Math.floor(baseDamage * $scope.effectiveness);
+		baseDamage = Math.max(1, baseDamage);
+		baseDamage = pokeRound(baseDamage * finalMod / 0x1000);
+
+	
+
+		return [minDamage, baseDamage];
+
+		// for (var i = 0; i < modifier.length; i++)
+		// {
+		// 	min = Math.floor(min * modifier[i])
+		// 	res = Math.floor(res * modifier[i]);
+		// }
+
+		// return [Math.floor(min), Math.floor(res)];
 		//return Math.floor(((((((2 * level) + 10) / 250) * offense) / defense) * bp + 2)) * modifier;
 	}
+	function truncToOnePlace(num)
+	{
+		return Math.floor(num * 10) / 10;
+	}
+
+	function pokeRound(num)
+	{
+		return (num % 1 > 0.5) ? Math.ceil(num) : Math.floor(num);
+	}
+
 
 
 	$scope.natureBoost = 1;
@@ -513,6 +575,144 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	$scope.abEff = [1, 1.3, 1.33, 1.5];
 	$scope.abilityEffectiveness = 1;
+
+	$scope.bpMods = [1, 1.1, 1.2, 1.3, 1.5, 2]
+	$scope.bpMod = 1;
+
+	$scope.atkStatMods = [0.5, 1, 1.5, 2];
+	$scope.atkStatMod = 1;
+
+	$scope.defStatMods = [1, 1.5, 2];
+	$scope.defStatMod = 1;
+
+	$scope.damageMods = [0.5, 1, 1.2];
+	$scope.damageMod = 1;
+
+	$scope.STABMods = [1, 1.5, 2];
+	$scope.STABMod = 1;
+
+	function decToPokeHex(num)
+	{
+		switch (num)
+		{
+			case 0.5:
+				return 0x800;
+				break;
+			case 1:
+				return 0x1000;
+				break;
+			case 1.1:
+				return 0x1199;
+				break;
+			case 1.2:
+				return 0x1333;
+				break;
+			case 1.3:
+				return 0x14CD;
+				break;
+			case 1.5:
+				return 0x1800;
+				break;
+			case 2:
+				return 0x2000;
+				break;
+			default:
+				return 0x1000;
+
+		}
+	}
+
+
+
+	function chainMods(mods) 
+	{
+	    var M = 0x1000;
+	    for(var i = 0; i < mods.length; i++) {
+
+	        if(mods[i] !== 0x1000) 
+	        {
+	            M = ((M * mods[i]) + 0x800) >> 12;
+	        }
+	    }
+	    return M;
+	}
+
+	function calcBasePower(move, attacker)
+	{
+		
+		var bp = move.bp;
+		
+		var bpMods = [0x1000];
+
+		//ex technician
+		if ($scope.bpMod === 1.5)
+		{
+			bpMods.push(0x1800);
+		}
+		//ex sheer force
+		else if ($scope.bpMod === 1.3)
+		{
+			bpMods.push(0x14CD);
+		}
+		else if ($scope.bpMod === 1.2)
+		{
+			bpMods.push(0x1333);
+		}
+		else if ($scope.bpMod === 1.1)
+		{
+			bpMods.push(0x1199);
+		}
+		else if ($scope.bpMod === 2)
+		{
+			bpMods.push(0x2000);
+		}
+
+		return Math.max(1, pokeRound(bp * chainMods(bpMods) / 0x1000));
+	}
+
+	function calcAttack(stat)
+	{
+		var statMods = [0x1000];
+
+		if ($scope.natureBoost === 1)
+		{
+			//statMods.push(0x1000);
+		}
+		else if ($scope.natureBoost === 1.1)
+		{
+			//statMods.push(0x1199);
+			stat = Math.floor(stat * 1.1);
+		}
+		//[0.5, 1, 1.5, 2];
+		if ($scope.atkStatMod === 0.5)
+		{
+			statMods.push(0x800);
+		}
+		else if ($scope.atkStatMod === 1.5)
+		{
+			statMods.push(0x1800);
+		}
+		else if ($scope.atkStatMod === 2)
+		{
+			statMods.push(0x2000);
+		}
+		return Math.max(1, pokeRound(stat * chainMods(statMods) / 0x1000));
+	}
+
+	function calcDef(stat)
+	{
+		var statMods = [0x1000];
+		if ($scope.defNatureBoost === 1)
+		{
+			//statMods.push(0x1000)
+		}
+		else
+		{
+			//statMods.push(0x1199);
+			stat = Math.floor(stat * 1.1);
+		}
+		return Math.max(1, pokeRound(stat * chainMods(statMods) / 0x1000));
+	}
 
 	$scope.refreshCalcs = function()
 	{
@@ -572,9 +772,9 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		var level = 100;
 		if ($scope.selectedTier === "LC") level = 5;
 
-		var AtkStat = Math.floor(calcStat(baseAtk, AtkEV, level, $scope.natureBoost));
-		var SpAStat = Math.floor(calcStat(baseSpA, SpAEV, level, $scope.natureBoost));
-		
+		var AtkStat = calcAttack(Math.floor(calcStat(baseAtk, AtkEV, level, 1)));
+		var SpAStat = calcAttack(Math.floor(calcStat(baseSpA, SpAEV, level, 1)));
+
 		for (var move in movedex)
 		{
 			for (var i in moves)
@@ -587,34 +787,12 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 				}
 			}
 
-			// if (moves.move1.name === movedex[move].name)
-			// {
-			// 	moves.move1.bp = movedex[move].basePower;
-			// 	moves.move1.cat = movedex[move].category;
-
-			// }
-			// if (moves.move2.name === movedex[move].name)
-			// {
-			// 	moves.move2.bp = movedex[move].basePower;
-			// 	moves.move2.cat = movedex[move].category;
-			// }
-			// if (moves.move3.name === movedex[move].name)
-			// {
-			// 	moves.move3.bp = movedex[move].basePower;
-			// 	moves.move3.cat = movedex[move].category;
-			// }
-			// if (moves.move4.name === movedex[move].name)
-			// {
-			// 	moves.move4.bp = movedex[move].basePower;
-			// 	moves.move4.cat = movedex[move].category;
-			// }
 		}
 
-		//$scope.damageCalculations = "Typing: " + types + " Atk stat: " + AtkStat + "<br />";
-		//$scope.damageCalculations += "moves: " + move1.name + " " + move2.name + " " + move3.name + " " + move4.name;
 		var baseDef = 0;
 		var baseSpD = 0;
 		var baseHP = 0;
+
 		if ($scope.defenderName.length >= 3)
 		{
 			
@@ -630,40 +808,40 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			}
 			
 			var defenderHP = Math.floor(calcHP(baseHP, parseInt($scope.defHPEVs), level));
-			var DefStat = Math.floor(calcStat(baseDef, parseInt($scope.dEVs), level, $scope.defNatureBoost));
-			var SpDStat = Math.floor(calcStat(baseSpD, parseInt($scope.dEVs), level, $scope.defNatureBoost));
+			var DefStat = calcDef(Math.floor(calcStat(baseDef, parseInt($scope.dEVs), level, 1)));
+			var SpDStat = calcDef(Math.floor(calcStat(baseSpD, parseInt($scope.dEVs), level, 1)));
 			var damage = "";
-			
-			
+					
+			$scope.atkstat = SpAStat;
+			$scope.defstat = SpDStat;
+		
 			for (var mov in moves)
 			{
-
+				var basePower = calcBasePower(moves[mov], "");
 				var mod = [1];
 				//random roll here
 				//D' = (D * (100-R)) ÷ 100
-				if (types.indexOf(moves[mov].type) > -1)
-				{
-					mod.push(1.5);
-				}
-				mod.push($scope.effectiveness);
-				mod.push($scope.itemEffectiveness);
-				mod.push($scope.abilityEffectiveness);
-				
+
+				// $scope.basepower = basePower;
+				// mod.push($scope.effectiveness);
+				// mod.push($scope.itemEffectiveness);
+				// mod.push($scope.abilityEffectiveness);
+				//damageCalc(move, types, level, offense, defense, bp, modifier)
 				if (moves[mov].cat === "Physical")
 				{
 
 					
 					damage += moves[mov].name + ": " + 
-					(Math.floor(damageCalc(level, AtkStat, DefStat, moves[mov].bp, mod)[0]) / defenderHP * 100).toFixed(2) + " to " + 
-					(Math.floor(damageCalc(level, AtkStat, DefStat, moves[mov].bp, mod)[1]) / defenderHP * 100).toFixed(2) + " <br />";
+					truncToOnePlace(Math.floor(damageCalc(moves[mov], types, level, AtkStat, DefStat, basePower, mod)[0]) / defenderHP * 100) + "% to " + 
+					truncToOnePlace(Math.floor(damageCalc(moves[mov], types, level, AtkStat, DefStat, basePower, mod)[1]) / defenderHP * 100) + "% <br />";
 
 				}
 				else
 				{
 					
 					damage += moves[mov].name + ": " + 
-					(Math.floor(damageCalc(level, SpAStat, SpDStat, moves[mov].bp, mod)[0]) / defenderHP * 100).toFixed(2) + " to " + 
-					(Math.floor(damageCalc(level, SpAStat, SpDStat, moves[mov].bp, mod)[1]) / defenderHP * 100).toFixed(2) + " <br />";
+					truncToOnePlace(Math.floor(damageCalc(moves[mov], types, level, SpAStat, SpDStat, basePower, mod)[0]) / defenderHP * 100) + "% to " + 
+					truncToOnePlace(Math.floor(damageCalc(moves[mov], types, level, SpAStat, SpDStat, basePower, mod)[1]) / defenderHP * 100) + "% <br />";
 
 				}
 			}
@@ -672,6 +850,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 		
 	}
+
 
 
 	$scope.roomID = post._id;
