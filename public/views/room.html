@@ -195,6 +195,7 @@
 		</div>
 		<input style="visibility: hidden;"></input> 
 		<div class="damageCalc">
+			
 			<label>
 				<input type="checkbox" ng-model="natureBoost" ng-true-value="1.1" ng-false-value="1" ng-click="refreshCalcs()"></input>
 				Attacker Positive Nature
@@ -205,6 +206,10 @@
 			<br />
 
 			<select ng-options="i for i in itemEff" ng-model="itemEffectiveness" ng-change="refreshCalcs()"></select> Item Modifier
+
+			<br />
+
+			<select ng-options="a for a in abEff" ng-model="abilityEffectiveness" ng-change="refreshCalcs()"></select> Ability Modifier
 
 			<br />
 
@@ -222,7 +227,7 @@
 
 			</div>
 
-
+			<p style="font-size: 10px;">Currently the numbers are off by a bit. Will look into the detailed damage formula before adding defending calcs.</p> 
 		</div>
 
 		<input style="visibility: hidden;" class="inputMes"></input>

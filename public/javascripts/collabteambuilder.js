@@ -477,22 +477,24 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	function calcHP(base, EV, level)
 	{
-		//HP = ((2*Base + IV + EV/4 + 100) * Level) / 100 + 10
+		return ((2*base + 31 + EV / 4 + 100) * level) / 100 + 10;
 	}
 
 	function calcStat(base, EV, level, nature)
 	{
-		return Math.floor((((2 * base + 31 + EV / 4) * level) / 100 + 5)) * nature;
+		return Math.floor(((2 * base + 31 + EV / 4) * level) / 100 + 5) * nature;
 	}
 
 	function damageCalc(level, offense, defense, bp, modifier)
 	{
-		var res = Math.floor(((((((2 * level) + 10) / 250) * offense) / defense) * bp + 2));
+		var res = ((((2 * level) / 5 + 2) * offense / defense * bp) / 50 + 2);
+		var min = (85 / 100 * res);
 		for (var i = 0; i < modifier.length; i++)
 		{
+			min = Math.floor(min * modifier[i])
 			res = Math.floor(res * modifier[i]);
 		}
-		return res;
+		return [Math.floor(min), Math.floor(res)];
 		//return Math.floor(((((((2 * level) + 10) / 250) * offense) / defense) * bp + 2)) * modifier;
 	}
 
@@ -506,8 +508,11 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.howEffective = [0.25, 0.5, 1, 2, 4];
 	$scope.effectiveness = 1;
 
-	$scope.itemEff = [1, 1.1, 1.3, 1.5];
+	$scope.itemEff = [1, 1.2, 1.3, 1.5];
 	$scope.itemEffectiveness = 1;
+
+	$scope.abEff = [1, 1.3, 1.33, 1.5];
+	$scope.abilityEffectiveness = 1;
 
 	$scope.refreshCalcs = function()
 	{
@@ -624,35 +629,41 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 				}
 			}
 			
-			var defenderHP = calcHP(baseHP, parseInt($scope.defHPEVs), level);
-			var DefStat = calcStat(baseDef, parseInt($scope.dEVs), level, $scope.defNatureBoost);
-			var SpDStat = calcStat(baseSpD, parseInt($scope.dEVs), level, $scope.defNatureBoost);
+			var defenderHP = Math.floor(calcHP(baseHP, parseInt($scope.defHPEVs), level));
+			var DefStat = Math.floor(calcStat(baseDef, parseInt($scope.dEVs), level, $scope.defNatureBoost));
+			var SpDStat = Math.floor(calcStat(baseSpD, parseInt($scope.dEVs), level, $scope.defNatureBoost));
 			var damage = "";
-			$scope.defstat = DefStat;
+			
 			
 			for (var mov in moves)
 			{
+
 				var mod = [1];
+				//random roll here
+				//D' = (D * (100-R)) ÷ 100
+				if (types.indexOf(moves[mov].type) > -1)
+				{
+					mod.push(1.5);
+				}
 				mod.push($scope.effectiveness);
 				mod.push($scope.itemEffectiveness);
+				mod.push($scope.abilityEffectiveness);
 				
 				if (moves[mov].cat === "Physical")
 				{
 
-					if (types.indexOf(moves[mov].type) > -1)
-					{
-						mod.push(1.5);
-					}
-					damage += moves[mov].name + ": " + Math.floor(damageCalc(level, AtkStat, DefStat, moves[mov].bp, mod)) + " <br />";
+					
+					damage += moves[mov].name + ": " + 
+					(Math.floor(damageCalc(level, AtkStat, DefStat, moves[mov].bp, mod)[0]) / defenderHP * 100).toFixed(2) + " to " + 
+					(Math.floor(damageCalc(level, AtkStat, DefStat, moves[mov].bp, mod)[1]) / defenderHP * 100).toFixed(2) + " <br />";
 
 				}
 				else
 				{
-					if (types.indexOf(moves[mov].type) > -1)
-					{
-						mod.push(1.5);
-					}
-					damage += moves[mov].name + ": " + Math.floor(damageCalc(level, SpAStat, SpDStat, moves[mov].bp, mod)) + " <br />";
+					
+					damage += moves[mov].name + ": " + 
+					(Math.floor(damageCalc(level, SpAStat, SpDStat, moves[mov].bp, mod)[0]) / defenderHP * 100).toFixed(2) + " to " + 
+					(Math.floor(damageCalc(level, SpAStat, SpDStat, moves[mov].bp, mod)[1]) / defenderHP * 100).toFixed(2) + " <br />";
 
 				}
 			}
@@ -827,6 +838,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	$scope.chooseEV = function(whichPoke, whichEV)
 	{
+
+		
 		var amount = $scope.party["pokemon" + whichPoke].EVs[whichEV];
 		// var totalEVs = 0;
 		// for (var ev in $scope.evNums[whichPoke])
@@ -851,6 +864,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		
 		dex.updateParty(dataToSend);
 		socket.emit("fill EVs", dataToSend);
+		$scope.refreshCalcs();
 
 	}
 
@@ -1073,6 +1087,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		var data = {room: post._id, currentInput: currentInput, move: move};
 		dex.updateParty(data);
 		socket.emit("move selection", data);
+		$scope.refreshCalcs();
 	}
 
 	socket.on("update mon selection", function(data)
