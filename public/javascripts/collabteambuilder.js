@@ -1,6 +1,6 @@
 var app = angular.module("collabteambuilder", ["ui.router", "ngSanitize", "sticky", "ngclipboard", "angular-clipboard"]);
 
-
+// angular.module("collabteambuilder", ["createRoom"]);
 app.factory("createRoom", function($http, $window)
 {
 
