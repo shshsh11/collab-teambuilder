@@ -480,14 +480,14 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		return ((2*base + 31 + EV / 4 + 100) * level) / 100 + 10;
 	}
 
-	function calcStat(base, EV, level, nature)
+	function calcStat(base, EV, level)
 	{
 		//natures is actually calculated elsewhere
-		return Math.floor(((2 * base + 31 + EV / 4) * level) / 100 + 5) * nature;
+		return Math.floor(((2 * base + 31 + EV / 4) * level) / 100 + 5);
 	}
 
 	//types is what types the attacker is
-	function damageCalc(move, types, level, offense, defense, bp, modifier)
+	function damageCalc(move, typing, level, offense, defense, bp)
 	{
 
 	
@@ -504,20 +504,16 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		baseDamage = Math.floor(Math.floor((Math.floor((2 * level) / 5 + 2) * offense) / defense * bp) / 50 + 2);
 		minDamage = Math.floor(85 / 100 * baseDamage);
 		//STAB
-	
-		if (types.indexOf(move.type) > -1 && currentPoke.ability === "Adaptability")
+		if (typing.indexOf(move.type) > -1 && currentPoke.ability === "Adaptability")
 		{
 			stabMod = 0x2000;
 		}
-		else if (types.indexOf(move.type) > -1 && !(currentPoke.ability === "Adaptability"))
+		else if (typing.indexOf(move.type) > -1 && !(currentPoke.ability === "Adaptability"))
 		{
 			stabMod = 0x1800;
 		}
 		else stabMod = 0x1000;
 
-		////$scope.test = "typing: " + types + " move type: " + move.type + " stab mod: " + stabMod / 0x1000;
-		
-		//mods.push(decToPokeHex($scope.damageMod));
 
 		if (currentPoke.item === "Life Orb")
 		{
@@ -540,14 +536,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 		return [minDamage, baseDamage];
 
-		// for (var i = 0; i < modifier.length; i++)
-		// {
-		// 	min = Math.floor(min * modifier[i])
-		// 	res = Math.floor(res * modifier[i]);
-		// }
 
-		// return [Math.floor(min), Math.floor(res)];
-		//return Math.floor(((((((2 * level) + 10) / 250) * offense) / defense) * bp + 2)) * modifier;
 	}
 	function truncToOnePlace(num)
 	{
@@ -658,7 +647,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	function calcBasePower(move, attacker)
 	{
 		
-		var bp = move.bp;
+		var bp = move.basePower;
 		
 		var bpMods = [0x1000];
 
@@ -666,29 +655,29 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		{
 			bpMods.push(0x14CD);
 		}
-
+		bpMods.push(decToPokeHex($scope.bpMod));
 		//ex technician
-		if ($scope.bpMod === 1.5)
-		{
-			bpMods.push(0x1800);
-		}
-		//ex sheer force
-		else if ($scope.bpMod === 1.3)
-		{
-			bpMods.push(0x14CD);
-		}
-		else if ($scope.bpMod === 1.2)
-		{
-			bpMods.push(0x1333);
-		}
-		else if ($scope.bpMod === 1.1)
-		{
-			bpMods.push(0x1199);
-		}
-		else if ($scope.bpMod === 2)
-		{
-			bpMods.push(0x2000);
-		}
+		// if ($scope.bpMod === 1.5)
+		// {
+		// 	bpMods.push(0x1800);
+		// }
+		// //ex sheer force
+		// else if ($scope.bpMod === 1.3)
+		// {
+		// 	bpMods.push(0x14CD);
+		// }
+		// else if ($scope.bpMod === 1.2)
+		// {
+		// 	bpMods.push(0x1333);
+		// }
+		// else if ($scope.bpMod === 1.1)
+		// {
+		// 	bpMods.push(0x1199);
+		// }
+		// else if ($scope.bpMod === 2)
+		// {
+		// 	bpMods.push(0x2000);
+		// }
 
 		return Math.max(1, pokeRound(bp * chainMods(bpMods) / 0x1000));
 	}
@@ -742,67 +731,65 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	{
 
 		////$scope.test = $scope.party["pokemon" + currentInput.substring(0, 1)].move4;//["move" + currentInput.substring(1)];
-		var mon = $scope.party["pokemon" + currentInput.substring(0, 1)].name;
+		var mon = $scope.party["pokemon" + currentInput.substring(0, 1)];
 
 		var moves =
 		{
 
 			move1:
 			{
-				name: [],
-				bp: [],
-				cat: [],
-				type: []
+				// name: [],
+				// bp: [],
+				// cat: [],
+				// type: []
 			},
 			move2:
 			{
-				name: [],
-				bp: [],
-				cat: [],
-				type: []
+				// name: [],
+				// bp: [],
+				// cat: [],
+				// type: []
 			},
 			move3:
 			{
-				name: [],
-				bp: [],
-				cat: [],
-				type: []
+				// name: [],
+				// bp: [],
+				// cat: [],
+				// type: []
 			},
 			move4:
 			{
-				name: [],
-				bp: [],
-				cat: [],
-				type: []
+				// name: [],
+				// bp: [],
+				// cat: [],
+				// type: []
 			}
 		}
 
-		moves.move1.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move1;
-		moves.move2.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move2;
-		moves.move3.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move3;
-		moves.move4.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move4;
+		for (var m in moves)
+		{
+			moves[m].name = mon[m];
+		}
 
-	
-
-		var AtkEV = $scope.party["pokemon" + currentInput.substring(0, 1)].EVs.Atk;
-		var SpAEV = $scope.party["pokemon" + currentInput.substring(0, 1)].EVs.SpA;
+		var AtkEV = mon.EVs.Atk; //$scope.party["pokemon" + currentInput.substring(0, 1)].EVs.Atk;
+		var SpAEV = mon.EVs.SpA; //$scope.party["pokemon" + currentInput.substring(0, 1)].EVs.SpA;
 		var baseAtk = 0;
 		var baseSpA = 0;
 		var types = [];
 		for (var poke in pokedex)
 		{
-			if (mon === pokedex[poke].species)
+			if (mon.name === pokedex[poke].species)
 			{
 				baseAtk = pokedex[poke].baseStats.atk;
 				baseSpA = pokedex[poke].baseStats.spa;
-				types = pokedex[poke].types;
+				typing = pokedex[poke].types;
 			}
 		}
 		var level = 100;
 		if ($scope.selectedTier === "LC") level = 5;
 
-		var AtkStat = calcAttack(Math.floor(calcStat(baseAtk, AtkEV, level, 1)));
-		var SpAStat = calcAttack(Math.floor(calcStat(baseSpA, SpAEV, level, 1)));
+		var AtkStat = calcAttack(Math.floor(calcStat(baseAtk, AtkEV, level)));
+		var SpAStat = calcAttack(Math.floor(calcStat(baseSpA, SpAEV, level)));
 
 		for (var move in movedex)
 		{
@@ -810,9 +797,10 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			{
 				if (moves[i].name === movedex[move].name)
 				{
-					moves[i].bp = movedex[move].basePower;
-					moves[i].cat = movedex[move].category;
-					moves[i].type = movedex[move].type;
+					moves[i] = movedex[move];
+					// moves[i].bp = movedex[move].basePower;
+					// moves[i].cat = movedex[move].category;
+					// moves[i].type = movedex[move].type;
 				}
 			}
 
@@ -821,7 +809,13 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		var baseDef = 0;
 		var baseSpD = 0;
 		var baseHP = 0;
-
+		var defendingPoke = 
+		{
+			species: "",
+			types: ["", ""],
+			baseStats: {hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0},
+			abilities: {0: "", H: ""}
+		};
 		if ($scope.defenderName.length >= 3)
 		{
 			
@@ -829,53 +823,38 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			{
 				if ($scope.defenderName === pokedex[poke].species || $scope.defenderName === pokedex[poke].species.toLowerCase())
 				{
-					baseDef = pokedex[poke].baseStats.def;
-					baseSpD = pokedex[poke].baseStats.spd;
-					baseHP = pokedex[poke].baseStats.hp;
-					//types = pokedex[poke].types;
+					defendingPoke = pokedex[poke];
 				}
 			}
 			
-			var defenderHP = Math.floor(calcHP(baseHP, parseInt($scope.defHPEVs), level));
-			var DefStat = calcDef(Math.floor(calcStat(baseDef, parseInt($scope.dEVs), level, 1)));
-			var SpDStat = calcDef(Math.floor(calcStat(baseSpD, parseInt($scope.dEVs), level, 1)));
+			baseDef = defendingPoke.baseStats.def;
+			baseSpD = defendingPoke.baseStats.spd;
+			baseHP = defendingPoke.baseStats.hp;
+
+			var defenderHP = Math.floor(calcHP(baseHP, $scope.defHPEVs, level));
+			var DefStat = calcDef(Math.floor(calcStat(baseDef, $scope.dEVs, level)));
+			var SpDStat = calcDef(Math.floor(calcStat(baseSpD, $scope.dEVs, level)));
 			var damage = "";
-					
-			$scope.atkstat = SpAStat;
-			$scope.defstat = SpDStat;
-			//$scope.test = "";
+
 			for (var mov in moves)
 			{
 				var basePower = calcBasePower(moves[mov], "");
 				var mod = [1];
-				//random roll here
-				//D' = (D * (100-R)) ÷ 100
 
-				// $scope.basepower = basePower;
-				// mod.push($scope.effectiveness);
-				// mod.push($scope.itemEffectiveness);
-				// mod.push($scope.abilityEffectiveness);
-				//damageCalc(move, types, level, offense, defense, bp, modifier)
 
-				//$scope.test += moves[mov].name + " " + moves[mov].cat + " outside ";
-
-				if (moves[mov].cat === "Physical")
+				if (moves[mov].category === "Physical")
 				{
-					////$scope.test += moves[mov].cat + " inside types: " + types + " AtkStat: " + AtkStat + " DefStat: " + DefStat + " BP: " + basePower + " defHP: " + defenderHP;
 					
 					damage += moves[mov].name + ": " + 
-					truncToOnePlace(Math.floor(damageCalc(moves[mov], types, level, AtkStat, DefStat, basePower, mod)[0]) / defenderHP * 100) + "% to " + 
-					truncToOnePlace(Math.floor(damageCalc(moves[mov], types, level, AtkStat, DefStat, basePower, mod)[1]) / defenderHP * 100) + "% <br />";
-					//$scope.test += " deeps " + damage;
+					truncToOnePlace(Math.floor(damageCalc(moves[mov], typing, level, AtkStat, DefStat, basePower)[0]) / defenderHP * 100) + "% to " + 
+					truncToOnePlace(Math.floor(damageCalc(moves[mov], typing, level, AtkStat, DefStat, basePower)[1]) / defenderHP * 100) + "% <br />";
 				}
-				else if (moves[mov].cat === "Special")
+				else if (moves[mov].category === "Special")
 				{	
 
-					//$scope.test += moves[mov].cat + " inside ";
-					
 					damage += moves[mov].name + ": " + 
-					truncToOnePlace(Math.floor(damageCalc(moves[mov], types, level, SpAStat, SpDStat, basePower, mod)[0]) / defenderHP * 100) + "% to " + 
-					truncToOnePlace(Math.floor(damageCalc(moves[mov], types, level, SpAStat, SpDStat, basePower, mod)[1]) / defenderHP * 100) + "% <br />";
+					truncToOnePlace(Math.floor(damageCalc(moves[mov], typing, level, SpAStat, SpDStat, basePower)[0]) / defenderHP * 100) + "% to " + 
+					truncToOnePlace(Math.floor(damageCalc(moves[mov], typing, level, SpAStat, SpDStat, basePower)[1]) / defenderHP * 100) + "% <br />";
 
 				}
 			}
