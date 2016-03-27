@@ -79,10 +79,18 @@ textarea
 	margin-left: 5px;
 }
 
+
+
 .wholeChat li
 {
 	list-style-type: none;
 	margin: 0px 0px 0px -35px;
+}
+
+.inconsistencies li
+{
+	list-style-type: square;
+	margin-left: -20px;
 }
 
 .wholeChat .inputMes
@@ -106,8 +114,9 @@ textarea
 .damageCalc
 {
 	width: 300px;
-	height: 300px;
+	height: 327px;
 	overflow: scroll;
 	overflow-x: hidden;
 	padding: 5px 5px 5px 10px;
 }
+

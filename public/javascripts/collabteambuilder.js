@@ -587,13 +587,13 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.defStatMods = [1, 1.5, 2];
 	$scope.defStatMod = 1;
 
-	$scope.damageMods = [0.5, 1, 1.2];
+	$scope.damageMods = [0.5, 1, 1.2, 1.5, 2];
 	$scope.damageMod = 1;
 
 	$scope.STABMods = [1, 1.5, 2];
 	$scope.STABMod = 1;
 
-	$scope.boostMods = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6];
+	$scope.boostMods = [6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5, -6];
 	$scope.boostMod = 0;
 
 	function boostConverter(num)
@@ -661,6 +661,11 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		var bp = move.bp;
 		
 		var bpMods = [0x1000];
+
+		if ($scope.party["pokemon" + currentInput.substring(0, 1)].ability === "Sheer Force")
+		{
+			bpMods.push(0x14CD);
+		}
 
 		//ex technician
 		if ($scope.bpMod === 1.5)

@@ -171,7 +171,8 @@
 
 		<div class="chatNav">
 			<a href="" ng-click="damageCalcActive = false">Chat</a> 
-			<a href="" ng-mousedown="damageCalcActive = true" ng-mouseup="refreshCalcs()">Attacking Calc</a>
+			<a href="" ng-mousedown="damageCalcActive = true" ng-mouseup="refreshCalcs()">Attacking Calc</a> 
+			Defending Calc coming soon!
 		</div>
 
 
@@ -191,10 +192,10 @@
 	<div ng-show="damageCalcActive">
 		<div class="chatNav">
 			<a href="" ng-click="damageCalcActive = false">Chat</a> 
-			<a href="" ng-mousedown="damageCalcActive = true" ng-mouseup="refreshCalcs()">Attacking Calc</a> 
+			<a href="" ng-mousedown="damageCalcActive = true" ng-mouseup="refreshCalcs()">Attacking Calc</a> Defending Calc coming soon!
 			<!-- <a href="" ng-click="refreshCalcs()">Refresh Calcs</a> -->
 		</div>
-		<input style="visibility: hidden;"></input> 
+		<!-- <input style="visibility: hidden;"></input>  -->
 		<div class="damageCalc">
 <!-- 			<span ng-bind="test"></span>
 			<span ng-bind="basepower"></span> -->
@@ -202,7 +203,9 @@
 				<input type="checkbox" ng-model="natureBoost" ng-true-value="1.1" ng-false-value="1" ng-click="refreshCalcs()"></input>
 				Attacker Positive Nature
 			</label>
+			<br />
 
+ 			<select ng-options="h for h in howEffective" ng-model="effectiveness" ng-change="refreshCalcs()"></select> Effectiveness
 			<br />
 			<select ng-options="b for b in bpMods" ng-model="bpMod" ng-change="refreshCalcs()"></select> Base Power Modifier
 
@@ -220,9 +223,7 @@
 
 
 
-			<br />
 
- 			<select ng-options="h for h in howEffective" ng-model="effectiveness" ng-change="refreshCalcs()"></select> Effectiveness
 
 
 			<!--
@@ -249,7 +250,23 @@
 			</div>
 
 			<!-- <p style="font-size: 10px;">Currently the numbers are off by a bit. Will look into the detailed damage formula before adding defending calcs.</p>  -->
-			<p>The features are very inconsistent. STAB is accounted for, including if you pick Adaptability as your ability. Life Orb is accounted for, which is why there is not 1.3x option under Damage Modifier. EVs are accounted for, but nature is not. </p>
+			<p>Currently, the features are very inconsistent. The calc does not work well for mixed attackers; better set integration will be implemented in the future.<br />
+				You <strong>do not</strong> have to worry about the following:
+				<ul class="inconsistencies">
+					<li>STAB</li>
+					<li>Adaptability</li>
+					<li>Life Orb</li>
+					<li>Sheer Force (note: does not check for a secondary effect)</li>
+					<li>EVs</li>
+				</ul>
+				Everything except the Base Power Modifier is pretty interchangeable, with only small % or no inaccuracies. 
+				
+			</p>
+			<p>Most offensive abilities should go under the Base Power Modifier. Defeatist / Slow Start / Huge / Pure Power should go under Offensive Stat Modifier. Protean and Tinted Lens should go under Damage Modifier, as well as weather. To stack these with minimal inaccuracies, simply make use of another option EXCLUDING Base Power Modifier.</p>
+
+			<p>Example Usage: 252+ Atk Choice Band Technician Scizor's Bullet Punch should have Attacker Positive Nature checked, 252 Atk EVs, Bullet Punch as a move, 1.5 under Base Power Modifier (Technician), and 1.5 under Offensive Stat Modifier (Choice Band).</p>
+
+			<p>252 Life Orb Sheer Force Nidoking Sludge Wave vs 0 / 0 Eviolite Chansey should have 252 SpA EVs, Sludge Wave as a move, Life Orb as the item, Sheer Force as the ability, -1 as the Boost Modifier to account for Eviolite, Chansey as Defender name, and 0 in both Defender HP EVs and EVs.</p>
 		</div>
 
 		<input style="visibility: hidden;" class="inputMes"></input>
