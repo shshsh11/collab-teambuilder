@@ -486,6 +486,12 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		return Math.floor(((2 * base + 31 + EV / 4) * level) / 100 + 5);
 	}
 
+
+	$scope.isAerilate = "";
+	$scope.isPixilate = "";
+	$scope.isRefrigerate = "";
+
+
 	//types is what types the attacker is
 	function damageCalc(move, typing, level, offense, defense, bp)
 	{
@@ -508,7 +514,11 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		{
 			stabMod = 0x2000;
 		}
-		else if (typing.indexOf(move.type) > -1 && !(currentPoke.ability === "Adaptability"))
+		else if ((typing.indexOf(move.type) > -1 && !(currentPoke.ability === "Adaptability")))// || $scope.isAerilate || $scope.isPixilate || $scope.isRefrigerate)
+		{
+			stabMod = 0x1800;
+		}
+		else if ((typing.indexOf("Fairy") > -1 && $scope.isPixilate) || (typing.indexOf("Flying") && $scope.isAerilate) || (typing.indexOf("Ice") && $scope.isRefrigerate))
 		{
 			stabMod = 0x1800;
 		}
@@ -551,6 +561,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 
 	$scope.natureBoost = 1;
+	$scope.plateBoost = 0;
+	$scope.knockMod = 0;
 
 	$scope.defNatureBoost = 1;
 	$scope.defHPEVs = 0;
@@ -584,6 +596,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	$scope.boostMods = [6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5, -6];
 	$scope.boostMod = 0;
+
+
 
 	function boostConverter(num)
 	{
@@ -644,14 +658,66 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	    return M;
 	}
 
-	function calcBasePower(move, attacker)
+
+	function calcBasePower(move, defender)
 	{
 		
 		var bp = move.basePower;
-		
+
+		var currentMon = $scope.party["pokemon" + currentInput.substring(0, 1)];
 		var bpMods = [0x1000];
 
-		if ($scope.party["pokemon" + currentInput.substring(0, 1)].ability === "Sheer Force")
+		if (currentMon.ability === "Technician" && bp <= 60)
+		{
+			bpMods.push(0x1800);
+		}
+		else if (currentMon.ability === "Reckless" && move.recoil)
+		{
+			bpMods.push(0x1333);
+		}
+		else if (currentMon.ability === "Iron Fist" && move.flags)
+		{
+			if (move.flags.punch)
+			{
+				bpMods.push(0x1333);
+			}
+		}
+		if (currentMon.ability === "Sheer Force" && move.secondary)
+		{
+			bpMods.push(0x14CD);
+		}
+		if ($scope.plateBoost)
+		{
+			
+			bpMods.push(0x1333);
+		}
+		else if ((currentMon.item === "Muscle Band" && move.category === "Physical") || (currentMon.item === "Wise Glasses" && move.category === "Special"))
+		{
+			bpMods.push(0x1199);
+		}
+
+
+		//Gen 4 Orbs
+		//status, eg facade
+
+		if (move.name === "Knock Off" && $scope.knockMod)
+		{
+			bpMods.push(0x1800);
+		}
+
+		$scope.isAerilate = (currentMon.ability === "Aerilate" && move.type === "Normal");
+		$scope.isPixilate = (currentMon.ability === "Pixilate" && move.type === "Normal");
+		$scope.isRefrigerate = (currentMon.ability === "Refrigerate" && move.type === "Normal");
+
+		if ($scope.isAerilate || $scope.isPixilate || $scope.isRefrigerate)
+		{
+			bpMods.push(0x14CD);
+		}
+		else if ((currentMon.ability === "Mega Launcher" && move.flags.pulse) || (currentMon.ability === "Strong Jaw" && move.flags.bite))
+		{
+			bpMods.push(0x1800);
+		}
+		else if (currentMon.ability === "Tough Claws" && move.flags.contact)
 		{
 			bpMods.push(0x14CD);
 		}
@@ -814,7 +880,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			species: "",
 			types: ["", ""],
 			baseStats: {hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0},
-			abilities: {0: "", H: ""}
+			abilities: {0: "", 1: "", H: ""}
 		};
 		if ($scope.defenderName.length >= 3)
 		{
@@ -838,7 +904,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 			for (var mov in moves)
 			{
-				var basePower = calcBasePower(moves[mov], "");
+				var basePower = calcBasePower(moves[mov], defendingPoke);
 				var mod = [1];
 
 

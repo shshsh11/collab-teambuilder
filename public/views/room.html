@@ -206,6 +206,14 @@
 			</label>
 			<br />
 
+			<input type="checkbox" ng-model="plateBoost" ng-true-value="1" ng-false-value="0" ng-click="refreshCalcs()"></input> Plate Boost
+
+			<br />
+
+			<input type="checkbox" ng-model="knockMod" ng-true-value="1" ng-false-value="0" ng-click="refreshCalcs()"></input> Opponent has item?
+
+			<br />
+
  			<select ng-options="h for h in howEffective" ng-model="effectiveness" ng-change="refreshCalcs()"></select> Effectiveness
 			<br />
 			<select ng-options="b for b in bpMods" ng-model="bpMod" ng-change="refreshCalcs()"></select> Base Power Modifier
