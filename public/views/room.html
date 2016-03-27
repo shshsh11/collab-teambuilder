@@ -221,9 +221,7 @@
 
 			<select ng-options="b for b in boostMods" ng-model="boostMod" ng-change="refreshCalcs()"></select> Offensive Boost
 
-			<br />
 
-			<select ng-options="d for d in damageMods" ng-model="damageMod" ng-change="refreshCalcs()"></select> Damage Modifier
 
 
 
@@ -241,10 +239,9 @@
 			<u>Defender</u> <br />
 			Name: <input ng-model="defenderName" ng-keyup="refreshCalcs()"></input>
 			<br />
-			HP: <input ng-model="defHPEVs" ng-keyup="refreshCalcs()"></input>
-			<br />
-			Def: <input size="4" ng-model="dEVs" ng-keyup="refreshCalcs()"></input> / 
-			SpD: <input size="4" ng-model="spdEVs" ng-keyup="refreshCalcs()"></input>
+			HP: <input size="2" ng-model="defHPEVs" ng-keyup="refreshCalcs()"></input>
+			Def: <input size="2" ng-model="dEVs" ng-keyup="refreshCalcs()"></input>
+			SpD: <input size="2" ng-model="spdEVs" ng-keyup="refreshCalcs()"></input>
 			<br />
 			<input type="checkbox" ng-model="defNatureBoost" ng-true-value="1.1" ng-false-value="1" ng-click="refreshCalcs()"></input> Defender Positive Nature
 			<br />
@@ -255,23 +252,9 @@
 			</div>
 
 			<!-- <p style="font-size: 10px;">Currently the numbers are off by a bit. Will look into the detailed damage formula before adding defending calcs.</p>  -->
-			<p>Currently, the features are very inconsistent. The calc does not work well for mixed attackers; better set integration will be implemented in the future.<br />
-				You <strong>do not</strong> have to worry about the following:
-				<ul class="inconsistencies">
-					<li>STAB</li>
-					<li>Adaptability</li>
-					<li>Life Orb</li>
-					<li>Sheer Force (note: does not check for a secondary effect)</li>
-					<li>EVs</li>
-				</ul>
-				Everything except the Base Power Modifier is pretty interchangeable, with only small % or no inaccuracies. 
-				
+			<p>The calc does not work well for mixed attackers because I have yet to implement natures. There is also no type effectiveness. If you use Offensive Boost for weather, it slightly underestimates favorable weather and slightly overestimates for unfavorable weather.
 			</p>
-			<p>Most offensive abilities should go under the Base Power Modifier. Defeatist / Slow Start / Huge / Pure Power should go under Offensive Stat Modifier. Protean and Tinted Lens should go under Damage Modifier, as well as weather. To stack these with minimal inaccuracies, simply make use of another option EXCLUDING Base Power Modifier.</p>
 
-			<p>Example Usage: 252+ Atk Choice Band Technician Scizor's Bullet Punch should have Attacker Positive Nature checked, 252 Atk EVs, Bullet Punch as a move, 1.5 under Base Power Modifier (Technician), and 1.5 under Offensive Stat Modifier (Choice Band).</p>
-
-			<p>252 Life Orb Sheer Force Nidoking Sludge Wave vs 0 / 0 Eviolite Chansey should have 252 SpA EVs, Sludge Wave as a move, Life Orb as the item, Sheer Force as the ability, -1 as the Boost Modifier to account for Eviolite, Chansey as Defender name, and 0 in both Defender HP EVs and EVs.</p>
 		</div>
 
 		<input style="visibility: hidden;" class="inputMes"></input>

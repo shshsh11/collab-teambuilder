@@ -545,6 +545,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 		var finalMod = chainMods(mods);
 		minDamage = pokeRound(minDamage * stabMod / 0x1000);
+		
 		minDamage = Math.floor(minDamage * $scope.effectiveness);
 		minDamage = Math.max(1, minDamage);
 		minDamage = pokeRound(minDamage * finalMod / 0x1000);
