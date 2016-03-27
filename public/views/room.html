@@ -204,15 +204,12 @@
 
 			<br />
 
-			<input type="checkbox" ng-model="knockMod" ng-true-value="1" ng-false-value="0" ng-click="refreshCalcs()"></input> Opponent has item?
-
-			<br />
-
-			<select ng-options="b for b in boostMods" ng-model="boostMod" ng-change="refreshCalcs()"></select> Offensive Boost
+			Atk Boost: <select ng-options="b for b in boostMods" ng-model="AtkBoostMod" ng-change="refreshCalcs()"></select> 
+			SpA Boost: <select ng-options="b for b in boostMods" ng-model="SpABoostMod" ng-change="refreshCalcs()"></select> 
 
 			<br />
 			<u>Defender</u> <br />
-			Name: <input ng-model="defenderName" ng-keyup="refreshCalcs()"></input>
+			Name: <input size= "9" ng-model="defenderName" ng-keyup="refreshCalcs()"></input> Item: <input size= "9" ng-model="defenderItem" ng-keyup="refreshCalcs()"></input>
 			<br />
 			HP: <input size="2" ng-model="defHPEVs" ng-keyup="refreshCalcs()"></input>
 			Def: <input size="2" ng-model="dEVs" ng-keyup="refreshCalcs()"></input>
@@ -220,14 +217,15 @@
 			<br />
 			<select ng-options="n for n in natureList" ng-model="defNat" ng-change="refreshCalcs()"></select> Defender Nature 
 			<br />
-			<select ng-options="b for b in boostMods" ng-model="defBoostMod" ng-change="refreshCalcs()"></select> Defensive Boost
+			Def Boost: <select ng-options="b for b in boostMods" ng-model="defBoostMod" ng-change="refreshCalcs()"></select> 
+			SpD Boost: <select ng-options="b for b in boostMods" ng-model="spdBoostMod" ng-change="refreshCalcs()"></select> 
 				<!-- <span ng-bind="atkstat"></span> vs <span ng-bind="defstat"></span> -->
 			<div ng-bind-html="damageCalculations">
 
 			</div>
 
 			<!-- <p style="font-size: 10px;">Currently the numbers are off by a bit. Will look into the detailed damage formula before adding defending calcs.</p>  -->
-			<p>The calc does not work well for mixed attackers because I have yet to implement natures. There is also no type effectiveness. If you use Offensive Boost for weather, it slightly underestimates favorable weather and slightly overestimates for unfavorable weather.
+			<p>If you use Offensive Boost for weather, it slightly underestimates favorable weather and slightly overestimates unfavorable weather.
 			</p>
 
 		</div>

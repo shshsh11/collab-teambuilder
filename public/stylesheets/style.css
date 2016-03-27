@@ -120,3 +120,7 @@ textarea
 	padding: 5px 5px 5px 10px;
 }
 
+.dispDmgCalcs td
+{
+	width: 100px;
+}

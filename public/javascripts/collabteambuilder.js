@@ -1201,14 +1201,17 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.STABMods = [1, 1.5, 2];
 	$scope.STABMod = 1;
 
-	$scope.boostMods = [6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5, -6];
-	$scope.boostMod = 0;
-	$scope.defBoostMod = 0;
-
+	// $scope.boostMods = [6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5, -6];
+	$scope.boostMods = ["+6", "+5", "+4", "+3", "+2", "+1", "+0", "-1", "-2", "-3", "-4", "-5", "-6"];
+	$scope.AtkBoostMod = "+0";
+	$scope.SpABoostMod = "+0";
+	$scope.defBoostMod = "+0";
+	$scope.spdBoostMod = "+0";
 	$scope.defNat = "Hardy";
 
 	function boostConverter(num)
 	{
+		num = parseInt(num);
 		if (num < 0)
 		{
 			return 2 / (2 - num);
@@ -1308,7 +1311,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		//Gen 4 Orbs
 		//status, eg facade
 
-		if (move.name === "Knock Off" && $scope.knockMod)
+		if (move.name === "Knock Off" && defender.item)
 		{
 			bpMods.push(0x1800);
 		}
@@ -1349,15 +1352,17 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		if (move.category === "Physical")
 		{
 			stat = Math.floor(stat * atkBoost);
+			stat = pokeRound(stat * boostConverter($scope.AtkBoostMod));
 		}
 		else if (move.category === "Special")
 		{
 			stat = Math.floor(stat * spaBoost);
+			stat = pokeRound(stat * boostConverter($scope.SpABoostMod))
 		}
 
 		// stat = Math.floor(stat * $scope.natureBoost);
 		//could lead to errors because not technically right
-		stat = pokeRound(stat * boostConverter($scope.boostMod));
+
 
 		if (attacker.ability === "Hustle" && move.category === "Physical")
 		{
@@ -1365,7 +1370,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		}
 
 		//bunch of niche stuff, https://github.com/Zarel/honko-damagecalc/blob/master/js/damage.js
-		// $scope.test = attacker.item === "Choice Band" && move.category === "Physical";
+
 
 		if ((attacker.item === "Soul Dew" && (attacker.name === "Latias" || attacker.name === "Latios") && move.category === "Special")
 		|| (attacker.item === "Choice Band" && move.category === "Physical") || (attacker.item === "Choice Specs" && move.category === "Special"))
@@ -1382,20 +1387,22 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	{
 		var statMods = [0x1000];
 		var nat = defender.nature.split(" ")[0];
-		$scope.test = nat;
+
 		var defBoost = natures[nat].Def;
 		var spdBoost = natures[nat].SpD;
 		if (move.category === "Physical")
 		{
 			stat = Math.floor(stat * defBoost);
+			stat = pokeRound(stat * boostConverter($scope.defBoostMod));
 		}
 		else if (move.category === "Special")
 		{
 			stat = Math.floor(stat * spdBoost);
+			stat = pokeRound(stat * boostConverter($scope.spdBoostMod));
 		}
 
 
-		stat = pokeRound(stat * boostConverter($scope.defBoostMod));
+
 
 		//implement things for defending calc
 		
@@ -1511,6 +1518,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			baseSpD = defendingPoke.baseStats.spd;
 			baseHP = defendingPoke.baseStats.hp;
 			defendingPoke.nature = $scope.defNat;
+			defendingPoke.item = $scope.defenderItem;
 
 			var defenderHP = Math.floor(calcHP(baseHP, $scope.defHPEVs, level));
 			var unmodDefStat = Math.floor(calcStat(baseDef, $scope.dEVs, level));
@@ -1518,7 +1526,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			var DefStat = 0;
 			var SpDStat = 0;
 			var damage = "";
-
+			damage += "<table class='dispDmgCalcs'>";
 			for (var mov in moves)
 			{
 				AtkStat = calcAttack(unmodAtkStat, mon, defendingPoke, moves[mov]);
@@ -1529,23 +1537,28 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 				var basePower = calcBasePower(moves[mov], mon, defendingPoke);
 				var mod = [1];
 
+				damage += "<tr>";
 
 				if (moves[mov].category === "Physical")
 				{
-					
-					damage += moves[mov].name + ": " + 
+					damage += "<td>";
+					damage += moves[mov].name + ": </td><td>" + 
 					truncToOnePlace(Math.floor(damageCalc(moves[mov], typing, level, AtkStat, DefStat, basePower, mon, defendingPoke)[0]) / defenderHP * 100) + "% to " + 
-					truncToOnePlace(Math.floor(damageCalc(moves[mov], typing, level, AtkStat, DefStat, basePower, mon, defendingPoke)[1]) / defenderHP * 100) + "% <br />";
+					truncToOnePlace(Math.floor(damageCalc(moves[mov], typing, level, AtkStat, DefStat, basePower, mon, defendingPoke)[1]) / defenderHP * 100) + "%";
+					damage += "</td>";
 				}
 				else if (moves[mov].category === "Special")
 				{	
-
-					damage += moves[mov].name + ": " + 
+					damage += "<td>";
+					damage += moves[mov].name + ": </td><td>" + 
 					truncToOnePlace(Math.floor(damageCalc(moves[mov], typing, level, SpAStat, SpDStat, basePower, mon, defendingPoke)[0]) / defenderHP * 100) + "% to " + 
-					truncToOnePlace(Math.floor(damageCalc(moves[mov], typing, level, SpAStat, SpDStat, basePower, mon, defendingPoke)[1]) / defenderHP * 100) + "% <br />";
-
+					truncToOnePlace(Math.floor(damageCalc(moves[mov], typing, level, SpAStat, SpDStat, basePower, mon, defendingPoke)[1]) / defenderHP * 100) + "%";
+					damage += "</td>";
 				}
+
+				damage += "</tr>";
 			}
+			damage += "</table>";
 			$scope.damageCalculations = damage;
 		}
 
