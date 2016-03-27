@@ -493,7 +493,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 
 	//types is what types the attacker is
-	function damageCalc(move, typing, level, offense, defense, bp)
+	function damageCalc(move, typing, level, offense, defense, bp, attacker, defender)
 	{
 
 	
@@ -502,7 +502,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 		var mods = [];
 
-		var currentPoke = $scope.party["pokemon" + currentInput.substring(0, 1)];
+		// var attacker = $scope.party["pokemon" + currentInput.substring(0, 1)];
 
 		var stabMod;		
 		//spread, weather, gravity, crit
@@ -510,11 +510,11 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		baseDamage = Math.floor(Math.floor((Math.floor((2 * level) / 5 + 2) * offense) / defense * bp) / 50 + 2);
 		minDamage = Math.floor(85 / 100 * baseDamage);
 		//STAB
-		if (typing.indexOf(move.type) > -1 && currentPoke.ability === "Adaptability")
+		if (typing.indexOf(move.type) > -1 && attacker.ability === "Adaptability")
 		{
 			stabMod = 0x2000;
 		}
-		else if ((typing.indexOf(move.type) > -1 && !(currentPoke.ability === "Adaptability")))// || $scope.isAerilate || $scope.isPixilate || $scope.isRefrigerate)
+		else if ((typing.indexOf(move.type) > -1 && !(attacker.ability === "Adaptability")))// || $scope.isAerilate || $scope.isPixilate || $scope.isRefrigerate)
 		{
 			stabMod = 0x1800;
 		}
@@ -522,10 +522,22 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		{
 			stabMod = 0x1800;
 		}
+		else if (attacker.ability === "Protean")
+		{
+			stabMod = 0x1800;
+		}
 		else stabMod = 0x1000;
 
+		if (attacker.ability === "Tinted Lens" && $scope.effectiveness < 1)
+		{
+			mods.push(0x2000);
+		}
 
-		if (currentPoke.item === "Life Orb")
+		//defensive abilities still needed
+
+		//expert belt
+
+		if (attacker.item === "Life Orb")
 		{
 			
 			mods.push(0x14CC);
@@ -594,7 +606,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	$scope.boostMods = [6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5, -6];
 	$scope.boostMod = 0;
-
+	$scope.defBoostMod = 0;
 
 
 	function boostConverter(num)
@@ -757,15 +769,13 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	function calcDef(stat, attacker, defender, move)
 	{
 		var statMods = [0x1000];
-		if ($scope.defNatureBoost === 1)
-		{
-			//statMods.push(0x1000)
-		}
-		else
-		{
-			//statMods.push(0x1199);
-			stat = Math.floor(stat * 1.1);
-		}
+
+		stat = Math.floor(stat * $scope.defNatureBoost);
+
+		stat = pokeRound(stat * boostConverter($scope.defBoostMod));
+
+		//implement things for defending calc
+		
 		return Math.max(1, pokeRound(stat * chainMods(statMods) / 0x1000));
 	}
 
@@ -900,15 +910,15 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 				{
 					
 					damage += moves[mov].name + ": " + 
-					truncToOnePlace(Math.floor(damageCalc(moves[mov], typing, level, AtkStat, DefStat, basePower)[0]) / defenderHP * 100) + "% to " + 
-					truncToOnePlace(Math.floor(damageCalc(moves[mov], typing, level, AtkStat, DefStat, basePower)[1]) / defenderHP * 100) + "% <br />";
+					truncToOnePlace(Math.floor(damageCalc(moves[mov], typing, level, AtkStat, DefStat, basePower, mon, defendingPoke)[0]) / defenderHP * 100) + "% to " + 
+					truncToOnePlace(Math.floor(damageCalc(moves[mov], typing, level, AtkStat, DefStat, basePower, mon, defendingPoke)[1]) / defenderHP * 100) + "% <br />";
 				}
 				else if (moves[mov].category === "Special")
 				{	
 
 					damage += moves[mov].name + ": " + 
-					truncToOnePlace(Math.floor(damageCalc(moves[mov], typing, level, SpAStat, SpDStat, basePower)[0]) / defenderHP * 100) + "% to " + 
-					truncToOnePlace(Math.floor(damageCalc(moves[mov], typing, level, SpAStat, SpDStat, basePower)[1]) / defenderHP * 100) + "% <br />";
+					truncToOnePlace(Math.floor(damageCalc(moves[mov], typing, level, SpAStat, SpDStat, basePower, mon, defendingPoke)[0]) / defenderHP * 100) + "% to " + 
+					truncToOnePlace(Math.floor(damageCalc(moves[mov], typing, level, SpAStat, SpDStat, basePower, mon, defendingPoke)[1]) / defenderHP * 100) + "% <br />";
 
 				}
 			}

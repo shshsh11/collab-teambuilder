@@ -219,7 +219,7 @@
 
 			<br />
 
-			<select ng-options="b for b in boostMods" ng-model="boostMod" ng-change="refreshCalcs()"></select> Boost Modifier
+			<select ng-options="b for b in boostMods" ng-model="boostMod" ng-change="refreshCalcs()"></select> Offensive Boost
 
 			<br />
 
@@ -246,9 +246,9 @@
 			Def: <input size="4" ng-model="dEVs" ng-keyup="refreshCalcs()"></input> / 
 			SpD: <input size="4" ng-model="spdEVs" ng-keyup="refreshCalcs()"></input>
 			<br />
-			<input type="checkbox" ng-model="defNatureBoost" ng-true-value="1.1" ng-false-value="1" ng-click="refreshCalcs()"></input>
-				Defender Positive Nature
-
+			<input type="checkbox" ng-model="defNatureBoost" ng-true-value="1.1" ng-false-value="1" ng-click="refreshCalcs()"></input> Defender Positive Nature
+			<br />
+			<select ng-options="b for b in boostMods" ng-model="defBoostMod" ng-change="refreshCalcs()"></select> Defensive Boost
 				<!-- <span ng-bind="atkstat"></span> vs <span ng-bind="defstat"></span> -->
 			<div ng-bind-html="damageCalculations">
 
