@@ -82,7 +82,7 @@
 		</div>
 
 		<div>
-			<select ng-options="n for n in natures" ng-model="party['pokemon' + num].nature" ng-change="doNatures(num, party['pokemon' + num].nature)"></select> Nature 
+			<select ng-options="n for n in natureList" ng-model="party['pokemon' + num].nature" ng-change="doNatures(num, party['pokemon' + num].nature)"></select> Nature 
 		</div>
 		
 
@@ -193,18 +193,12 @@
 		<div class="chatNav">
 			<a href="" ng-click="damageCalcActive = false">Chat</a> 
 			<a href="" ng-mousedown="damageCalcActive = true" ng-mouseup="refreshCalcs()">Attacking Calc</a> Defending Calc coming soon!
-			<!-- <a href="" ng-click="refreshCalcs()">Refresh Calcs</a> -->
+
 		</div>
-		<!-- <input style="visibility: hidden;"></input>  -->
+
 		<div class="damageCalc">
 			<a ng-bind="test"></a>
-<!-- 			<span ng-bind="test"></span>
-			<span ng-bind="basepower"></span> -->
-			<label>
-				<input type="checkbox" ng-model="natureBoost" ng-true-value="1.1" ng-false-value="1" ng-click="refreshCalcs()"></input>
-				Attacker Positive Nature
-			</label>
-			<br />
+
 
 			<input type="checkbox" ng-model="plateBoost" ng-true-value="1" ng-false-value="0" ng-click="refreshCalcs()"></input> Plate Boost
 
@@ -214,26 +208,7 @@
 
 			<br />
 
- 			<select ng-options="h for h in howEffective" ng-model="effectiveness" ng-change="refreshCalcs()"></select> Effectiveness
-
-
-			<br />
-
 			<select ng-options="b for b in boostMods" ng-model="boostMod" ng-change="refreshCalcs()"></select> Offensive Boost
-
-
-
-
-
-
-
-
-			<!--
-			<select ng-options="i for i in itemEff" ng-model="itemEffectiveness" ng-change="refreshCalcs()"></select> Item Modifier
-
-			<br />
-
-			<select ng-options="a for a in abEff" ng-model="abilityEffectiveness" ng-change="refreshCalcs()"></select> Ability Modifier -->
 
 			<br />
 			<u>Defender</u> <br />
@@ -243,7 +218,7 @@
 			Def: <input size="2" ng-model="dEVs" ng-keyup="refreshCalcs()"></input>
 			SpD: <input size="2" ng-model="spdEVs" ng-keyup="refreshCalcs()"></input>
 			<br />
-			<input type="checkbox" ng-model="defNatureBoost" ng-true-value="1.1" ng-false-value="1" ng-click="refreshCalcs()"></input> Defender Positive Nature
+			<select ng-options="n for n in natureList" ng-model="defNat" ng-change="refreshCalcs()"></select> Defender Nature 
 			<br />
 			<select ng-options="b for b in boostMods" ng-model="defBoostMod" ng-change="refreshCalcs()"></select> Defensive Boost
 				<!-- <span ng-bind="atkstat"></span> vs <span ng-bind="defstat"></span> -->

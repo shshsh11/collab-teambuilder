@@ -367,9 +367,603 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	};
 	$scope.fullEVs = [4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,0];
 
+	var typeChart = 
+	{
+		Normal : 
+		{
+			Normal: 1,
+			Grass: 1,
+			Fire: 1,
+			Water: 1,
+			Electric: 1,
+			Ice: 1,
+			Flying: 1,
+			Bug: 1,
+			Poison: 1,
+			Ground: 1,
+			Rock: 0.5,
+			Fighting: 1,
+			Psychic: 1,
+			Ghost: 0,
+			Dragon: 1,
+			Dark: 1,
+			Steel: 0.5,
+			Fairy: 1 
+		},
+		Grass : 
+		{
+			Normal: 1,
+			Grass: 0.5,
+			Fire: 0.5,
+			Water: 2,
+			Electric: 1,
+			Ice: 1,
+			Flying: 0.5,
+			Bug: 0.5,
+			Poison: 0.5,
+			Ground: 2,
+			Rock: 2,
+			Fighting: 1,
+			Psychic: 1,
+			Ghost: 1,
+			Dragon: 0.5,
+			Dark: 1,
+			Steel: 0.5,
+			Fairy: 1 
+		},
+		Fire : 
+		{
+			Normal: 1,
+			Grass: 2,
+			Fire: 0.5,
+			Water: 0.5,
+			Electric: 1,
+			Ice: 2,
+			Flying: 1,
+			Bug: 2,
+			Poison: 1,
+			Ground: 1,
+			Rock: 0.5,
+			Fighting: 1,
+			Psychic: 1,
+			Ghost: 1,
+			Dragon: 0.5,
+			Dark: 1,
+			Steel: 2,
+			Fairy: 1 
+		},
+		Water : 
+		{
+			Normal: 1,
+			Grass: 0.5,
+			Fire: 2,
+			Water: 0.5,
+			Electric: 1,
+			Ice: 1,
+			Flying: 1,
+			Bug: 1,
+			Poison: 1,
+			Ground: 2,
+			Rock: 2,
+			Fighting: 1,
+			Psychic: 1,
+			Ghost: 1,
+			Dragon: 0.5,
+			Dark: 1,
+			Steel: 1,
+			Fairy: 1 
+		},
+		Electric : 
+		{
+			Normal: 1,
+			Grass: 0.5,
+			Fire: 1,
+			Water: 2,
+			Electric: 0.5,
+			Ice: 1,
+			Flying: 2,
+			Bug: 1,
+			Poison: 1,
+			Ground: 0,
+			Rock: 1,
+			Fighting: 1,
+			Psychic: 1,
+			Ghost: 1,
+			Dragon: 0.5,
+			Dark: 1,
+			Steel: 1,
+			Fairy: 1 
+		},
+		Ice : 
+		{
+			Normal: 1,
+			Grass: 2,
+			Fire: 0.5,
+			Water: 0.5,
+			Electric: 1,
+			Ice: 0.5,
+			Flying: 2,
+			Bug: 1,
+			Poison: 1,
+			Ground: 2,
+			Rock: 1,
+			Fighting: 1,
+			Psychic: 1,
+			Ghost: 1,
+			Dragon: 2,
+			Dark: 1,
+			Steel: 0.5,
+			Fairy: 1 
+		},
+		Flying : 
+		{
+			Normal: 1,
+			Grass: 2,
+			Fire: 1,
+			Water: 1,
+			Electric: 0.5,
+			Ice: 1,
+			Flying: 1,
+			Bug: 2,
+			Poison: 1,
+			Ground: 1,
+			Rock: 0.5,
+			Fighting: 2,
+			Psychic: 1,
+			Ghost: 1,
+			Dragon: 1,
+			Dark: 1,
+			Steel: 0.5,
+			Fairy: 1 
+		},
+		Bug : 
+		{
+			Normal: 1,
+			Grass: 2,
+			Fire: 0.5,
+			Water: 1,
+			Electric: 1,
+			Ice: 1,
+			Flying: 0.5,
+			Bug: 1,
+			Poison: 0.5,
+			Ground: 1,
+			Rock: 1,
+			Fighting: 0.5,
+			Psychic: 2,
+			Ghost: 0.5,
+			Dragon: 1,
+			Dark: 2,
+			Steel: 0.5,
+			Fairy: 0.5 
+		},
+		Poison : 
+		{
+			Normal: 1,
+			Grass: 2,
+			Fire: 1,
+			Water: 1,
+			Electric: 1,
+			Ice: 1,
+			Flying: 1,
+			Bug: 1,
+			Poison: 0.5,
+			Ground: 0.5,
+			Rock: 0.5,
+			Fighting: 1,
+			Psychic: 1,
+			Ghost: 0.5,
+			Dragon: 1,
+			Dark: 1,
+			Steel: 0,
+			Fairy: 2 
+		},
+		Ground : 
+		{
+			Normal: 1,
+			Grass: 0.5,
+			Fire: 2,
+			Water: 1,
+			Electric: 2,
+			Ice: 1,
+			Flying: 0,
+			Bug: 0.5,
+			Poison: 2,
+			Ground: 1,
+			Rock: 2,
+			Fighting: 1,
+			Psychic: 1,
+			Ghost: 1,
+			Dragon: 1,
+			Dark: 1,
+			Steel: 2,
+			Fairy: 1 
+		},
+		Rock : 
+		{
+			Normal: 1,
+			Grass: 1,
+			Fire: 2,
+			Water: 1,
+			Electric: 1,
+			Ice: 2,
+			Flying: 2,
+			Bug: 2,
+			Poison: 1,
+			Ground: 0.5,
+			Rock: 1,
+			Fighting: 0.5,
+			Psychic: 1,
+			Ghost: 1,
+			Dragon: 1,
+			Dark: 1,
+			Steel: 0.5,
+			Fairy: 1 
+		},
+		Fighting : 
+		{
+			Normal: 2,
+			Grass: 1,
+			Fire: 1,
+			Water: 1,
+			Electric: 1,
+			Ice: 2,
+			Flying: 0.5,
+			Bug: 0.5,
+			Poison: 0.5,
+			Ground: 1,
+			Rock: 2,
+			Fighting: 1,
+			Psychic: 0.5,
+			Ghost: 0,
+			Dragon: 1,
+			Dark: 2,
+			Steel: 2,
+			Fairy: 0.5 
+		},
+		Psychic : 
+		{
+			Normal: 1,
+			Grass: 1,
+			Fire: 1,
+			Water: 1,
+			Electric: 1,
+			Ice: 1,
+			Flying: 1,
+			Bug: 1,
+			Poison: 2,
+			Ground: 1,
+			Rock: 1,
+			Fighting: 2,
+			Psychic: 0.5,
+			Ghost: 1,
+			Dragon: 1,
+			Dark: 0,
+			Steel: 0.5,
+			Fairy: 1 
+		},
+		Ghost : 
+		{
+			Normal: 0,
+			Grass: 1,
+			Fire: 1,
+			Water: 1,
+			Electric: 1,
+			Ice: 1,
+			Flying: 1,
+			Bug: 1,
+			Poison: 1,
+			Ground: 1,
+			Rock: 1,
+			Fighting: 1,
+			Psychic: 2,
+			Ghost: 2,
+			Dragon: 1,
+			Dark: 0.5,
+			Steel: 1,
+			Fairy: 1 
+		},
+		Dragon : 
+		{
+			Normal: 1,
+			Grass: 1,
+			Fire: 1,
+			Water: 1,
+			Electric: 1,
+			Ice: 1,
+			Flying: 1,
+			Bug: 1,
+			Poison: 1,
+			Ground: 1,
+			Rock: 1,
+			Fighting: 1,
+			Psychic: 1,
+			Ghost: 1,
+			Dragon: 2,
+			Dark: 1,
+			Steel: 0.5,
+			Fairy: 0 
+		},
+		Dark : 
+		{
+			Normal: 1,
+			Grass: 1,
+			Fire: 1,
+			Water: 1,
+			Electric: 1,
+			Ice: 1,
+			Flying: 1,
+			Bug: 1,
+			Poison: 1,
+			Ground: 1,
+			Rock: 1,
+			Fighting: 0.5,
+			Psychic: 2,
+			Ghost: 2,
+			Dragon: 1,
+			Dark: 0.5,
+			Steel: 1,
+			Fairy: 0.5 
+		},
+		Steel : 
+		{
+			Normal: 1,
+			Grass: 1,
+			Fire: 0.5,
+			Water: 0.5,
+			Electric: 0.5,
+			Ice: 2,
+			Flying: 1,
+			Bug: 1,
+			Poison: 1,
+			Ground: 1,
+			Rock: 2,
+			Fighting: 1,
+			Psychic: 1,
+			Ghost: 1,
+			Dragon: 1,
+			Dark: 1,
+			Steel: 0.5,
+			Fairy: 2 
+		}, 
+		Fairy : 
+		{
+			Normal: 1,
+			Grass: 1,
+			Fire: 0.5,
+			Water: 1,
+			Electric: 1,
+			Ice: 1,
+			Flying: 1,
+			Bug: 1,
+			Poison: 0.5,
+			Ground: 1,
+			Rock: 1,
+			Fighting: 2,
+			Psychic: 1,
+			Ghost: 1,
+			Dragon: 2,
+			Dark: 2,
+			Steel: 0.5,
+			Fairy: 1 
+		}
 
+	}
+		
+	function getEffectiveness(moveType, typing)
+	{
+		return typing[1] ? typeChart[moveType][typing[0]] * typeChart[moveType][typing[1]] : typeChart[moveType][typing[0]];
+	}
+
+
+	var natures = 
+	{
+		Hardy:
+		{
+			name: "Hardy",
+			Atk: 1,
+			Def: 1,
+			SpA: 1,
+			SpD: 1,
+			Spe: 1
+		},
+		Adamant:
+		{
+			name: "Adamant",
+			Atk: 1.1,
+			Def: 1,
+			SpA: 0.9,
+			SpD: 1,
+			Spe: 1
+		},
+		Bold:
+		{
+			name: "Bold",
+			Atk: 0.9,
+			Def: 1.1,
+			SpA: 1,
+			SpD: 1,
+			Spe: 1
+		},
+		Brave:
+		{
+			name: "Brave",
+			Atk: 1.1,
+			Def: 1,
+			SpA: 1,
+			SpD: 1,
+			Spe: 0.9
+		},
+		Calm:
+		{
+			name: "Calm",
+			Atk: 0.9,
+			Def: 1,
+			SpA: 1,
+			SpD: 1.1,
+			Spe: 1
+		},
+		Careful:
+		{
+			name: "Careful",
+			Atk: 1,
+			Def: 1,
+			SpA: 0.9,
+			SpD: 1.1,
+			Spe: 1
+		},
+		Gentle:
+		{
+			name: "Gentle",
+			Atk: 1,
+			Def: 1.1,
+			SpA: 1,
+			SpD: 0.9,
+			Spe: 1
+		},
+		Hasty:
+		{
+			name: "Hasty",
+			Atk: 1,
+			Def: 0.9,
+			SpA: 1,
+			SpD: 1,
+			Spe: 1.1
+		},
+		Impish:
+		{
+			name: "Impish",
+			Atk: 1,
+			Def: 1.1,
+			SpA: 0.9,
+			SpD: 1,
+			Spe: 1
+		},
+		Jolly:
+		{
+			name: "Jolly",
+			Atk: 1,
+			Def: 1,
+			SpA: 0.9,
+			SpD: 1,
+			Spe: 1.1
+		},
+		Lax:
+		{
+			name: "Lax",
+			Atk: 1,
+			Def: 1.1,
+			SpA: 1,
+			SpD: 0.9,
+			Spe: 1
+		},
+		Lonely:
+		{
+			name: "Lonely",
+			Atk: 1.1,
+			Def: 0.9,
+			SpA: 1,
+			SpD: 1,
+			Spe: 1
+		},
+		Mild:
+		{
+			name: "Mild",
+			Atk: 1,
+			Def: 0.9,
+			SpA: 1.1,
+			SpD: 1,
+			Spe: 1
+		},
+		Modest:
+		{
+			name: "Modest",
+			Atk: 0.9,
+			Def: 1,
+			SpA: 1.1,
+			SpD: 1,
+			Spe: 1
+		},
+		Naive:
+		{
+			name: "Naive",
+			Atk: 1,
+			Def: 1,
+			SpA: 1,
+			SpD: 0.9,
+			Spe: 1.1
+		},
+		Naughty:
+		{
+			name: "Naughty",
+			Atk: 1.1,
+			Def: 1,
+			SpA: 1,
+			SpD: 0.9,
+			Spe: 1
+		},
+		Quiet:
+		{
+			name: "Quiet",
+			Atk: 1,
+			Def: 1,
+			SpA: 1.1,
+			SpD: 1,
+			Spe: 0.9
+		},
+		Rash:
+		{
+			name: "Rash",
+			Atk: 1,
+			Def: 1,
+			SpA: 1.1,
+			SpD: 0.9,
+			Spe: 1
+		},
+		Relaxed:
+		{
+			name: "Relaxed",
+			Atk: 1,
+			Def: 1.1,
+			SpA: 1,
+			SpD: 1,
+			Spe: 0.9
+		},
+		Sassy:
+		{
+			name: "Relaxed",
+			Atk: 1,
+			Def: 1,
+			SpA: 1,
+			SpD: 1.1,
+			Spe: 0.9
+		},
+		Timid:
+		{
+			name: "Timid",
+			Atk: 0.9,
+			Def: 1,
+			SpA: 1,
+			SpD: 1,
+			Spe: 1.1
+		}
+
+	}
+
+	$scope.natureList = ["Hardy", "Adamant (+Atk, -SpA)", "Bold (+Def, -Atk)", "Brave (+Atk, -Spe)", "Calm (+SpD, -Atk)", "Careful (+SpD, -SpA)", "Gentle (+Def, -SpD)", "Hasty (+Spe, -Def)", "Impish (+Def, -SpA)", "Jolly (+Spe, -SpA)", "Lax (+Def, -SpD)", "Lonely (+Atk, -Def)", "Mild (+SpA, -Def)", "Modest (+SpA, -Atk)", "Naive (+Spe, -SpD)", "Naughty (+Atk, -SpD)", "Quiet (+SpA, -Spe)", "Rash (+SpA, -SpD)", "Relaxed (+Def, -Spe)", "Sassy (+SpD, -Spe)", "Timid (+Spe, -Atk)"];
+	// var pos = "";
+	// var neg = "";
+	// for (var n in natures)
+	// {
+	// 	for (var s in natures[n])
+	// 	{
+	// 		if (natures[n][s] === 1.1) pos = "+" + s;
+	// 		if (natures[n][s] === 0.9) neg = "-" + s;
+	// 	}
+	// 	$scope.natureList.push(n + " (" + pos + ", " + neg + ")");
+	// }
 	
-	
+
 
 	var pokedex = dex.dex;
 	var movedex = dex.moves;
@@ -382,7 +976,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.tiers = ["Uber", "OU", "BL", "UU", "BL2", "RU", "BL3", "NU", "BL4", "PU", "LC", "NFE"];
 	
 	//[{name: "Uber"}, {name: "OU"}, {name: "BL"}, {name: "UU"}, {name: "BL2"}, {name: "RU"}, {name: "BL3"}, {name: "NU"}, {name: "BL4"}, {name: "PU"}, {name: "LC"}, {name: "NFE"}];
-	$scope.natures = ["Adamant", "Jolly", "Modest", "Timid", "Bold", "Calm"];
+	// $scope.natures = ["Adamant", "Jolly", "Modest", "Timid", "Bold", "Calm"];
 	//$scope.party = [];
 
 	$scope.colors = ["aqua", "purple", "green", "red", "orange", "gray", "cyan", "black", "magenta", "violet", "darkorchid", "darkturquoise"];
@@ -458,7 +1052,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			}
 			toExport = toExport.substring(0, toExport.length - 3);
 			toExport += "\n";
-			toExport += $scope.party[poke].nature + " Nature \n";
+			toExport += $scope.party[poke].nature.split(" ")[0] + " Nature \n";
 			//possible restructure of moves
 			toExport += "- " + $scope.party[poke].move1 + "\n";
 			toExport += "- " + $scope.party[poke].move2 + "\n";
@@ -501,7 +1095,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		var minDamage;
 
 		var mods = [];
-
+		var effectiveness = getEffectiveness(move.type, defender.types);
 		// var attacker = $scope.party["pokemon" + currentInput.substring(0, 1)];
 
 		var stabMod;		
@@ -528,7 +1122,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		}
 		else stabMod = 0x1000;
 
-		if (attacker.ability === "Tinted Lens" && $scope.effectiveness < 1)
+		if (attacker.ability === "Tinted Lens" && effectiveness < 1)
 		{
 			mods.push(0x2000);
 		}
@@ -543,15 +1137,17 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			mods.push(0x14CC);
 		}
 
+
+
 		var finalMod = chainMods(mods);
 		minDamage = pokeRound(minDamage * stabMod / 0x1000);
-		
-		minDamage = Math.floor(minDamage * $scope.effectiveness);
+
+		minDamage = Math.floor(minDamage * effectiveness);
 		minDamage = Math.max(1, minDamage);
 		minDamage = pokeRound(minDamage * finalMod / 0x1000);
 
 		baseDamage = pokeRound(baseDamage * stabMod / 0x1000);
-		baseDamage = Math.floor(baseDamage * $scope.effectiveness);
+		baseDamage = Math.floor(baseDamage * effectiveness);
 		baseDamage = Math.max(1, baseDamage);
 		baseDamage = pokeRound(baseDamage * finalMod / 0x1000);
 
@@ -609,6 +1205,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.boostMod = 0;
 	$scope.defBoostMod = 0;
 
+	$scope.defNat = "Hardy";
 
 	function boostConverter(num)
 	{
@@ -744,7 +1341,21 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	function calcAttack(stat, attacker, defender, move)
 	{
 		var statMods = [0x1000];
-		stat = Math.floor(stat * $scope.natureBoost);
+
+
+		var nat = attacker.nature.split(" ")[0];
+		var atkBoost = natures[nat].Atk;
+		var spaBoost = natures[nat].SpA;
+		if (move.category === "Physical")
+		{
+			stat = Math.floor(stat * atkBoost);
+		}
+		else if (move.category === "Special")
+		{
+			stat = Math.floor(stat * spaBoost);
+		}
+
+		// stat = Math.floor(stat * $scope.natureBoost);
 		//could lead to errors because not technically right
 		stat = pokeRound(stat * boostConverter($scope.boostMod));
 
@@ -770,8 +1381,19 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	function calcDef(stat, attacker, defender, move)
 	{
 		var statMods = [0x1000];
+		var nat = defender.nature.split(" ")[0];
+		$scope.test = nat;
+		var defBoost = natures[nat].Def;
+		var spdBoost = natures[nat].SpD;
+		if (move.category === "Physical")
+		{
+			stat = Math.floor(stat * defBoost);
+		}
+		else if (move.category === "Special")
+		{
+			stat = Math.floor(stat * spdBoost);
+		}
 
-		stat = Math.floor(stat * $scope.defNatureBoost);
 
 		stat = pokeRound(stat * boostConverter($scope.defBoostMod));
 
@@ -888,6 +1510,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			baseDef = defendingPoke.baseStats.def;
 			baseSpD = defendingPoke.baseStats.spd;
 			baseHP = defendingPoke.baseStats.hp;
+			defendingPoke.nature = $scope.defNat;
 
 			var defenderHP = Math.floor(calcHP(baseHP, $scope.defHPEVs, level));
 			var unmodDefStat = Math.floor(calcStat(baseDef, $scope.dEVs, level));
