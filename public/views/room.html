@@ -215,12 +215,7 @@
 			<br />
 
  			<select ng-options="h for h in howEffective" ng-model="effectiveness" ng-change="refreshCalcs()"></select> Effectiveness
-			<br />
-			<select ng-options="b for b in bpMods" ng-model="bpMod" ng-change="refreshCalcs()"></select> Base Power Modifier
 
-			<br />
-
-			<select ng-options="s for s in atkStatMods" ng-model="atkStatMod" ng-change="refreshCalcs()"></select> Offensive Stat Modifier
 
 			<br />
 
@@ -243,12 +238,13 @@
 			<select ng-options="a for a in abEff" ng-model="abilityEffectiveness" ng-change="refreshCalcs()"></select> Ability Modifier -->
 
 			<br />
-
-			Defender name: <input ng-model="defenderName" ng-keyup="refreshCalcs()"></input>
+			<u>Defender</u> <br />
+			Name: <input ng-model="defenderName" ng-keyup="refreshCalcs()"></input>
 			<br />
-			Defender HP EVs: <input ng-model="defHPEVs" ng-keyup="refreshCalcs()"></input>
+			HP: <input ng-model="defHPEVs" ng-keyup="refreshCalcs()"></input>
 			<br />
-			Defender EVs: <input ng-model="dEVs" ng-keyup="refreshCalcs()"></input>
+			Def: <input size="4" ng-model="dEVs" ng-keyup="refreshCalcs()"></input> / 
+			SpD: <input size="4" ng-model="spdEVs" ng-keyup="refreshCalcs()"></input>
 			<br />
 			<input type="checkbox" ng-model="defNatureBoost" ng-true-value="1.1" ng-false-value="1" ng-click="refreshCalcs()"></input>
 				Defender Positive Nature

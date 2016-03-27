@@ -567,6 +567,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.defNatureBoost = 1;
 	$scope.defHPEVs = 0;
 	$scope.dEVs = 0;
+	$scope.spdEVs = 0;
 
 	$scope.defenderName = "";
 
@@ -578,9 +579,6 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	$scope.abEff = [1, 1.3, 1.33, 1.5];
 	$scope.abilityEffectiveness = 1;
-
-	$scope.bpMods = [1, 1.1, 1.2, 1.3, 1.5, 2]
-	$scope.bpMod = 1;
 
 	$scope.atkStatMods = [0.5, 1, 1.5, 2];
 	$scope.atkStatMod = 1;
@@ -659,30 +657,30 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	}
 
 
-	function calcBasePower(move, defender)
+	function calcBasePower(move, attacker, defender)
 	{
 		
 		var bp = move.basePower;
 
-		var currentMon = $scope.party["pokemon" + currentInput.substring(0, 1)];
+		// var attacker = $scope.party["pokemon" + currentInput.substring(0, 1)];
 		var bpMods = [0x1000];
 
-		if (currentMon.ability === "Technician" && bp <= 60)
+		if (attacker.ability === "Technician" && bp <= 60)
 		{
 			bpMods.push(0x1800);
 		}
-		else if (currentMon.ability === "Reckless" && move.recoil)
+		else if (attacker.ability === "Reckless" && move.recoil)
 		{
 			bpMods.push(0x1333);
 		}
-		else if (currentMon.ability === "Iron Fist" && move.flags)
+		else if (attacker.ability === "Iron Fist" && move.flags)
 		{
 			if (move.flags.punch)
 			{
 				bpMods.push(0x1333);
 			}
 		}
-		if (currentMon.ability === "Sheer Force" && move.secondary)
+		if (attacker.ability === "Sheer Force" && move.secondary)
 		{
 			bpMods.push(0x14CD);
 		}
@@ -691,7 +689,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			
 			bpMods.push(0x1333);
 		}
-		else if ((currentMon.item === "Muscle Band" && move.category === "Physical") || (currentMon.item === "Wise Glasses" && move.category === "Special"))
+		else if ((attacker.item === "Muscle Band" && move.category === "Physical") || (attacker.item === "Wise Glasses" && move.category === "Special"))
 		{
 			bpMods.push(0x1199);
 		}
@@ -705,80 +703,58 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			bpMods.push(0x1800);
 		}
 
-		$scope.isAerilate = (currentMon.ability === "Aerilate" && move.type === "Normal");
-		$scope.isPixilate = (currentMon.ability === "Pixilate" && move.type === "Normal");
-		$scope.isRefrigerate = (currentMon.ability === "Refrigerate" && move.type === "Normal");
+		$scope.isAerilate = (attacker.ability === "Aerilate" && move.type === "Normal");
+		$scope.isPixilate = (attacker.ability === "Pixilate" && move.type === "Normal");
+		$scope.isRefrigerate = (attacker.ability === "Refrigerate" && move.type === "Normal");
 
 		if ($scope.isAerilate || $scope.isPixilate || $scope.isRefrigerate)
 		{
 			bpMods.push(0x14CD);
 		}
-		else if ((currentMon.ability === "Mega Launcher" && move.flags.pulse) || (currentMon.ability === "Strong Jaw" && move.flags.bite))
+		else if ((attacker.ability === "Mega Launcher" && move.flags.pulse) || (attacker.ability === "Strong Jaw" && move.flags.bite))
 		{
 			bpMods.push(0x1800);
 		}
-		else if (currentMon.ability === "Tough Claws" && move.flags.contact)
+		else if (attacker.ability === "Tough Claws" && move.flags.contact)
 		{
 			bpMods.push(0x14CD);
 		}
-		bpMods.push(decToPokeHex($scope.bpMod));
-		//ex technician
-		// if ($scope.bpMod === 1.5)
-		// {
-		// 	bpMods.push(0x1800);
-		// }
-		// //ex sheer force
-		// else if ($scope.bpMod === 1.3)
-		// {
-		// 	bpMods.push(0x14CD);
-		// }
-		// else if ($scope.bpMod === 1.2)
-		// {
-		// 	bpMods.push(0x1333);
-		// }
-		// else if ($scope.bpMod === 1.1)
-		// {
-		// 	bpMods.push(0x1199);
-		// }
-		// else if ($scope.bpMod === 2)
-		// {
-		// 	bpMods.push(0x2000);
-		// }
+		//account for defending mon's aura too
+		else if (attacker.ability === (move.type + " Aura"))
+		{
+			bpMods.push(0x1547);
+		}
 
 		return Math.max(1, pokeRound(bp * chainMods(bpMods) / 0x1000));
 	}
 
-	function calcAttack(stat)
+	function calcAttack(stat, attacker, defender, move)
 	{
 		var statMods = [0x1000];
+		stat = Math.floor(stat * $scope.natureBoost);
+		//could lead to errors because not technically right
+		stat = pokeRound(stat * boostConverter($scope.boostMod));
 
-		if ($scope.natureBoost === 1)
+		if (attacker.ability === "Hustle" && move.category === "Physical")
 		{
-			//statMods.push(0x1000);
+			stat = pokeRound(stat * 1.5);
 		}
-		else if ($scope.natureBoost === 1.1)
+
+		//bunch of niche stuff, https://github.com/Zarel/honko-damagecalc/blob/master/js/damage.js
+		// $scope.test = attacker.item === "Choice Band" && move.category === "Physical";
+
+		if ((attacker.item === "Soul Dew" && (attacker.name === "Latias" || attacker.name === "Latios") && move.category === "Special")
+		|| (attacker.item === "Choice Band" && move.category === "Physical") || (attacker.item === "Choice Specs" && move.category === "Special"))
 		{
-			//statMods.push(0x1199);
-			stat = Math.floor(stat * 1.1);
-		}
-		//[0.5, 1, 1.5, 2];
-		if ($scope.atkStatMod === 0.5)
-		{
-			statMods.push(0x800);
-		}
-		else if ($scope.atkStatMod === 1.5)
-		{
+
 			statMods.push(0x1800);
 		}
-		else if ($scope.atkStatMod === 2)
-		{
-			statMods.push(0x2000);
-		}
-		stat = pokeRound(stat * boostConverter($scope.boostMod));
+
+
 		return Math.max(1, pokeRound(stat * chainMods(statMods) / 0x1000));
 	}
 
-	function calcDef(stat)
+	function calcDef(stat, attacker, defender, move)
 	{
 		var statMods = [0x1000];
 		if ($scope.defNatureBoost === 1)
@@ -854,8 +830,11 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		var level = 100;
 		if ($scope.selectedTier === "LC") level = 5;
 
-		var AtkStat = calcAttack(Math.floor(calcStat(baseAtk, AtkEV, level)));
-		var SpAStat = calcAttack(Math.floor(calcStat(baseSpA, SpAEV, level)));
+		var AtkStat = 0;
+		var SpAStat = 0;
+
+		var unmodAtkStat = Math.floor(calcStat(baseAtk, AtkEV, level));
+		var unmodSpAStat = Math.floor(calcStat(baseSpA, SpAEV, level));
 
 		for (var move in movedex)
 		{
@@ -893,18 +872,27 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 				}
 			}
 			
+
+
 			baseDef = defendingPoke.baseStats.def;
 			baseSpD = defendingPoke.baseStats.spd;
 			baseHP = defendingPoke.baseStats.hp;
 
 			var defenderHP = Math.floor(calcHP(baseHP, $scope.defHPEVs, level));
-			var DefStat = calcDef(Math.floor(calcStat(baseDef, $scope.dEVs, level)));
-			var SpDStat = calcDef(Math.floor(calcStat(baseSpD, $scope.dEVs, level)));
+			var unmodDefStat = Math.floor(calcStat(baseDef, $scope.dEVs, level));
+			var unmodSpDStat = Math.floor(calcStat(baseSpD, $scope.spdEVs, level));
+			var DefStat = 0;
+			var SpDStat = 0;
 			var damage = "";
 
 			for (var mov in moves)
 			{
-				var basePower = calcBasePower(moves[mov], defendingPoke);
+				AtkStat = calcAttack(unmodAtkStat, mon, defendingPoke, moves[mov]);
+				SpAStat = calcAttack(unmodSpAStat, mon, defendingPoke, moves[mov]);
+				DefStat = calcDef(unmodDefStat, mon, defendingPoke, moves[mov]);
+				SpDStat = calcDef(unmodSpDStat, mon, defendingPoke, moves[mov]);
+
+				var basePower = calcBasePower(moves[mov], mon, defendingPoke);
 				var mod = [1];
 
 
