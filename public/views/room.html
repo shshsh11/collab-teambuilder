@@ -191,7 +191,8 @@
 	<div ng-show="damageCalcActive">
 		<div class="chatNav">
 			<a href="" ng-click="damageCalcActive = false">Chat</a> 
-			<a href="" ng-mousedown="damageCalcActive = true" ng-mouseup="refreshCalcs()">Attacking Damage Calc</a>
+			<a href="" ng-mousedown="damageCalcActive = true" ng-mouseup="refreshCalcs()">Attacking Damage Calc</a> 
+			<!-- <a href="" ng-click="refreshCalcs()">Refresh Calcs</a> -->
 		</div>
 		<input style="visibility: hidden;"></input> 
 		<div class="damageCalc">
@@ -219,7 +220,7 @@
 
  			<select ng-options="h for h in howEffective" ng-model="effectiveness" ng-change="refreshCalcs()"></select> Effectiveness
 
-			<br />
+
 			<!--
 			<select ng-options="i for i in itemEff" ng-model="itemEffectiveness" ng-change="refreshCalcs()"></select> Item Modifier
 

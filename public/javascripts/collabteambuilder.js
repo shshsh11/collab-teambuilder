@@ -496,7 +496,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 		var mods = [];
 
-		var currentPoke = $scope.party["pokemon" + currentInput];
+		var currentPoke = $scope.party["pokemon" + currentInput.substring(0, 1)];
 
 		var stabMod;		
 		//spread, weather, gravity, crit
@@ -515,7 +515,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		}
 		else stabMod = 0x1000;
 
-		//$scope.test = "typing: " + types + " move type: " + move.type + " stab mod: " + stabMod / 0x1000;
+		////$scope.test = "typing: " + types + " move type: " + move.type + " stab mod: " + stabMod / 0x1000;
 		
 		//mods.push(decToPokeHex($scope.damageMod));
 
@@ -566,6 +566,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.defNatureBoost = 1;
 	$scope.defHPEVs = 0;
 	$scope.dEVs = 0;
+
+	$scope.defenderName = "";
 
 	$scope.howEffective = [0.25, 0.5, 1, 2, 4];
 	$scope.effectiveness = 1;
@@ -716,6 +718,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	$scope.refreshCalcs = function()
 	{
+
+		////$scope.test = $scope.party["pokemon" + currentInput.substring(0, 1)].move4;//["move" + currentInput.substring(1)];
 		var mon = $scope.party["pokemon" + currentInput.substring(0, 1)].name;
 
 		var moves =
@@ -755,6 +759,9 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		moves.move2.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move2;
 		moves.move3.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move3;
 		moves.move4.name = $scope.party["pokemon" + currentInput.substring(0, 1)].move4;
+
+	
+
 		var AtkEV = $scope.party["pokemon" + currentInput.substring(0, 1)].EVs.Atk;
 		var SpAEV = $scope.party["pokemon" + currentInput.substring(0, 1)].EVs.SpA;
 		var baseAtk = 0;
@@ -814,7 +821,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 					
 			$scope.atkstat = SpAStat;
 			$scope.defstat = SpDStat;
-		
+			//$scope.test = "";
 			for (var mov in moves)
 			{
 				var basePower = calcBasePower(moves[mov], "");
@@ -827,17 +834,22 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 				// mod.push($scope.itemEffectiveness);
 				// mod.push($scope.abilityEffectiveness);
 				//damageCalc(move, types, level, offense, defense, bp, modifier)
+
+				//$scope.test += moves[mov].name + " " + moves[mov].cat + " outside ";
+
 				if (moves[mov].cat === "Physical")
 				{
-
+					////$scope.test += moves[mov].cat + " inside types: " + types + " AtkStat: " + AtkStat + " DefStat: " + DefStat + " BP: " + basePower + " defHP: " + defenderHP;
 					
 					damage += moves[mov].name + ": " + 
 					truncToOnePlace(Math.floor(damageCalc(moves[mov], types, level, AtkStat, DefStat, basePower, mod)[0]) / defenderHP * 100) + "% to " + 
 					truncToOnePlace(Math.floor(damageCalc(moves[mov], types, level, AtkStat, DefStat, basePower, mod)[1]) / defenderHP * 100) + "% <br />";
-
+					//$scope.test += " deeps " + damage;
 				}
-				else
-				{
+				else if (moves[mov].cat === "Special")
+				{	
+
+					//$scope.test += moves[mov].cat + " inside ";
 					
 					damage += moves[mov].name + ": " + 
 					truncToOnePlace(Math.floor(damageCalc(moves[mov], types, level, SpAStat, SpDStat, basePower, mod)[0]) / defenderHP * 100) + "% to " + 
@@ -977,6 +989,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		var dataToSend = {room: post._id, currentInput: currentInput, abName: abName, whichAb: whichAb};
 		dex.updateParty(dataToSend);
 		socket.emit("ability selection", dataToSend);
+		$scope.refreshCalcs();
 	}
 
 	socket.on("update ability selection", function(data)
@@ -1044,6 +1057,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		dex.updateParty(dataToSend);
 		socket.emit("fill EVs", dataToSend);
 		$scope.refreshCalcs();
+		
 
 	}
 
@@ -1058,13 +1072,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			}
 			$scope.party["pokemon" + data.currentInput.substring(0, 1)].EVs[data.whichEV] = data.amount;
 			filterEVlist(data.currentInput.substring(0, 1));
-			// for (var ev in $scope.evNums[data.currentInput.substring(0, 1)])
-			// {
-			// 	if ($scope.party["pokemon" + data.currentInput.substring(0, 1)].EVs[ev] === 0)
-			// 	{
-			// 		$scope.evNums[data.currentInput.substring(0, 1)][ev] = $scope.fullEVs.filter(lessThan(max));
-			// 	}
-			// }
+
 		});
 	});
 
@@ -1112,49 +1120,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	$scope.currentInput = [];
 
-	{
-	// $scope.findRelevant = function(index)
-	// {
-	// 	$scope.currentInput = [];
-	// 	$scope.r.displayDex = [];
 
-	// 	if (index.length === 1)
-	// 	{
-	// 		$scope.currentInput[0] = "pokemon" + index;
-	// 		var q = $scope.party[$scope.currentInput[0]].name;
-
-	// 		for(var i = 0; i < pokedex.length; i++)
-	// 		{
-	// 			if (pokedex[i].species.indexOf(q) > -1 || pokedex[i].species.toLowerCase().indexOf(q) > -1)
-	// 			{
-					
-	// 				if (q.length >= 2)
-	// 				{
-	// 					$scope.r.displayDex.push(pokedex[i]);
-
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	// }
-
-	// $scope.fillInputSpecial = function(item)
-	// {
-		
-	// 	$scope.party[$scope.currentInput[0]].name = item.species;
-	// 	$scope.displayDex = [];
-	// 	var data = {room: post._id, currentInput: currentInput, mon: name, tier: $scope.selectedTier};
-	// 	dex.updateParty(data);
-	// 	socket.emit("mon selection", data);
-
-	// 	// $scope.party["pokemon" + currentInput].name = name;
-	// 	// // $scope.showMons($scope.selectedTier);
-	// 	// $scope.r.pokedex = [];
-	// 	// var data = {room: post._id, currentInput: currentInput, mon: name, tier: $scope.selectedTier};
-	// 	// dex.updateParty(data);
-	// 	// socket.emit("mon selection", data);
-	// }
-	}
 	$scope.findRelMons = function(index)
 	{
 		
@@ -1243,30 +1209,37 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 		$scope.party["pokemon" + currentInput.substring(0, 1)].name = name;
 		$scope.party["pokemon" + currentInput.substring(0, 1)].ability = "";
+	
 		// $scope.showMons($scope.selectedTier);
 		$scope.r.pokedex = [];
 		var data = {room: post._id, currentInput: currentInput, mon: name};
 		dex.updateParty(data);
 		socket.emit("mon selection", data);
+		$scope.refreshCalcs();
 	}
 
 	$scope.fillInputItem = function(item)
 	{
 		$scope.party["pokemon" + currentInput.substring(0, 1)].item = item;
+		
 		$scope.r.itemdex = [];
 		var data = {room: post._id, currentInput: currentInput, item: item};
 		dex.updateParty(data);
 		socket.emit("item selection", data);
+		$scope.refreshCalcs();
 	}
 
 	$scope.fillInputMove = function(move)
 	{
 		$scope.party["pokemon" + currentInput.substring(0, 1)]["move" + currentInput.substring(1)] = move;
+	
 		$scope.r.movedex = [];
 		var data = {room: post._id, currentInput: currentInput, move: move};
 		dex.updateParty(data);
+
 		socket.emit("move selection", data);
 		$scope.refreshCalcs();
+		
 	}
 
 	socket.on("update mon selection", function(data)
