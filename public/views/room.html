@@ -171,7 +171,7 @@
 
 		<div class="chatNav">
 			<a href="" ng-click="damageCalcActive = false">Chat</a> 
-			<a href="" ng-mousedown="damageCalcActive = true" ng-mouseup="refreshCalcs()">Attacking Damage Calc</a>
+			<a href="" ng-mousedown="damageCalcActive = true" ng-mouseup="refreshCalcs()">Attacking Calc</a>
 		</div>
 
 
@@ -191,13 +191,13 @@
 	<div ng-show="damageCalcActive">
 		<div class="chatNav">
 			<a href="" ng-click="damageCalcActive = false">Chat</a> 
-			<a href="" ng-mousedown="damageCalcActive = true" ng-mouseup="refreshCalcs()">Attacking Damage Calc</a> 
+			<a href="" ng-mousedown="damageCalcActive = true" ng-mouseup="refreshCalcs()">Attacking Calc</a> 
 			<!-- <a href="" ng-click="refreshCalcs()">Refresh Calcs</a> -->
 		</div>
 		<input style="visibility: hidden;"></input> 
 		<div class="damageCalc">
-			<span ng-bind="test"></span>
-			<span ng-bind="basepower"></span>
+<!-- 			<span ng-bind="test"></span>
+			<span ng-bind="basepower"></span> -->
 			<label>
 				<input type="checkbox" ng-model="natureBoost" ng-true-value="1.1" ng-false-value="1" ng-click="refreshCalcs()"></input>
 				Attacker Positive Nature
@@ -209,6 +209,10 @@
 			<br />
 
 			<select ng-options="s for s in atkStatMods" ng-model="atkStatMod" ng-change="refreshCalcs()"></select> Offensive Stat Modifier
+
+			<br />
+
+			<select ng-options="b for b in boostMods" ng-model="boostMod" ng-change="refreshCalcs()"></select> Boost Modifier
 
 			<br />
 
@@ -239,12 +243,13 @@
 			<input type="checkbox" ng-model="defNatureBoost" ng-true-value="1.1" ng-false-value="1" ng-click="refreshCalcs()"></input>
 				Defender Positive Nature
 
-				<span ng-bind="atkstat"></span> vs <span ng-bind="defstat"></span>
+				<!-- <span ng-bind="atkstat"></span> vs <span ng-bind="defstat"></span> -->
 			<div ng-bind-html="damageCalculations">
 
 			</div>
 
-			<p style="font-size: 10px;">Currently the numbers are off by a bit. Will look into the detailed damage formula before adding defending calcs.</p> 
+			<!-- <p style="font-size: 10px;">Currently the numbers are off by a bit. Will look into the detailed damage formula before adding defending calcs.</p>  -->
+			<p>The features are very inconsistent. STAB is accounted for, including if you pick Adaptability as your ability. Life Orb is accounted for, which is why there is not 1.3x option under Damage Modifier. EVs are accounted for, but nature is not. </p>
 		</div>
 
 		<input style="visibility: hidden;" class="inputMes"></input>

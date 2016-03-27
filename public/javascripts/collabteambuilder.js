@@ -593,6 +593,22 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.STABMods = [1, 1.5, 2];
 	$scope.STABMod = 1;
 
+	$scope.boostMods = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6];
+	$scope.boostMod = 0;
+
+	function boostConverter(num)
+	{
+		if (num < 0)
+		{
+			return 2 / (2 - num);
+		}
+		if (num > 0)
+		{
+			return (num + 2) / 2;
+		}
+		else return 1;
+	}
+
 	function decToPokeHex(num)
 	{
 		switch (num)
@@ -698,6 +714,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		{
 			statMods.push(0x2000);
 		}
+		stat = pokeRound(stat * boostConverter($scope.boostMod));
 		return Math.max(1, pokeRound(stat * chainMods(statMods) / 0x1000));
 	}
 

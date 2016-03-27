@@ -181,11 +181,11 @@ router.post("/createroom", function(req, res, next)
 	{
 		pokemon1: 
 		{
-			name: "Ditto",
+			name: "",
 			id: "",
 			item: "", 
 			ability: "",
-			move1: "Transform",
+			move1: "",
 			move2: "",
 			move3: "",
 			move4: "",
