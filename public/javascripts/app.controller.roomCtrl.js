@@ -1222,9 +1222,10 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		if (move.defensiveCategory)
 		{
 			if (move.defensiveCategory === "Physical") return true;
-			else return false;
 		}
-		return false;
+		else if (move.category === "Physical") return true;
+		else return false;
+	
 	}
 
 	function calcDef(stat, attacker, defender, move, dBoost, sBoost)
