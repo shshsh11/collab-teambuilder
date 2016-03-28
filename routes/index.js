@@ -126,6 +126,17 @@ router.post("/updateParty", function(req, res, next)
 			});
 		}
 
+		else if (req.body.whichIV)
+		{
+			console.log("updating ivs");
+			docs.party["pokemon" + req.body.currentInput.substring(0, 1)].IVs[req.body.whichIV] = req.body.amount;
+			docs.save(function(err)
+			{
+				if (err) throw err;
+				res.send("updated IV " + req.body.whichIV + " successfully");
+			});
+		}
+
 		else if (req.body.nature)
 		{
 			console.log("updating nature");
@@ -198,6 +209,15 @@ router.post("/createroom", function(req, res, next)
 				SpD: 0,
 				Spe: 0
 			},
+			IVs: 
+			{
+				HP: 31,
+				Atk: 31,
+				Def: 31,
+				SpA: 31,
+				SpD: 31,
+				Spe: 31
+			},
 			nature: "Hardy"
 		},
 		pokemon2: 
@@ -218,6 +238,15 @@ router.post("/createroom", function(req, res, next)
 				SpA: 0,
 				SpD: 0,
 				Spe: 0
+			},
+			IVs: 
+			{
+				HP: 31,
+				Atk: 31,
+				Def: 31,
+				SpA: 31,
+				SpD: 31,
+				Spe: 31
 			},
 			nature: "Hardy"
 		},
@@ -240,6 +269,15 @@ router.post("/createroom", function(req, res, next)
 				SpD: 0,
 				Spe: 0
 			},
+			IVs: 
+			{
+				HP: 31,
+				Atk: 31,
+				Def: 31,
+				SpA: 31,
+				SpD: 31,
+				Spe: 31
+			},
 			nature: "Hardy"
 		},
 		pokemon4: 
@@ -260,6 +298,15 @@ router.post("/createroom", function(req, res, next)
 				SpA: 0,
 				SpD: 0,
 				Spe: 0
+			},
+			IVs: 
+			{
+				HP: 31,
+				Atk: 31,
+				Def: 31,
+				SpA: 31,
+				SpD: 31,
+				Spe: 31
 			},
 			nature: "Hardy"
 		},
@@ -282,6 +329,15 @@ router.post("/createroom", function(req, res, next)
 				SpD: 0,
 				Spe: 0
 			},
+			IVs: 
+			{
+				HP: 31,
+				Atk: 31,
+				Def: 31,
+				SpA: 31,
+				SpD: 31,
+				Spe: 31
+			},
 			nature: "Hardy"
 		},
 		pokemon6: 
@@ -302,6 +358,15 @@ router.post("/createroom", function(req, res, next)
 				SpA: 0,
 				SpD: 0,
 				Spe: 0
+			},
+			IVs: 
+			{
+				HP: 31,
+				Atk: 31,
+				Def: 31,
+				SpA: 31,
+				SpD: 31,
+				Spe: 31
 			},
 			nature: "Hardy"
 		}

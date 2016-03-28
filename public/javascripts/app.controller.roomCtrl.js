@@ -218,6 +218,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 
 
 	/******************************** Damage Calc ********************************/
+	/*** Code: damage calc ***/
 
 	$scope.attackingCalcActive = false;
 	$scope.defendingCalcActive = false;
@@ -328,8 +329,8 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		var AtkStat = 0;
 		var SpAStat = 0;
 
-		var unmodAtkStat = Math.floor(calcStat(baseAtk, AtkEV, level));
-		var unmodSpAStat = Math.floor(calcStat(baseSpA, SpAEV, level));
+		var unmodAtkStat = Math.floor(calcStat(baseAtk, AtkEV, 31, level));
+		var unmodSpAStat = Math.floor(calcStat(baseSpA, SpAEV, 31, level));
 
 		for (var move in movedex)
 		{
@@ -375,9 +376,9 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 			defendingPoke.nature = $scope.defNat;
 			defendingPoke.item = $scope.defenderItem;
 
-			var defenderHP = Math.floor(calcHP(baseHP, $scope.defHPEVs, level));
-			var unmodDefStat = Math.floor(calcStat(baseDef, $scope.dEVs, level));
-			var unmodSpDStat = Math.floor(calcStat(baseSpD, $scope.spdEVs, level));
+			var defenderHP = Math.floor(calcHP(baseHP, $scope.defHPEVs, 31, level));
+			var unmodDefStat = Math.floor(calcStat(baseDef, $scope.dEVs, 31, level));
+			var unmodSpDStat = Math.floor(calcStat(baseSpD, $scope.spdEVs, 31, level));
 
 			var DefStat = 0;
 			var SpDStat = 0;
@@ -480,9 +481,9 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 			var DefStat = 0;
 			var SpDStat = 0;
 
-			var unmodHP = Math.floor(calcHP(baseHP, HPEVs, level));
-			var unmodDef = Math.floor(calcStat(baseDef, DefEVs, level));
-			var unmodSpD = Math.floor(calcStat(baseSpD, SpDEVs, level));
+			var unmodHP = Math.floor(calcHP(baseHP, HPEVs, 31, level));
+			var unmodDef = Math.floor(calcStat(baseDef, DefEVs, 31, level));
+			var unmodSpD = Math.floor(calcStat(baseSpD, SpDEVs, 31, level));
 
 			if ($scope.attacker.name.length >= 3)
 			{
@@ -500,8 +501,8 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 				var baseAtk = attackingPoke.details.baseStats.atk;
 				var baseSpA = attackingPoke.details.baseStats.spa;
 
-				var unmodAtk = Math.floor(calcStat(baseAtk, $scope.attacker.EVs.Atk, level));
-				var unmodSpA = Math.floor(calcStat(baseSpA, $scope.attacker.EVs.SpA, level));
+				var unmodAtk = Math.floor(calcStat(baseAtk, $scope.attacker.EVs.Atk, 31, level));
+				var unmodSpA = Math.floor(calcStat(baseSpA, $scope.attacker.EVs.SpA, 31, level));
 
 			
 				attackingPoke.nature = $scope.attacker.nature;
@@ -578,6 +579,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		mostRecentModded = which;
 		$scope.refreshCalcs();
 		$scope.refreshDefCalcs();
+		$scope.calcStatNumbers(which);
 		var toFocus = "focusMe" + which;
 		document.getElementById(toFocus).select();
 
@@ -628,6 +630,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 
 
 	/****************************** Ability ******************************/
+	/*** Code: ability ***/
 
 	/*** Add an input box to allow any ability ***/
 	$scope.getAbs = function(num)
@@ -668,9 +671,19 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		});
 	});
 
+	$scope.IVNums = [31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0];
 
 
-	/****************************** EVs ******************************/
+	/****************************** EVs and IVs ******************************/
+	/*** Code: EVIV ***/
+
+
+	$scope.refresh = function()
+	{
+		$scope.refreshCalcs();
+		$scope.refreshDefCalcs();
+	}
+
 
 	/*** Because of EV cap, the options shrink when you start EVing your mons ***/
 	$scope.chooseEV = function(whichPoke, whichEV)
@@ -684,6 +697,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		socket.emit("fill EVs", dataToSend);
 		$scope.refreshCalcs();
 		$scope.refreshDefCalcs();
+		$scope.calcStatNumbers(whichPoke);
 		
 
 	}
@@ -703,6 +717,74 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		});
 	});
 
+	$scope.chooseIV = function(whichPoke, whichIV)
+	{
+		var amount = $scope.party["pokemon" + whichPoke].IVs[whichIV];
+		if ((amount >= 0) && (amount <= 31))
+		{	
+			var dataToSend = {room: post._id, currentInput: currentInput, whichIV: whichIV, amount: amount};
+			dex.updateParty(dataToSend);
+			socket.emit("fill IVs", dataToSend);
+			$scope.refreshCalcs();
+			$scope.refreshDefCalcs();
+			$scope.calcStatNumbers(whichPoke);
+		}
+	}
+
+	socket.on("IVs filled", function(data)
+	{
+		
+		$scope.$apply(function()
+		{
+			$scope.party["pokemon" + data.currentInput.substring(0, 1)].IVs[data.whichIV] = data.amount;
+		});
+	});
+
+	
+	$scope.calcStatNumbers = function(whichMon)
+	{
+		var mon = $scope.party["pokemon" + whichMon];
+		$scope.r.statNumbers = [];
+		$scope.r.statNumbers = calcMonStats(mon);
+
+	}
+
+	function calcMonStats(mon)
+	{
+		var dexEntry = getDexEntry(mon.name);
+		var baseStats = dexEntry.baseStats;
+		var monEVs = mon.EVs;
+		var monIVs = mon.IVs;
+		var statNums = [];
+		var nat = mon.nature.split(" ")[0];
+		for (var stat in monEVs)
+		{
+			var bs = baseStats[stat.toLowerCase()];
+			var ev = monEVs[stat];
+			var iv = parseInt(monIVs[stat]);
+			var level = 100;
+			var natBoost = NATURES[nat][stat];
+			var res = 0;
+			if ($scope.selectedTier === "LC") level = 5;
+
+			//calcStat(base, EV, IV, level)
+			if (stat === "HP")
+			{
+				res = calcHP(bs, ev, iv, level);
+				natBoost = 1;
+			}
+			else
+			{
+				res = calcStat(bs, ev, iv, level);
+			}
+			res = Math.floor(res * natBoost);
+			
+			statNums.push(res);
+			
+		}
+		return statNums;
+	}
+
 
 	/****************************** Natures ******************************/
 
@@ -714,6 +796,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		socket.emit("nature selection", dataToSend);
 		$scope.refreshCalcs();
 		$scope.refreshDefCalcs();
+		$scope.calcStatNumbers(whichPoke);
 
 	}
 
@@ -933,15 +1016,15 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 
 	/****************************** Non Scope Functions ******************************/
 
-	function calcHP(base, EV, level)
+	function calcHP(base, EV, IV, level)
 	{
-		return ((2*base + 31 + EV / 4 + 100) * level) / 100 + 10;
+		return ((2*base + IV + EV / 4 + 100) * level) / 100 + 10;
 	}
 
-	function calcStat(base, EV, level)
+	function calcStat(base, EV, IV, level)
 	{
 		//natures is actually calculated elsewhere
-		return Math.floor(((2 * base + 31 + EV / 4) * level) / 100 + 5);
+		return Math.floor(((2 * base + IV + EV / 4) * level) / 100 + 5);
 	}
 
 	//types is what types the attacker is
@@ -1170,8 +1253,8 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 
 
 		var nat = attacker.nature.split(" ")[0];
-		var atkBoost = natures[nat].Atk;
-		var spaBoost = natures[nat].SpA;
+		var atkBoost = NATURES[nat].Atk;
+		var spaBoost = NATURES[nat].SpA;
 
 
 
@@ -1218,7 +1301,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 
 	function hitsDefense(move)
 	{
-		
+		alert(move.toSource());
 		if (move.defensiveCategory)
 		{
 			if (move.defensiveCategory === "Physical") return true;
@@ -1233,8 +1316,8 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		var statMods = [0x1000];
 		var nat = defender.nature.split(" ")[0];
 
-		var defBoost = natures[nat].Def;
-		var spdBoost = natures[nat].SpD;
+		var defBoost = NATURES[nat].Def;
+		var spdBoost = NATURES[nat].SpD;
 		if (move.category === "Physical")
 		{
 			stat = Math.floor(stat * defBoost);
@@ -1287,6 +1370,18 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		}
 	}
 
+
+	function getDexEntry(mon)
+	{
+		for (var poke in pokedex)
+		{
+			if (mon === pokedex[poke].species || mon === pokedex[poke].species.toLowerCase())
+			{
+				return pokedex[poke];
+			}
+		}
+		return "";
+	}
 
 
 });

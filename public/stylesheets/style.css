@@ -138,3 +138,8 @@ input:focus
 {
 	width: auto;
 }
+
+.statTable td
+{
+	width: auto;
+}

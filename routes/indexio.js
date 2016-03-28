@@ -51,6 +51,11 @@ module.exports = function(io)
 			nsp.to(roomID).emit("EVs filled", data);
 		})
 
+		socket.on("fill IVs", function(data)
+		{
+			nsp.to(roomID).emit("IVs filled", data);
+		})
+
 		socket.on("mon selection", function(data)
 		{
 			console.log(data);

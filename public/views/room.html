@@ -72,13 +72,34 @@
 		</div>
 
 		<div>
-			EVs: 
-			<span ng-repeat="ev in evs track by $index">
-				<span ng-bind="ev"></span>: 
-				<select ng-options="n for n in evNums[num][ev]" ng-model="party['pokemon' + $parent.num].EVs[ev]" ng-change="chooseEV($parent.num, ev)"></select>
 
-				
-			</span>
+			<table class="statTable">
+				<thead>
+					<td></td>
+					<td ng-repeat="ev in evs"><span ng-bind="ev"></span></td>
+				</thead>
+
+				<tr>
+					<td>EVs:</td> 
+					<td ng-repeat="ev in evs track by $index">
+						<!-- <span ng-bind="ev"></span>:  -->
+						<select ng-options="n for n in evNums[num][ev]" ng-model="party['pokemon' + $parent.num].EVs[ev]" ng-change="chooseEV($parent.num, ev)"></select>
+					</td>
+				</tr>
+				<tr>
+					<td>IVs:</td> 
+					<td ng-repeat="iv in evs track by $index">
+						<!-- <span ng-bind="iv"></span>:  -->
+						<input size="2" min="0" max="31" ng-model="party['pokemon' + $parent.num].IVs[iv]" ng-keyup="chooseIV($parent.num, iv)"></input>
+					</td>
+				</tr>
+
+				<tr>
+					<td>Stat:</td>
+					<td ng-repeat="stat in r.statNumbers track by $index"><span ng-bind="stat"></span></td>
+				</tr>
+
+			</table>
 		</div>
 
 		<div>

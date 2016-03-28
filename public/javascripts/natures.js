@@ -1,4 +1,4 @@
-	var natures = 
+	var NATURES = 
 	{
 		Hardy:
 		{

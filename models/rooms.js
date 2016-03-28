@@ -26,6 +26,15 @@ var RoomSchema = new mongoose.Schema(
 				SpD: Number,
 				Spe: Number
 			},
+			IVs: 
+			{
+				HP: Number,
+				Atk: Number,
+				Def: Number,
+				SpA: Number,
+				SpD: Number,
+				Spe: Number
+			},
 			nature: String
 		},
 		pokemon2: 
@@ -39,6 +48,15 @@ var RoomSchema = new mongoose.Schema(
 			move3: String,
 			move4: String,
 			EVs: 
+			{
+				HP: Number,
+				Atk: Number,
+				Def: Number,
+				SpA: Number,
+				SpD: Number,
+				Spe: Number
+			},
+			IVs: 
 			{
 				HP: Number,
 				Atk: Number,
@@ -68,6 +86,15 @@ var RoomSchema = new mongoose.Schema(
 				SpD: Number,
 				Spe: Number
 			},
+			IVs: 
+			{
+				HP: Number,
+				Atk: Number,
+				Def: Number,
+				SpA: Number,
+				SpD: Number,
+				Spe: Number
+			},
 			nature: String
 		},
 		pokemon4: 
@@ -81,6 +108,15 @@ var RoomSchema = new mongoose.Schema(
 			move3: String,
 			move4: String,
 			EVs: 
+			{
+				HP: Number,
+				Atk: Number,
+				Def: Number,
+				SpA: Number,
+				SpD: Number,
+				Spe: Number
+			},
+			IVs: 
 			{
 				HP: Number,
 				Atk: Number,
@@ -110,6 +146,15 @@ var RoomSchema = new mongoose.Schema(
 				SpD: Number,
 				Spe: Number
 			},
+			IVs: 
+			{
+				HP: Number,
+				Atk: Number,
+				Def: Number,
+				SpA: Number,
+				SpD: Number,
+				Spe: Number
+			},
 			nature: String
 		},
 		pokemon6: 
@@ -123,6 +168,15 @@ var RoomSchema = new mongoose.Schema(
 			move3: String,
 			move4: String,
 			EVs: 
+			{
+				HP: Number,
+				Atk: Number,
+				Def: Number,
+				SpA: Number,
+				SpD: Number,
+				Spe: Number
+			},
+			IVs: 
 			{
 				HP: Number,
 				Atk: Number,
