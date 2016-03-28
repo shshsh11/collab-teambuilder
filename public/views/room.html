@@ -60,7 +60,7 @@
 	
 	<span ng-show="num === whichMonToShow">
 		<div>
-			Pokemon <span ng-bind="num"></span>: <input ng-model="party['pokemon' + num].name" ng-keyup="findRelMons(num)"></input> @ Item: <input ng-model="party['pokemon' + num].item" ng-keyup="findRelItems(num)"></input>
+			Pokemon <span ng-bind="num"></span>: <input ng-model="party['pokemon' + num].name" ng-keyup="findRelMons(num, $event)"></input> @ Item: <input ng-model="party['pokemon' + num].item" ng-keyup="findRelItems(num, $event)"></input>
 		</div>
 
 
@@ -88,7 +88,7 @@
 
 		<div ng-repeat="moveNum in moveSize track by $index">
 
-			Move <span ng-bind="moveNum"></span>: <input ng-model="party['pokemon' + $parent.num]['move' + moveNum]" ng-keyup="findRelMoves($parent.num + moveNum)"></input>
+			Move <span ng-bind="moveNum"></span>: <input ng-model="party['pokemon' + $parent.num]['move' + moveNum]" ng-keyup="findRelMoves($parent.num + moveNum, $event)"></input>
 
 		</div>
 
@@ -166,13 +166,13 @@
 		<a href="" ng-click="hideChat = !hideChat" class="topRight">Hide Chat</a>
 	</div>
 
-	<div ng-hide="damageCalcActive">
-
+	<div ng-hide="attackingCalcActive || defendingCalcActive">
 
 		<div class="chatNav">
-			<a href="" ng-click="damageCalcActive = false">Chat</a> 
-			<a href="" ng-mousedown="damageCalcActive = true" ng-mouseup="refreshCalcs()">Attacking Calc</a> 
-			Defending Calc coming soon!
+			<a href="" ng-click="attackingCalcActive = false; defendingCalcActive = false;">Chat</a> 
+			<a href="" ng-mousedown="attackingCalcActive = true; defendingCalcActive = false;" ng-mouseup="refreshCalcs()">Attacking Calc</a> 
+			<a href="" ng-mousedown="attackingCalcActive = false; defendingCalcActive = true" ng-mouseup="refreshDefCalcs()">Defending Calc</a> 
+
 		</div>
 
 
@@ -189,15 +189,16 @@
 
 		<input class="inputMes" ng-model="chatMessage" ng-keydown="sendMessage($event)"></input>
 	</div>
-	<div ng-show="damageCalcActive">
+	<div ng-show="attackingCalcActive">
 		<div class="chatNav">
-			<a href="" ng-click="damageCalcActive = false">Chat</a> 
-			<a href="" ng-mousedown="damageCalcActive = true" ng-mouseup="refreshCalcs()">Attacking Calc</a> Defending Calc coming soon!
+			<a href="" ng-click="attackingCalcActive = false; defendingCalcActive = false;">Chat</a> 
+			<a href="" ng-mousedown="attackingCalcActive = true; defendingCalcActive = false;" ng-mouseup="refreshCalcs()">Attacking Calc</a> 
+			<a href="" ng-mousedown="attackingCalcActive = false; defendingCalcActive = true" ng-mouseup="refreshDefCalcs()">Defending Calc</a> 
 
 		</div>
 
 		<div class="damageCalc">
-			<a ng-bind="test"></a>
+			<!-- <a ng-bind="test"></a> -->
 
 
 			<input type="checkbox" ng-model="plateBoost" ng-true-value="1" ng-false-value="0" ng-click="refreshCalcs()"></input> Plate Boost
@@ -234,5 +235,54 @@
 
 
 	</div>
+
+	<div ng-show="defendingCalcActive">
+		<div class="chatNav">
+			<a href="" ng-click="attackingCalcActive = false; defendingCalcActive = false;">Chat</a> 
+			<a href="" ng-mousedown="attackingCalcActive = true; defendingCalcActive = false;" ng-mouseup="refreshCalcs()">Attacking Calc</a> 
+			<a href="" ng-mousedown="attackingCalcActive = false; defendingCalcActive = true" ng-mouseup="refreshDefCalcs()">Defending Calc</a> 
+
+		</div>
+
+		<div class="damageCalc">
+			<a ng-bind="test"></a>
+			<a ng-bind="attack"></a> vs <a ng-bind="defense"></a>
+			<br />
+			<u>Attacker</u> <br />
+			Name: <input size= "9" ng-model="attacker.name" ng-keyup="refreshDefCalcs()"></input> Item: <input size= "9" ng-model="attacker.item" ng-keyup="refreshDefCalcs()"></input>
+			<br />
+			Atk: <input size="2" ng-model="attacker.EVs.Atk" ng-keyup="refreshDefCalcs()"></input>
+			SpA: <input size="2" ng-model="attacker.EVs.SpA" ng-keyup="refreshDefCalcs()"></input>
+			<br />
+			<select ng-options="n for n in natureList" ng-model="attacker.nature" ng-change="refreshDefCalcs()"></select> Attacker Nature 
+			<br />
+			Atk Boost: <select ng-options="b for b in boostMods" ng-model="attackerBoostMod" ng-change="refreshDefCalcs()"></select> 
+			SpA Boost: <select ng-options="b for b in boostMods" ng-model="sattackerBoostMod" ng-change="refreshDefCalcs()"></select> <br />
+			<input type="checkbox" ng-model="attackerPlateBoost" ng-true-value="1" ng-false-value="0" ng-click="refreshDefCalcs()"></input> Plate Boost
+
+			<br />
+
+			Move 1: <input size="9" ng-model="attacker.move1" ng-keyup="refreshDefCalcs()"></input> 
+			Move 2: <input size="9" ng-model="attacker.move2" ng-keyup="refreshDefCalcs()"></input> <br />
+			Move 3: <input size="9" ng-model="attacker.move3" ng-keyup="refreshDefCalcs()"></input> 
+			Move 4: <input size="9" ng-model="attacker.move4" ng-keyup="refreshDefCalcs()"></input> <br />
+
+<!-- 			Atk Boost: <select ng-options="b for b in boostMods" ng-model="AtkBoostMod" ng-change="refreshCalcs()"></select> 
+			SpA Boost: <select ng-options="b for b in boostMods" ng-model="SpABoostMod" ng-change="refreshCalcs()"></select>  -->
+
+			<br />
+
+				<!-- <span ng-bind="atkstat"></span> vs <span ng-bind="defstat"></span> -->
+			<div ng-bind-html="defendingCalculations">
+
+			</div>
+
+		</div>
+
+		<input style="visibility: hidden;" class="inputMes"></input>
+
+
+	</div>
+
 
 </div>

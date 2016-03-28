@@ -198,7 +198,7 @@ router.post("/createroom", function(req, res, next)
 				SpD: 0,
 				Spe: 0
 			},
-			nature: ""
+			nature: "Hardy"
 		},
 		pokemon2: 
 		{
@@ -219,7 +219,7 @@ router.post("/createroom", function(req, res, next)
 				SpD: 0,
 				Spe: 0
 			},
-			nature: ""
+			nature: "Hardy"
 		},
 		pokemon3: 
 		{
@@ -240,7 +240,7 @@ router.post("/createroom", function(req, res, next)
 				SpD: 0,
 				Spe: 0
 			},
-			nature: ""
+			nature: "Hardy"
 		},
 		pokemon4: 
 		{
@@ -261,7 +261,7 @@ router.post("/createroom", function(req, res, next)
 				SpD: 0,
 				Spe: 0
 			},
-			nature: ""
+			nature: "Hardy"
 		},
 		pokemon5: 
 		{
@@ -282,7 +282,7 @@ router.post("/createroom", function(req, res, next)
 				SpD: 0,
 				Spe: 0
 			},
-			nature: ""
+			nature: "Hardy"
 		},
 		pokemon6: 
 		{
@@ -303,7 +303,7 @@ router.post("/createroom", function(req, res, next)
 				SpD: 0,
 				Spe: 0
 			},
-			nature: ""
+			nature: "Hardy"
 		}
 	}
 

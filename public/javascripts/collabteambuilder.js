@@ -1341,7 +1341,12 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		return Math.max(1, pokeRound(bp * chainMods(bpMods) / 0x1000));
 	}
 
-	function calcAttack(stat, attacker, defender, move)
+	$scope.attackerBoostMod = "+0";
+	$scope.sattackerBoostMod = "+0";
+
+//	var AtkStat = calcAttack(unmodAtk, attackingPoke, mon, attackingPoke.moves[mov], $scope.attackerBoostMod, $scope.sattackerBoostMod);
+
+	function calcAttack(stat, attacker, defender, move, pBoost, sBoost)
 	{
 		var statMods = [0x1000];
 
@@ -1349,15 +1354,18 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		var nat = attacker.nature.split(" ")[0];
 		var atkBoost = natures[nat].Atk;
 		var spaBoost = natures[nat].SpA;
+
+
+
 		if (move.category === "Physical")
 		{
 			stat = Math.floor(stat * atkBoost);
-			stat = pokeRound(stat * boostConverter($scope.AtkBoostMod));
+			stat = pokeRound(stat * boostConverter(pBoost));
 		}
 		else if (move.category === "Special")
 		{
 			stat = Math.floor(stat * spaBoost);
-			stat = pokeRound(stat * boostConverter($scope.SpABoostMod))
+			stat = pokeRound(stat * boostConverter(sBoost))
 		}
 
 		// stat = Math.floor(stat * $scope.natureBoost);
@@ -1383,7 +1391,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		return Math.max(1, pokeRound(stat * chainMods(statMods) / 0x1000));
 	}
 
-	function calcDef(stat, attacker, defender, move)
+	function calcDef(stat, attacker, defender, move, dBoost, sBoost)
 	{
 		var statMods = [0x1000];
 		var nat = defender.nature.split(" ")[0];
@@ -1393,12 +1401,12 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		if (move.category === "Physical")
 		{
 			stat = Math.floor(stat * defBoost);
-			stat = pokeRound(stat * boostConverter($scope.defBoostMod));
+			stat = pokeRound(stat * boostConverter(dBoost));
 		}
 		else if (move.category === "Special")
 		{
 			stat = Math.floor(stat * spdBoost);
-			stat = pokeRound(stat * boostConverter($scope.spdBoostMod));
+			stat = pokeRound(stat * boostConverter(sBoost));
 		}
 
 
@@ -1523,16 +1531,17 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			var defenderHP = Math.floor(calcHP(baseHP, $scope.defHPEVs, level));
 			var unmodDefStat = Math.floor(calcStat(baseDef, $scope.dEVs, level));
 			var unmodSpDStat = Math.floor(calcStat(baseSpD, $scope.spdEVs, level));
+
 			var DefStat = 0;
 			var SpDStat = 0;
 			var damage = "";
 			damage += "<table class='dispDmgCalcs'>";
 			for (var mov in moves)
 			{
-				AtkStat = calcAttack(unmodAtkStat, mon, defendingPoke, moves[mov]);
-				SpAStat = calcAttack(unmodSpAStat, mon, defendingPoke, moves[mov]);
-				DefStat = calcDef(unmodDefStat, mon, defendingPoke, moves[mov]);
-				SpDStat = calcDef(unmodSpDStat, mon, defendingPoke, moves[mov]);
+				AtkStat = calcAttack(unmodAtkStat, mon, defendingPoke, moves[mov], $scope.AtkBoostMod, $scope.SpABoostMod);
+				SpAStat = calcAttack(unmodSpAStat, mon, defendingPoke, moves[mov], $scope.AtkBoostMod, $scope.SpABoostMod);
+				DefStat = calcDef(unmodDefStat, mon, defendingPoke, moves[mov], $scope.defBoostMod, $scope.spdBoostMod);
+				SpDStat = calcDef(unmodSpDStat, mon, defendingPoke, moves[mov], $scope.defBoostMod, $scope.spdBoostMod);
 
 				var basePower = calcBasePower(moves[mov], mon, defendingPoke);
 				var mod = [1];
@@ -1564,7 +1573,116 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 		
 	}
+	$scope.attacker = 
+	{
+		EVs:
+		{
+			Atk: 0,
+			SpA: 0
+		},
+		nature: "Hardy"
+	}
 
+
+	$scope.refreshDefCalcs = function()
+	{
+		
+		if ($scope.attacker.move1.length >= 3 || $scope.attacker.move2.length >= 3 || $scope.attacker.move3.length >= 3 || $scope.attacker.move4.length >= 3)
+		{
+
+			var attackingPoke = 
+			{
+				moves:
+				{
+					move1: {},
+					move2: {},
+					move3: {},
+					move4: {}
+				}
+
+			};
+
+			for (var mov in movedex)
+			{
+				for (var i in attackingPoke.moves)
+				{
+					if ($scope.attacker[i] === movedex[mov].name || $scope.attacker[i] === movedex[mov].name.toLowerCase())
+					{
+						
+						attackingPoke.moves[i] = movedex[mov];
+					}
+				}
+			}
+
+			var mon = $scope.party["pokemon" + currentInput.substring(0, 1)];
+			var HPEVs = mon.EVs.HP;
+			var DefEVs = mon.EVs.Def;
+			var SpDEVs = mon.EVs.SpD;
+			var baseHP = 0;
+			var baseDef = 0;
+			var baseSpD = 0;
+			var typing = [];
+			for (var poke in pokedex)
+			{
+				if (mon.name === pokedex[poke].species)
+				{
+					baseHP = pokedex[poke].baseStats.hp;
+					baseDef = pokedex[poke].baseStats.def;
+					baseSpD = pokedex[poke].baseStats.spd;
+					typing = pokedex[poke].types;
+				}
+			}
+			var level = 100;
+			if ($scope.selectedTier === "LC") level = 5;
+
+			var HPStat = 0;
+			var DefStat = 0;
+			var SpDStat = 0;
+
+			var unmodHP = Math.floor(calcHP(baseHP, HPEVs, level));
+			var unmodDef = Math.floor(calcStat(baseDef, DefEVs, level));
+			var unmodSpD = Math.floor(calcStat(baseSpD, SpDEVs, level));
+
+			if ($scope.attacker.name.length >= 3)
+			{
+				attackingPoke.name = $scope.attacker.name;
+				for (var poke in pokedex)
+				{
+					if (attackingPoke.name === pokedex[poke].species || attackingPoke.name === pokedex[poke].species.toLowerCase())
+					{
+						attackingPoke.details = pokedex[poke];
+					}
+				}
+
+				var baseAtk = attackingPoke.details.baseStats.atk;
+				var baseSpA = attackingPoke.details.baseStats.spa;
+
+				var unmodAtk = Math.floor(calcStat(baseAtk, $scope.attacker.EVs.Atk, level));
+				var unmodSpA = Math.floor(calcStat(baseSpA, $scope.attacker.EVs.SpA, level));
+
+			
+				attackingPoke.nature = $scope.attacker.nature;
+				attackingPoke.item = $scope.attacker.item;
+
+
+				for (var move in attackingPoke.moves)
+				{
+					
+					var AtkStat = calcAttack(unmodAtk, attackingPoke, mon, attackingPoke.moves[move], $scope.attackerBoostMod, $scope.sattackerBoostMod);
+					var SpAStat = calcAttack(unmodSpA, attackingPoke, mon, attackingPoke.moves[move], $scope.attackerBoostMod, $scope.sattackerBoostMod);
+					var DefStat = calcDef(unmodDef, attackingPoke, mon, attackingPoke.moves[move]);
+
+				
+				}
+
+			}
+
+
+			
+		}
+
+
+	}
 
 
 	$scope.roomID = post._id;
@@ -1809,6 +1927,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		var dataToSend = {room: post._id, currentInput: currentInput, nature: nature};
 		dex.updateParty(dataToSend);
 		socket.emit("nature selection", dataToSend);
+		$scope.refreshCalcs();
 
 	}
 
@@ -1823,7 +1942,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.currentInput = [];
 
 
-	$scope.findRelMons = function(index)
+	$scope.findRelMons = function(index, event)
 	{
 		
 
@@ -1848,9 +1967,14 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			}
 		}
 
+		if (event.keyCode === 13)
+		{
+			$scope.fillInput($scope.r.pokedex[0].species);
+		}
+
 	}
 
-	$scope.findRelItems = function(index)
+	$scope.findRelItems = function(index, event)
 	{
 		
 
@@ -1876,9 +2000,14 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			}
 		}
 
+		if (event.keyCode === 13)
+		{
+			$scope.fillInputItem($scope.r.itemdex[0].name);
+		}
+
 	}
 
-	$scope.findRelMoves = function(index)
+	$scope.findRelMoves = function(index, event)
 	{
 		
 
@@ -1902,6 +2031,11 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 				}
 			}
+		}
+
+		if (event.keyCode === 13)
+		{
+			$scope.fillInputMove($scope.r.movedex[0].name);
 		}
 
 	}
