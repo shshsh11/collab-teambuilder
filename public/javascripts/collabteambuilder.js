@@ -1090,7 +1090,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	function damageCalc(move, typing, level, offense, defense, bp, attacker, defender)
 	{
 
-	
+		$scope.test = typing;
 		var baseDamage;
 		var minDamage;
 
@@ -1629,9 +1629,10 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 					baseHP = pokedex[poke].baseStats.hp;
 					baseDef = pokedex[poke].baseStats.def;
 					baseSpD = pokedex[poke].baseStats.spd;
-					typing = pokedex[poke].types;
+					mon.types = pokedex[poke].types;
 				}
 			}
+
 			var level = 100;
 			if ($scope.selectedTier === "LC") level = 5;
 
@@ -1646,11 +1647,13 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			if ($scope.attacker.name.length >= 3)
 			{
 				attackingPoke.name = $scope.attacker.name;
+				attackingPoke.ability = $scope.attacker.ability;
 				for (var poke in pokedex)
 				{
 					if (attackingPoke.name === pokedex[poke].species || attackingPoke.name === pokedex[poke].species.toLowerCase())
 					{
 						attackingPoke.details = pokedex[poke];
+						typing = pokedex[poke].types;
 					}
 				}
 
@@ -1663,18 +1666,43 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			
 				attackingPoke.nature = $scope.attacker.nature;
 				attackingPoke.item = $scope.attacker.item;
-
-
+				var damage = ""
+				damage += "<table>";
 				for (var move in attackingPoke.moves)
 				{
-					
+					damage += "<tr>";
 					var AtkStat = calcAttack(unmodAtk, attackingPoke, mon, attackingPoke.moves[move], $scope.attackerBoostMod, $scope.sattackerBoostMod);
 					var SpAStat = calcAttack(unmodSpA, attackingPoke, mon, attackingPoke.moves[move], $scope.attackerBoostMod, $scope.sattackerBoostMod);
-					var DefStat = calcDef(unmodDef, attackingPoke, mon, attackingPoke.moves[move]);
+					var DefStat = calcDef(unmodDef, attackingPoke, mon, attackingPoke.moves[move], $scope.defenderBoostMod, $scope.sdefenderBoostMod);
+					var SpDStat = calcDef(unmodSpD, attackingPoke, mon, attackingPoke.moves[move], $scope.defenderBoostMod, $scope.sdefenderBoostMod);
+					
+					var basePower = calcBasePower(attackingPoke.moves[move], attackingPoke, mon);
 
-				
+					if (attackingPoke.moves[move].category === "Physical")
+					{
+						damage += "<td>";
+						damage += attackingPoke.moves[move].name + ": </td><td>" + 
+						truncToOnePlace(Math.floor(damageCalc(attackingPoke.moves[move], typing, level, AtkStat, DefStat, basePower, attackingPoke, mon)[0]) / unmodHP * 100) + "% to " + 
+						truncToOnePlace(Math.floor(damageCalc(attackingPoke.moves[move], typing, level, AtkStat, DefStat, basePower, attackingPoke, mon)[1]) / unmodHP * 100) + "%";
+						damage += "</td>";
+						
+					}
+
+					if (attackingPoke.moves[move].category === "Special")
+					{
+						damage += "<td>";
+						damage += attackingPoke.moves[move].name + ": </td><td>" + 
+						truncToOnePlace(Math.floor(damageCalc(attackingPoke.moves[move], typing, level, SpAStat, SpDStat, basePower, attackingPoke, mon)[0]) / unmodHP * 100) + "% to " + 
+						truncToOnePlace(Math.floor(damageCalc(attackingPoke.moves[move], typing, level, SpAStat, SpDStat, basePower, attackingPoke, mon)[1]) / unmodHP * 100) + "%";
+						damage += "</td>";
+						
+					}
+
+					damage += "</tr>";
+
 				}
-
+				damage += "</table>";
+				$scope.defendingCalculations = damage;
 			}
 
 

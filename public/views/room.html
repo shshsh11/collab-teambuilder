@@ -251,6 +251,9 @@
 			<u>Attacker</u> <br />
 			Name: <input size= "9" ng-model="attacker.name" ng-keyup="refreshDefCalcs()"></input> Item: <input size= "9" ng-model="attacker.item" ng-keyup="refreshDefCalcs()"></input>
 			<br />
+			Ability: <input ng-model="attacker.ability" ng-keyup="refreshDefCalcs()"></input>
+
+			<br />
 			Atk: <input size="2" ng-model="attacker.EVs.Atk" ng-keyup="refreshDefCalcs()"></input>
 			SpA: <input size="2" ng-model="attacker.EVs.SpA" ng-keyup="refreshDefCalcs()"></input>
 			<br />
@@ -267,8 +270,8 @@
 			Move 3: <input size="9" ng-model="attacker.move3" ng-keyup="refreshDefCalcs()"></input> 
 			Move 4: <input size="9" ng-model="attacker.move4" ng-keyup="refreshDefCalcs()"></input> <br />
 
-<!-- 			Atk Boost: <select ng-options="b for b in boostMods" ng-model="AtkBoostMod" ng-change="refreshCalcs()"></select> 
-			SpA Boost: <select ng-options="b for b in boostMods" ng-model="SpABoostMod" ng-change="refreshCalcs()"></select>  -->
+			Def Boost: <select ng-options="b for b in boostMods" ng-model="defenderBoostMod" ng-change="refreshDefCalcs()"></select> 
+			SpD Boost: <select ng-options="b for b in boostMods" ng-model="sdefenderBoostMod" ng-change="refreshDefCalcs()"></select> 
 
 			<br />
 
