@@ -987,6 +987,23 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		return {'color' : $scope.yourCol};
 	}
 
+	$scope.attackingCalcActive = false;
+	$scope.defendingCalcActive = false;
+
+	$scope.styleNav = function()
+	{
+		//if (i === 1)
+		{
+			if (!$scope.attackingCalcActive && !$scope.defendingCalcActive)
+			{
+				//'background-color': '#006186', 
+				return {'background-color' : 'white', 'color' : '#00374C', 'border-radius' : '0px'};
+			}
+		}
+
+	}
+
+
 	$scope.userNick = $scope.yourCol;
 
 	$scope.party = post.party;
@@ -1297,7 +1314,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		{
 			bpMods.push(0x14CD);
 		}
-		if ($scope.plateBoost)
+		if ($scope.plateBoost || $scope.attackerPlateBoost)
 		{
 			
 			bpMods.push(0x1333);
@@ -1372,7 +1389,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		//could lead to errors because not technically right
 
 
-		if (attacker.ability === "Hustle" && move.category === "Physical")
+		if ((attacker.ability === "Hustle" || attacker.ability === "hustle") && move.category === "Physical")
 		{
 			stat = pokeRound(stat * 1.5);
 		}
@@ -1387,8 +1404,26 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			statMods.push(0x1800);
 		}
 
+		// else if ((attacker.item === "soul dew" && (attacker.name === "latias" || attacker.name === "latios") && move.category === "Special")
+		// || (attacker.item === "choice band" && move.category === "Physical") || (attacker.item === "choice specs" && move.category === "Special"))
+		// {
+
+		// 	statMods.push(0x1800);
+		// }
+
 
 		return Math.max(1, pokeRound(stat * chainMods(statMods) / 0x1000));
+	}
+
+	function hitsDefense(move)
+	{
+		
+		if (move.defensiveCategory)
+		{
+			if (move.defensiveCategory === "Physical") return true;
+			else return false;
+		}
+		return false;
 	}
 
 	function calcDef(stat, attacker, defender, move, dBoost, sBoost)
@@ -1408,8 +1443,13 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			stat = Math.floor(stat * spdBoost);
 			stat = pokeRound(stat * boostConverter(sBoost));
 		}
+		
+		if ((defender.item === "Soul Dew" && (defender.name === "Latios" || defender.name === "Latias") && !hitsDefense(move)) ||
+            (defender.item === "Assault Vest" && !hitsDefense(move)) || (defender.item === "Eviolite")) 
+		{
+        	statMods.push(0x1800);
 
-
+    	}
 
 
 		//implement things for defending calc
@@ -1582,7 +1622,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		},
 		nature: "Hardy"
 	}
-
+	$scope.defenderBoostMod = "+0";
+	$scope.sdefenderBoostMod = "+0";
 
 	$scope.refreshDefCalcs = function()
 	{
@@ -1763,6 +1804,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		socket.emit("remove viewing", mostRecentModded);
 		mostRecentModded = which;
 		$scope.refreshCalcs();
+		$scope.refreshDefCalcs();
 
 	}
 
@@ -1838,6 +1880,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		dex.updateParty(dataToSend);
 		socket.emit("ability selection", dataToSend);
 		$scope.refreshCalcs();
+		$scope.refreshDefCalcs();
 	}
 
 	socket.on("update ability selection", function(data)
@@ -1905,6 +1948,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		dex.updateParty(dataToSend);
 		socket.emit("fill EVs", dataToSend);
 		$scope.refreshCalcs();
+		$scope.refreshDefCalcs();
 		
 
 	}
@@ -1956,6 +2000,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		dex.updateParty(dataToSend);
 		socket.emit("nature selection", dataToSend);
 		$scope.refreshCalcs();
+		$scope.refreshDefCalcs();
 
 	}
 
@@ -2080,6 +2125,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		dex.updateParty(data);
 		socket.emit("mon selection", data);
 		$scope.refreshCalcs();
+		$scope.refreshDefCalcs();
 	}
 
 	$scope.fillInputItem = function(item)
@@ -2091,6 +2137,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		dex.updateParty(data);
 		socket.emit("item selection", data);
 		$scope.refreshCalcs();
+		$scope.refreshDefCalcs();
 	}
 
 	$scope.fillInputMove = function(move)
@@ -2103,6 +2150,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 		socket.emit("move selection", data);
 		$scope.refreshCalcs();
+		$scope.refreshDefCalcs();
 		
 	}
 

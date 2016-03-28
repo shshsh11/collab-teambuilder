@@ -6,7 +6,7 @@ html, body
 
 a 
 {
-  color: #00B7FF;
+  color: #006186;
 }
 
 td 
@@ -66,6 +66,15 @@ textarea
 .chatNav
 {
 	margin-left: 5px;
+}
+
+.chatNav a
+{
+	color: #006186;
+	padding: 0px 2px 0px 2px;
+	border-style: ridge;
+	text-decoration: none;
+	border-radius: 3px;
 }
 
 .wholeChat input

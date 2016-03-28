@@ -169,7 +169,7 @@
 	<div ng-hide="attackingCalcActive || defendingCalcActive">
 
 		<div class="chatNav">
-			<a href="" ng-click="attackingCalcActive = false; defendingCalcActive = false;">Chat</a> 
+			<a href="" ng-style="{{styleNav()}}" ng-click="attackingCalcActive = false; defendingCalcActive = false;">Chat</a> 
 			<a href="" ng-mousedown="attackingCalcActive = true; defendingCalcActive = false;" ng-mouseup="refreshCalcs()">Attacking Calc</a> 
 			<a href="" ng-mousedown="attackingCalcActive = false; defendingCalcActive = true" ng-mouseup="refreshDefCalcs()">Defending Calc</a> 
 
@@ -192,7 +192,7 @@
 	<div ng-show="attackingCalcActive">
 		<div class="chatNav">
 			<a href="" ng-click="attackingCalcActive = false; defendingCalcActive = false;">Chat</a> 
-			<a href="" ng-mousedown="attackingCalcActive = true; defendingCalcActive = false;" ng-mouseup="refreshCalcs()">Attacking Calc</a> 
+			<a href="" ng-style="{{styleNav()}}" ng-mousedown="attackingCalcActive = true; defendingCalcActive = false;" ng-mouseup="refreshCalcs()">Attacking Calc</a> 
 			<a href="" ng-mousedown="attackingCalcActive = false; defendingCalcActive = true" ng-mouseup="refreshDefCalcs()">Defending Calc</a> 
 
 		</div>
@@ -240,14 +240,12 @@
 		<div class="chatNav">
 			<a href="" ng-click="attackingCalcActive = false; defendingCalcActive = false;">Chat</a> 
 			<a href="" ng-mousedown="attackingCalcActive = true; defendingCalcActive = false;" ng-mouseup="refreshCalcs()">Attacking Calc</a> 
-			<a href="" ng-mousedown="attackingCalcActive = false; defendingCalcActive = true" ng-mouseup="refreshDefCalcs()">Defending Calc</a> 
+			<a href="" ng-style="{{styleNav()}}" ng-mousedown="attackingCalcActive = false; defendingCalcActive = true" ng-mouseup="refreshDefCalcs()">Defending Calc</a> 
 
 		</div>
 
 		<div class="damageCalc">
-			<a ng-bind="test"></a>
-			<a ng-bind="attack"></a> vs <a ng-bind="defense"></a>
-			<br />
+			<!-- <a ng-bind="test"></a> -->
 			<u>Attacker</u> <br />
 			Name: <input size= "9" ng-model="attacker.name" ng-keyup="refreshDefCalcs()"></input> Item: <input size= "9" ng-model="attacker.item" ng-keyup="refreshDefCalcs()"></input>
 			<br />
@@ -279,6 +277,10 @@
 			<div ng-bind-html="defendingCalculations">
 
 			</div>
+
+			<p>
+				Make sure to capitalize and space correctly.
+			</p>
 
 		</div>
 
