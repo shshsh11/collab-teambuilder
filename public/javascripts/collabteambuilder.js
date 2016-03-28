@@ -1131,7 +1131,6 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	function damageCalc(move, typing, level, offense, defense, bp, attacker, defender)
 	{
 
-		$scope.test = typing;
 		var baseDamage;
 		var minDamage;
 
@@ -1365,13 +1364,17 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		{
 			bpMods.push(0x14CD);
 		}
-		else if ((attacker.ability === "Mega Launcher" && move.flags.pulse) || (attacker.ability === "Strong Jaw" && move.flags.bite))
+		else if (attacker.ability === "Mega Launcher" && move.flags)
 		{
-			bpMods.push(0x1800);
+			if (move.flags.pulse) bpMods.push(0x1800);
 		}
-		else if (attacker.ability === "Tough Claws" && move.flags.contact)
+		else if (attacker.ability === "Strong Jaw" && move.flags)
 		{
-			bpMods.push(0x14CD);
+			if (move.flags.bite) bpMods.push(0x1800);
+		}
+		else if (attacker.ability === "Tough Claws" && move.flags)
+		{
+			if (move.flags.contact) bpMods.push(0x14CD);
 		}
 		//account for defending mon's aura too
 		else if (attacker.ability === (move.type + " Aura"))
@@ -1484,7 +1487,6 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.refreshCalcs = function()
 	{
 
-		////$scope.test = $scope.party["pokemon" + currentInput.substring(0, 1)].move4;//["move" + currentInput.substring(1)];
 		var mon = $scope.party["pokemon" + currentInput.substring(0, 1)];
 
 		var moves =
@@ -1785,6 +1787,15 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	$scope.moveSize = ["1", "2", "3", "4"];
 
 
+	/*** EVs you're allow to use must be less than how many remaining ***/
+	function lessThan(x)
+	{
+		return function(element)
+		{
+			return element <= x;
+		}
+	}
+
 	function filterEVlist(which)
 	{
 		var totalEVs = 0;
@@ -1807,10 +1818,6 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	var mostRecentModded = "";
 	$scope.changeWhichMon = function(which)
 	{
-		//alert($scope["pokemon" + which].EVs.toSource());
-
-
-
 		for (var ev in $scope.evNums[which])
 		{
 			$scope.evNums[which][ev] = [4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,0];
@@ -1822,9 +1829,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		currentInput = which;
 		$scope.whichMonToShow = which;
 
-
 		var data = {color: $scope.yourCol, whichMon: which};
-		
+	
 		socket.emit("viewing", data);
 		socket.emit("remove viewing", mostRecentModded);
 		mostRecentModded = which;
@@ -1937,41 +1943,19 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		else return "";
 		
 	}
-	
-	function lessThan(x)
-	{
-		return function(element)
-		{
-			return element <= x;
-		}
-	}
 
+
+
+	/****************************** EVs ******************************/
+
+	/*** Because of EV cap, the options shrink when you start EVing your mons ***/
 	$scope.chooseEV = function(whichPoke, whichEV)
 	{
 
-		
 		var amount = $scope.party["pokemon" + whichPoke].EVs[whichEV];
-		// var totalEVs = 0;
-		// for (var ev in $scope.evNums[whichPoke])
-		// {
-		// 	totalEVs += $scope.party["pokemon" + whichPoke].EVs[ev];
-		// }
-		// var max = 508 - totalEVs;
-		
-		// for (var ev in $scope.evNums[whichPoke])
-		// {
-		// 	if ($scope.party["pokemon" + whichPoke].EVs[ev] === 0)
-		// 	{
-		// 		$scope.evNums[whichPoke][ev] = $scope.fullEVs.filter(lessThan(max));
-		// 	}
-		// }
-		
 		filterEVlist(whichPoke);
 		var dataToSend = {room: post._id, currentInput: currentInput, whichEV: whichEV, amount: amount};
-		
-		
 		var data = {pokemonNumber: whichPoke, whichEV: whichEV, amount: amount};
-		
 		dex.updateParty(dataToSend);
 		socket.emit("fill EVs", dataToSend);
 		$scope.refreshCalcs();
@@ -1995,25 +1979,25 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		});
 	});
 
-	$scope.fillEVs = function(whichPoke, whichEV)
-	{
-		var amount = $scope.party["pokemon" + whichPoke].EVs[whichEV];
+	// $scope.fillEVs = function(whichPoke, whichEV)
+	// {
+	// 	var amount = $scope.party["pokemon" + whichPoke].EVs[whichEV];
 
-		var dataToSend = {room: post._id, currentInput: currentInput, whichEV: whichEV, amount: amount};
+	// 	var dataToSend = {room: post._id, currentInput: currentInput, whichEV: whichEV, amount: amount};
 		
 		
-		var data = {pokemonNumber: whichPoke, whichEV: whichEV, amount: amount};
-		setTimeout(function()
-		{
-			socket.emit("fill EVs", data);
-		}, 1000);
+	// 	var data = {pokemonNumber: whichPoke, whichEV: whichEV, amount: amount};
+	// 	setTimeout(function()
+	// 	{
+	// 		socket.emit("fill EVs", data);
+	// 	}, 1000);
 		
-		if (parseInt(amount) % 4 === 0)
-		{
-			dex.updateParty(dataToSend);
-		}
+	// 	if (parseInt(amount) % 4 === 0)
+	// 	{
+	// 		dex.updateParty(dataToSend);
+	// 	}
 
-	}
+	// }
 
 
 
@@ -2041,6 +2025,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	$scope.currentInput = [];
 
+	/****************************** List possible options based on dex data ******************************/
 
 	$scope.findRelMons = function(index, event)
 	{
@@ -2059,7 +2044,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			if (pokedex[i].species.indexOf(q) > -1 || pokedex[i].species.toLowerCase().indexOf(q) > -1)
 			{
 				
-				if (q.length >= 3)
+				if (q.length >= 2)
 				{
 					$scope.r.pokedex.push(pokedex[i]);
 
@@ -2089,7 +2074,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 		for (var i = 0; i < itemdex.length; i++)
 		{
-			if (itemdex[i].name.indexOf(q) > -1 || itemdex[i].id.indexOf(q) > -1)
+			if (itemdex[i].name.indexOf(q) > -1 || itemdex[i].id.indexOf(q) > -1 || itemdex[i].name.toLowerCase().indexOf(q) > -1)
 			{
 				
 				if (q.length >= 2)
@@ -2140,6 +2125,10 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 	}
 
+
+
+	/****************************** Put your choice into the corresponding input box ******************************/
+
 	$scope.fillInput = function(name)
 	{
 
@@ -2167,6 +2156,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		$scope.refreshDefCalcs();
 	}
 
+	/*** From the party, move y on Pokemon x is indexed party[x][y]. Only case where currentInput is 2 chars long ***/
 	$scope.fillInputMove = function(move)
 	{
 		$scope.party["pokemon" + currentInput.substring(0, 1)]["move" + currentInput.substring(1)] = move;
@@ -2180,6 +2170,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		$scope.refreshDefCalcs();
 		
 	}
+
+	/****************************** Responding to another user choosing something about the set ******************************/
 
 	socket.on("update mon selection", function(data)
 	{
@@ -2209,6 +2201,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 
 
 
+	/****************************** Chat ******************************/
+
 	$scope.sendMessage = function(event)
 	{
 		if (event.keyCode === 13)
@@ -2228,7 +2222,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		
 		$scope.$apply(function()
 		{
-				$scope.messages += mes;
+			$scope.messages += mes;
 		});
 		var el = document.getElementById("cheating");
 		el.scrollTop = el.scrollHeight;
@@ -2246,18 +2240,11 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider)
 		url: "/",
 		templateUrl: "/views/main.html",
 		controller: "MainCtrl as m"
-		// resolve:
-  //     	{
-  //       	postPromise: ["poems", function(poems)
-  //       	{
-  //         		return poems.getAll();
-  //       	}]
-  //     	}
 	});
 
 	$stateProvider.state("room",
 	{
-		url: "/{roomID}",
+		url: "/rooms/{roomID}",
 		templateUrl: "/views/room.html",
 		controller: "RoomCtrl as r",
 		resolve:
@@ -2274,5 +2261,12 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider)
 
 		}
 	})
+	$stateProvider.state("misc",
+	{
+		url: "/misc",
+		templateUrl: "/views/misc.html"
+
+	})
+
 
 });

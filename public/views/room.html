@@ -76,7 +76,7 @@
 			<span ng-repeat="ev in evs track by $index">
 				<span ng-bind="ev"></span>: 
 				<select ng-options="n for n in evNums[num][ev]" ng-model="party['pokemon' + $parent.num].EVs[ev]" ng-change="chooseEV($parent.num, ev)"></select>
-				<!-- <input size="3" ng-model="party['pokemon' + $parent.num].EVs[ev]" ng-keyup="fillEVs($parent.num, ev)"></input>  -->
+
 				
 			</span>
 		</div>
@@ -198,7 +198,7 @@
 		</div>
 
 		<div class="damageCalc">
-			<!-- <a ng-bind="test"></a> -->
+			<a ng-bind="test"></a>
 
 
 			<input type="checkbox" ng-model="plateBoost" ng-true-value="1" ng-false-value="0" ng-click="refreshCalcs()"></input> Plate Boost
