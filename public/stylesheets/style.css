@@ -1,6 +1,6 @@
 html, body 
 {
-  padding: 25px;
+  padding: 10px;
   font: 14px "Ubuntu", Helvetica, Arial, sans-serif;
 }
 
@@ -22,6 +22,11 @@ div
 textarea
 {
   font: 14px "Ubuntu", Helvetica, Arial, sans-serif;	
+}
+
+input:focus
+{
+	box-shadow: 2px 2px #8BAED1;
 }
 
 .wholeChat

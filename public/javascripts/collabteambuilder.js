@@ -1,5 +1,29 @@
 var app = angular.module("collabteambuilder", ["ui.router", "ngSanitize", "sticky", "ngclipboard", "angular-clipboard"]);
 
+
+
+app.directive('focusOn',function($timeout) {
+    return {
+        restrict : 'A',
+        link : function($scope,$element,$attr) {
+            $scope.$watch($attr.focusOn,function(_focusVal) {
+                $timeout(function() {
+                    if (_focusVal)
+                   	{
+                    	$element.focus();
+                    }
+                    else
+                    {
+                    	$element.blur();
+                    }
+                       
+                });
+            });
+        }
+    }
+})
+
+
 // angular.module("collabteambuilder", ["createRoom"]);
 app.factory("createRoom", function($http, $window)
 {
@@ -1785,6 +1809,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 	{
 		//alert($scope["pokemon" + which].EVs.toSource());
 
+
+
 		for (var ev in $scope.evNums[which])
 		{
 			$scope.evNums[which][ev] = [4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,0];
@@ -1797,7 +1823,6 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		$scope.whichMonToShow = which;
 
 
-
 		var data = {color: $scope.yourCol, whichMon: which};
 		
 		socket.emit("viewing", data);
@@ -1805,6 +1830,8 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 		mostRecentModded = which;
 		$scope.refreshCalcs();
 		$scope.refreshDefCalcs();
+		var toFocus = "focusMe" + which;
+		document.getElementById(toFocus).select();
 
 	}
 
@@ -2032,7 +2059,7 @@ app.controller("RoomCtrl", function($scope, rooms, post, dex)
 			if (pokedex[i].species.indexOf(q) > -1 || pokedex[i].species.toLowerCase().indexOf(q) > -1)
 			{
 				
-				if (q.length >= 2)
+				if (q.length >= 3)
 				{
 					$scope.r.pokedex.push(pokedex[i]);
 

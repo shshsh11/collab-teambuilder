@@ -1,10 +1,10 @@
 
 
 
-<p>The room is <a><span ng-bind="roomID"></span></a>.</p>
+<!-- <p>The room is <a><span ng-bind="roomID"></span></a>.</p> -->
 
 <div ng-style="randCol()">
-	Your current color
+	Your current color, and the room: <span ng-bind="roomID"></span>
 </div>
 <p>Tier: 
 
@@ -33,7 +33,7 @@
 	<table>
 
 		<tr>
-			<td>who: </td><td ng-repeat="ind in partySize"><span ng-style="viewing{{ind}}"><span ng-bind="howManyViewing{{ind}}"></span></span></td>
+			<td style="visibility: hidden;">hi</td><td ng-repeat="ind in partySize"><span ng-style="viewing{{ind}}"><span ng-bind="howManyViewing{{ind}}"></span></span></td>
 		</tr>
 
 		<tr>
@@ -57,10 +57,10 @@
 
 <br />
 <div ng-repeat="num in partySize track by $index">
-	
+	<!--  -->
 	<span ng-show="num === whichMonToShow">
 		<div>
-			Pokemon <span ng-bind="num"></span>: <input ng-model="party['pokemon' + num].name" ng-keyup="findRelMons(num, $event)"></input> @ Item: <input ng-model="party['pokemon' + num].item" ng-keyup="findRelItems(num, $event)"></input>
+			Pokemon <span ng-bind="num"></span>: <input id="focusMe{{num}}" focus-on="!!(num === whichMonToShow)" ng-model="party['pokemon' + num].name" ng-keyup="findRelMons(num, $event)"></input> @ Item: <input ng-model="party['pokemon' + num].item" ng-keyup="findRelItems(num, $event)"></input>
 		</div>
 
 
