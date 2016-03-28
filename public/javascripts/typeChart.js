@@ -380,3 +380,8 @@ var typeChart =
 	}
 
 }
+
+function getEffectiveness(moveType, typing)
+{
+	return typing[1] ? typeChart[moveType][typing[0]] * typeChart[moveType][typing[1]] : typeChart[moveType][typing[0]];
+}

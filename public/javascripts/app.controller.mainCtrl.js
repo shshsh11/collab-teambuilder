@@ -1,5 +1,7 @@
-angular.module("collabteambuilder", ["ui.router", "ngSanitize", "sticky", "ngclipboard", "angular-clipboard"]).controller("MainCtrl", function($scope, createRoom)
+angular.module("collabteambuilder").controller("MainCtrl", function($scope, createRoom)
 {
+
+	
 
 
 	$scope.createRoom = function()

@@ -1,4 +1,4 @@
-angular.module("collabteambuilder", ["ui.router", "ngSanitize", "sticky", "ngclipboard", "angular-clipboard"]).factory("rooms", function($http)
+angular.module("collabteambuilder").factory("rooms", function($http)
 {
 	var o =
 	{

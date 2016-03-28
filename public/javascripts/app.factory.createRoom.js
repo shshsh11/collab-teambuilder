@@ -1,4 +1,4 @@
-angular.module("createRoom").factory("createRoom", function($http, $window)
+angular.module("collabteambuilder").factory("createRoom", function($http, $window)
 {
 
 	var data = 
