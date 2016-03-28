@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module("collabteambuilder").controller("RoomCtrl", function($scope, rooms, post, dex)
 {
 
@@ -248,6 +250,10 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 
 	$scope.attacker = 
 	{
+		move1: "",
+		move2: "",
+		move3: "",
+		move4: "",
 		EVs:
 		{
 			Atk: 0,
@@ -306,7 +312,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		var SpAEV = mon.EVs.SpA; //$scope.party["pokemon" + currentInput.substring(0, 1)].EVs.SpA;
 		var baseAtk = 0;
 		var baseSpA = 0;
-		var types = [];
+		var typing = [];
 		for (var poke in pokedex)
 		{
 			if (mon.name === pokedex[poke].species)
@@ -414,6 +420,8 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 
 		
 	}
+
+
 
 
 	$scope.refreshDefCalcs = function()
