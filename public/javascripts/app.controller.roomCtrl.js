@@ -927,6 +927,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		socket.emit("mon selection", data);
 		$scope.refreshCalcs();
 		$scope.refreshDefCalcs();
+		$scope.calcStatNumbers(currentInput.substring(0, 1));
 	}
 
 	$scope.fillInputItem = function(item)
