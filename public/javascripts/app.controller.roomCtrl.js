@@ -199,6 +199,13 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 			}
 			toExport = toExport.substring(0, toExport.length - 3);
 			toExport += "\n";
+			toExport += "IVs: ";
+			for (var iv in $scope.party[poke].IVs)
+			{
+				toExport += $scope.party[poke].IVs[iv] + " " + iv + " / ";
+			}
+			toExport = toExport.substring(0, toExport.length - 3);
+			toExport += "\n";
 			toExport += $scope.party[poke].nature.split(" ")[0] + " Nature \n";
 			//possible restructure of moves
 			toExport += "- " + $scope.party[poke].move1 + "\n";
