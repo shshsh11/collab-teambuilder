@@ -111,7 +111,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 
 	$scope.partySize = ["1", "2", "3", "4", "5", "6"];
 	$scope.moveSize = ["1", "2", "3", "4"];
-
+	$scope.suggestingMons = false;
 
 	/************** Misc functions **************/
 	$scope.styleNav = function()
@@ -139,6 +139,15 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 	}
 
 
+	$scope.hlSelectedPoke = function(index)
+	{
+		if (index === currentInput.substring(0, 1))
+		{
+			return {'background-color' : 'white'};
+		}
+	}
+
+
 	/*********** Tier ***********/
 
 	$scope.chooseTier = function(tier)
@@ -155,8 +164,16 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 			$scope.selectedTier = data.tier;
 		});
 	});
+	//pokemon.tier = RU, poke.tier = RU
+	function tierCompare(tier)
+	{
+		return function(a, b)
+		{
 
-
+			if (a[tier] === $scope.selectedTier) return 100;
+			return $scope.tiers.indexOf(b[tier]) - $scope.tiers.indexOf(a[tier]);
+		}
+	}
 
 	$scope.tierSort = function(mon)
 	{
@@ -579,7 +596,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		currentInput = which;
 		$scope.whichMonToShow = which;
 
-		var data = {color: $scope.yourCol, whichMon: which};
+		var data = {color: $scope.yourCol, whichMon: which, name: $scope.userNick};
 	
 		socket.emit("viewing", data);
 		socket.emit("remove viewing", mostRecentModded);
@@ -600,7 +617,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 
 			if (!($scope.whichMonToShow === data.whichMon))
 			{
-				$scope["howManyViewing" + data.whichMon] = "being modified";
+				$scope["howManyViewing" + data.whichMon] = "Being Modified";
 				$scope["viewing" + data.whichMon] = {'color' : data.color};
 			}
 
@@ -747,7 +764,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		});
 	});
 
-	
+	//work with sockets
 	$scope.calcStatNumbers = function(whichMon)
 	{
 		var mon = $scope.party["pokemon" + whichMon];
@@ -822,7 +839,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 	$scope.findRelMons = function(index, event)
 	{
 		
-
+		$scope.suggestingMons = true;
 		currentInput = "";
 		currentInput = index;
 
@@ -843,6 +860,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 				}
 			}
 		}
+		$scope.r.pokedex.sort(tierCompare("tier")).reverse();
 
 		if (event.keyCode === 13)
 		{
@@ -928,6 +946,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		$scope.party["pokemon" + currentInput.substring(0, 1)].ability = "";
 	
 		// $scope.showMons($scope.selectedTier);
+		$scope.suggestingMons = false;
 		$scope.r.pokedex = [];
 		var data = {room: post._id, currentInput: currentInput, mon: name};
 		dex.updateParty(data);

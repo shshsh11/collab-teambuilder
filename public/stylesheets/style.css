@@ -2,6 +2,7 @@ html, body
 {
   padding: 10px;
   font: 14px "Ubuntu", Helvetica, Arial, sans-serif;
+  background-color: #eff4f5;
 }
 
 a 
@@ -11,7 +12,10 @@ a
 
 td 
 {
-	width: 150px;
+	/*width: 150px;*/
+	width: auto;
+	padding: 3px 0px 3px 0px;
+
 }
 
 div
@@ -24,21 +28,117 @@ textarea
   font: 14px "Ubuntu", Helvetica, Arial, sans-serif;	
 }
 
+input
+{
+	border-radius: 3px;
+}
 input:focus
 {
 	box-shadow: 2px 2px #8BAED1;
 }
 
+.dispParty
+{
+	
+}
+
+
+.dispParty table
+{
+	
+}
+
+.dispParty table tr
+{
+	
+}
+
+
+
+.dispParty td:first-child
+{
+	border: none;
+	width: auto;
+}
+.dispParty td:first-child:hover
+{
+	background-color: #eff4f5;
+	cursor: default;
+	border: none;
+}
+.dispParty td:first-child:active
+{
+	background-color: #eff4f5;
+	cursor: default;
+	border: none;
+}
+
+.dispParty tr:first-child td:hover
+{
+	background-color: #eff4f5;
+	cursor: default;
+	border: 1px solid gray;
+
+	
+}
+.dispParty tr:first-child td:active
+{
+	background-color: #eff4f5;
+	cursor: default;
+	
+}
+
+.dispParty td
+{
+	padding: 0px 10px 5px 10px;
+	border: 1px solid gray;
+	border-radius: 3px;
+	text-align: center;
+	vertical-align: text-bottom;
+	width: 95px;
+
+}
+
+
+.dispParty td:hover
+{
+	background-color: #b0cacf;
+	cursor: pointer;
+	border: 1px solid black;
+}
+.dispParty td:active
+{
+	background-color: #81a9b1;
+	cursor: pointer;
+	border: 1px solid black;
+}
+
+
+.dispDex
+{
+
+}
+.dispDex tr
+{
+	width: auto;
+
+}
+.dispDex td
+{
+	padding: 0px 5px 0px 5px;
+}
+
 .wholeChat
 {
-	background-color: #EDF3F4;
-
+	background-color: #d0dfe2;
+	border: 1px solid gray;
 
 	position: fixed;
 	bottom: 0;
 	right: 0;
 	z-index: 300;
 	margin: 0px 10px 20px 10px;
+	border-radius: 3px;
 }
 
 .export
@@ -71,6 +171,7 @@ input:focus
 .chatNav
 {
 	margin-left: 5px;
+
 }
 
 .chatNav a

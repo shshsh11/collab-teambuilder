@@ -30,9 +30,9 @@
 
 
 <div>
-	<table>
+	<table class="dispParty">
 
-		<tr>
+		<tr class="notAsWide">
 			<td style="visibility: hidden;">hi</td><td ng-repeat="ind in partySize"><span ng-style="viewing{{ind}}"><span ng-bind="howManyViewing{{ind}}"></span></span></td>
 		</tr>
 
@@ -40,12 +40,26 @@
 
 			
 				<!-- <td><img ng-src="https://play.pokemonshowdown.com/sprites/bw/sneasel.png" /></td> -->
-				<td></td><td ng-repeat="ind in partySize"><img ng-src="{{getPokeSprite(ind)}}" /></td>
+
+				<td></td>
+				<td ng-repeat="ind in partySize" ng-style="hlSelectedPoke(ind)" ng-click="changeWhichMon(ind)">
+					<div class="pokemonUnit">
+					<div>
+						<img ng-src="{{getPokeSprite(ind)}}" />
+					</div>
+<!-- 				</td>
 		</tr>
 
 		<tr>
 			
-				<td></td><td ng-repeat="ind in partySize"><a href="" ng-click="changeWhichMon(ind)" ng-bind="party['pokemon' + ind].name || 'Pokemon ' + ind"></a></td>
+				<td></td>
+				<td ng-repeat="ind in partySize"> -->
+					<div>
+						<span ng-bind="party['pokemon' + ind].name || 'Pokemon ' + ind"></span>
+					</div>
+					</div>
+
+				</td>
 			
 
 
@@ -122,21 +136,29 @@
 
 
 
-<div ng-repeat="mon in r.pokedex | orderBy:tierSort">
-  <table>
-    <tr>
+<div>
+  <table class="dispDex">
+  	<tr>
+  		<thead>
+    		<td ng-show="suggestingMons">Tier</td>
+    		<td ng-show="suggestingMons"></td>
+    		<td ng-show="suggestingMons">Name</td>
+    	</thead>
+    </tr>
+    <tr ng-repeat="mon in r.pokedex | orderBy:tierSort">
+
+		<td>
+	  		<span ng-bind="mon.tier"></span>
+		</td>
+		<td>
+			<img ng-src="http://www.smogon.com/dex/media/sprites/xyicons/{{mon.species.toLowerCase()}}.png" />
+		</td>
 
     	<td>
-    		<img ng-src="http://www.smogon.com/dex/media/sprites/xyicons/{{mon.species.toLowerCase()}}.png" />
+      		<a href="" ng-click="fillInput(mon.species)"><span ng-bind="mon.species"></span></a>
     	</td>
 
-      <td>
-      	<a href="" ng-click="fillInput(mon.species)"><span ng-bind="mon.species"></span></a>
-      </td>
 
-      <td>
-      	<span ng-bind="mon.tier"></span>
-      </td>
     </tr>
   </table>
 </div>
