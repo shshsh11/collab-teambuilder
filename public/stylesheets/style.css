@@ -2,7 +2,7 @@ html, body
 {
   padding: 10px;
   font: 14px "Ubuntu", Helvetica, Arial, sans-serif;
-  background-color: #eff4f5;
+  background-color: #F2F6F7;
 }
 
 a 
@@ -137,7 +137,7 @@ input:focus
 .wholeChat
 {
 
-	background-color: #d0dfe2;
+	background-color: #DCE9EC;
 	border: 1px solid gray;
 
 	position: fixed;
