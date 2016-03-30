@@ -8,7 +8,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 	//ng-repeat the EVs
 	$scope.evs = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
 
-	$scope.hideChat = false;
+	$scope.hideChat = true;
 	$scope.exporting = false;
 	$scope.messages = "";
 
@@ -583,29 +583,55 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 
 
 	var mostRecentModded = "";
+	var cheatingThis = 0;
 	$scope.changeWhichMon = function(which)
 	{
-		for (var ev in $scope.evNums[which])
+		if (cheatingThis === 0)
 		{
-			$scope.evNums[which][ev] = [4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,0];
+			cheatingThis++;
+			for (var ev in $scope.evNums[which])
+			{
+				$scope.evNums[which][ev] = [4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148,152,156,160,164,168,172,176,180,184,188,192,196,200,204,208,212,216,220,224,228,232,236,240,244,248,252,0];
+			}
+
+			filterEVlist(which);
+
+			$scope["howManyViewing" + mostRecentModded] = "";
+			currentInput = which;
+			$scope.whichMonToShow = which;
+
+			var data = {color: $scope.yourCol, whichMon: which, name: $scope.userNick};
+		
+			socket.emit("viewing", data);
+			socket.emit("remove viewing", mostRecentModded);
+			mostRecentModded = which;
+			$scope.refreshCalcs();
+			$scope.refreshDefCalcs();
+			$scope.calcStatNumbers(which);
+		}
+		else
+		{
+			cheatingThis = 0;
+			var toFocus = "focusMe" + which;
+			document.getElementById(toFocus).select();
 		}
 
-		filterEVlist(which);
+		
+		
 
-		$scope["howManyViewing" + mostRecentModded] = "";
-		currentInput = which;
-		$scope.whichMonToShow = which;
+	}
+	$scope.changeWhichMon2 = function(which)
+	{
 
-		var data = {color: $scope.yourCol, whichMon: which, name: $scope.userNick};
+		setTimeout(function()
+		{
+			$scope.changeWhichMon(which);
+		}, 1)
+		
+		$scope.changeWhichMon(which);
+
 	
-		socket.emit("viewing", data);
-		socket.emit("remove viewing", mostRecentModded);
-		mostRecentModded = which;
-		$scope.refreshCalcs();
-		$scope.refreshDefCalcs();
-		$scope.calcStatNumbers(which);
-		var toFocus = "focusMe" + which;
-		document.getElementById(toFocus).select();
+
 
 	}
 
@@ -862,8 +888,9 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		}
 		$scope.r.pokedex.sort(tierCompare("tier")).reverse();
 
-		if (event.keyCode === 13)
+		if (event.keyCode === 13 || event.keyCode === 9)
 		{
+
 			$scope.fillInput($scope.r.pokedex[0].species);
 		}
 
@@ -895,7 +922,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 			}
 		}
 
-		if (event.keyCode === 13)
+		if (event.keyCode === 13 || event.keyCode === 9)
 		{
 			$scope.fillInputItem($scope.r.itemdex[0].name);
 		}
@@ -928,7 +955,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 			}
 		}
 
-		if (event.keyCode === 13)
+		if (event.keyCode === 13 || event.keyCode === 9)
 		{
 			$scope.fillInputMove($scope.r.movedex[0].name);
 		}

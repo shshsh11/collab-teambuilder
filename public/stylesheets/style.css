@@ -128,8 +128,15 @@ input:focus
 	padding: 0px 5px 0px 5px;
 }
 
+.dispSuggestions td
+{
+	vertical-align: top;
+	padding: 0px 10px 0px 10px;
+}
+
 .wholeChat
 {
+
 	background-color: #d0dfe2;
 	border: 1px solid gray;
 
@@ -139,6 +146,10 @@ input:focus
 	z-index: 300;
 	margin: 0px 10px 20px 10px;
 	border-radius: 3px;
+}
+.wholeChat:hover
+{
+	/*opacity: 1;*/
 }
 
 .export
@@ -243,4 +254,5 @@ input:focus
 .statTable td
 {
 	width: auto;
+	padding: 0px 0px 0px 0px;
 }

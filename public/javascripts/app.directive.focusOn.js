@@ -7,6 +7,7 @@ angular.module("collabteambuilder").directive('focusOn',function($timeout) {
                     if (_focusVal)
                    	{
                     	$element.focus();
+                      
                     }
                     else
                     {
