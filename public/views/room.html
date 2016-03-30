@@ -76,7 +76,7 @@
 	<!--  -->
 	<span ng-show="num === whichMonToShow">
 		<div>
-			Pokemon <span ng-bind="num"></span>: <input id="focusMe{{num}}" focus-on="!!(num === whichMonToShow)" ng-model="party['pokemon' + num].name" ng-keydown="findRelMons(num, $event)"></input> @ Item: <input ng-model="party['pokemon' + num].item" ng-keydown="findRelItems(num, $event)"></input>
+			Pokemon <span ng-bind="num"></span>: <input id="focusMe{{num}}" focus-on="!!(num === whichMonToShow)" ng-model="party['pokemon' + num].name" ng-keyup="findRelMons(num, $event)" ng-keydown="findRelMonsTab($event)"></input> @ Item: <input ng-model="party['pokemon' + num].item" ng-keyup="findRelItems(num, $event)" ng-keydown="findRelItemsTab($event)"></input>
 		</div>
 
 
@@ -125,7 +125,7 @@
 
 		<div ng-repeat="moveNum in moveSize track by $index">
 
-			Move <span ng-bind="moveNum"></span>: <input ng-model="party['pokemon' + $parent.num]['move' + moveNum]" ng-keydown="findRelMoves($parent.num + moveNum, $event)"></input>
+			Move <span ng-bind="moveNum"></span>: <input ng-model="party['pokemon' + $parent.num]['move' + moveNum]" ng-keyup="findRelMoves($parent.num + moveNum, $event)" ng-keydown="findRelMovesTab($event)"></input>
 
 		</div>
 

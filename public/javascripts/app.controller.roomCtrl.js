@@ -888,12 +888,19 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		}
 		$scope.r.pokedex.sort(tierCompare("tier")).reverse();
 
-		if (event.keyCode === 13 || event.keyCode === 9)
+		if (event.keyCode === 13)
 		{
 
 			$scope.fillInput($scope.r.pokedex[0].species);
 		}
 
+	}
+	$scope.findRelMonsTab = function(event)
+	{
+		if (event.keyCode === 9)
+		{
+			$scope.fillInput($scope.r.pokedex[0].species);
+		}
 	}
 
 	$scope.findRelItems = function(index, event)
@@ -922,11 +929,18 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 			}
 		}
 
-		if (event.keyCode === 13 || event.keyCode === 9)
+		if (event.keyCode === 13)
 		{
 			$scope.fillInputItem($scope.r.itemdex[0].name);
 		}
 
+	}
+	$scope.findRelItemsTab = function(event)
+	{
+		if (event.keyCode === 9)
+		{
+			$scope.fillInputItem($scope.r.itemdex[0].name);
+		}
 	}
 
 	$scope.findRelMoves = function(index, event)
@@ -955,13 +969,19 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 			}
 		}
 
-		if (event.keyCode === 13 || event.keyCode === 9)
+		if (event.keyCode === 13)
 		{
 			$scope.fillInputMove($scope.r.movedex[0].name);
 		}
 
 	}
-
+	$scope.findRelMovesTab = function(event)
+	{
+		if (event.keyCode === 9)
+		{
+			$scope.fillInputMove($scope.r.movedex[0].name);
+		}
+	}
 
 
 	/****************************** Put your choice into the corresponding input box ******************************/
