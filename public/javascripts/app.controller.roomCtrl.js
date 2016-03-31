@@ -91,7 +91,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 	var itemdex = dex.items;
 	var currentInput = "";
 
-	$scope.tiers = ["Uber", "OU", "BL", "UU", "BL2", "RU", "BL3", "NU", "BL4", "PU", "LC", "NFE"];
+	$scope.tiers = ["Uber", "OU", "BL", "UU", "BL2", "RU", "BL3", "NU", "BL4", "PU", "LC", "NFE", "Level 50"];
 	
 	$scope.colors = ["aqua", "purple", "green", "red", "orange", "gray", "cyan", "black", "magenta", "violet", "darkorchid", "darkturquoise"];
 	$scope.yourCol = $scope.colors[Math.floor(Math.random() * $scope.colors.length)];
@@ -207,6 +207,10 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 			if ($scope.selectedTier === "LC")
 			{
 				toExport += "Level: 5 \n";
+			}
+			else if ($scope.selectedTier === "Level 50")
+			{
+				toExport += "Level: 50 \n";
 			}
 
 			toExport += "EVs: ";
@@ -347,8 +351,10 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 				typing = pokedex[poke].types;
 			}
 		}
+		//maybe function to get the level from the tier
 		var level = 100;
 		if ($scope.selectedTier === "LC") level = 5;
+		else if ($scope.selectedTier === "Level 50") level = 50;
 
 		var AtkStat = 0;
 		var SpAStat = 0;
@@ -500,6 +506,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 
 			var level = 100;
 			if ($scope.selectedTier === "LC") level = 5;
+			else if ($scope.selectedTier === "Level 50") level = 50;
 
 			var HPStat = 0;
 			var DefStat = 0;
@@ -818,6 +825,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 			var natBoost = NATURES[nat][stat];
 			var res = 0;
 			if ($scope.selectedTier === "LC") level = 5;
+			else if ($scope.selectedTier === "Level 50") level = 50;
 
 			//calcStat(base, EV, IV, level)
 			if (stat === "HP")
