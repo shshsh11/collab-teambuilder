@@ -763,6 +763,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 			}
 			$scope.party["pokemon" + data.currentInput.substring(0, 1)].EVs[data.whichEV] = data.amount;
 			filterEVlist(data.currentInput.substring(0, 1));
+			$scope.calcStatNumbers(data.currentInput.substring(0, 1));
 
 		});
 	});
@@ -787,6 +788,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		$scope.$apply(function()
 		{
 			$scope.party["pokemon" + data.currentInput.substring(0, 1)].IVs[data.whichIV] = data.amount;
+			$scope.calcStatNumbers(data.currentInput.substring(0, 1));
 		});
 	});
 
