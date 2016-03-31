@@ -917,6 +917,8 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		$scope.$apply(function()
 		{
 			$scope.party["pokemon" + data.currentInput.substring(0, 1)].nature = data.nature;
+			$scope.calcStatNumbers(data.currentInput.substring(0, 1));
+
 		})
 	})
 
