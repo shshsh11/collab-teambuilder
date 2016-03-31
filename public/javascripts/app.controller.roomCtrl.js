@@ -152,9 +152,10 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 
 	$scope.chooseTier = function(tier)
 	{
-		var data = {room: post._id, tier: tier};
+		var data = {room: post._id, tier: tier, currentInput: currentInput};
 		dex.updateParty(data);
 		socket.emit("tier selection", data);
+		
 	}
 
 	socket.on("update tier selection", function(data)
@@ -162,6 +163,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		$scope.$apply(function()
 		{
 			$scope.selectedTier = data.tier;
+			$scope.refresh(data.currentInput.substring(0, 1));
 		});
 	});
 	//pokemon.tier = RU, poke.tier = RU
@@ -292,6 +294,15 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 	}
 	$scope.defenderBoostMod = "+0";
 	$scope.sdefenderBoostMod = "+0";
+
+
+	$scope.refresh = function(which)
+	{
+		
+		$scope.refreshCalcs();
+		$scope.refreshDefCalcs();
+		$scope.calcStatNumbers(which);
+	}
 
 
 	$scope.refreshCalcs = function()
@@ -734,12 +745,6 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 	/****************************** EVs and IVs ******************************/
 	/*** Code: EVIV ***/
 
-
-	$scope.refresh = function()
-	{
-		$scope.refreshCalcs();
-		$scope.refreshDefCalcs();
-	}
 
 
 	/*** Because of EV cap, the options shrink when you start EVing your mons ***/
