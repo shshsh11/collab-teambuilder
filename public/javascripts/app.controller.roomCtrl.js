@@ -35,6 +35,37 @@ angular.module("collabteambuilder").directive('optionsClass', function ($parse) 
   };
 });
 
+angular.module("collabteambuilder").directive('changeOnBlur', function() {
+            return {
+                restrict: 'A',
+                require: 'ngModel',
+                link: function(scope, elm, attrs, ngModelCtrl) {
+                    if (attrs.type === 'radio' || attrs.type === 'checkbox') 
+                        return;
+
+                    var expressionToCall = attrs.changeOnBlur;
+
+                    var oldValue = null;
+                    elm.bind('focus',function() {
+                        scope.$apply(function() {
+                            oldValue = elm.val();
+                            console.log(oldValue);
+                        });
+                    })
+                    elm.bind('blur', function() {
+                        scope.$apply(function() {
+                            var newValue = elm.val();
+                            console.log(newValue);
+                            if (newValue !== oldValue){
+                                scope.$eval(expressionToCall);
+                            }
+                                //alert('changed ' + oldValue);
+                        });         
+                    });
+                }
+            };
+        });
+
 angular.module("collabteambuilder").controller("RoomCtrl", function($scope, rooms, post, dex)
 {
 
@@ -1069,8 +1100,18 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 
 	$scope.fillInputItem = function(item)
 	{
-		$scope.party["pokemon" + currentInput.substring(0, 1)].item = item;
+
 		
+		if ($scope.selectedTier === "Level 50")
+		{
+			var items = getItems();
+			if (items.indexOf(item) > -1)
+			{
+				alert("Item Clause");
+				return;
+			}
+		}
+		$scope.party["pokemon" + currentInput.substring(0, 1)].item = item;
 		$scope.r.itemdex = [];
 		var data = {room: post._id, currentInput: currentInput, item: item};
 		dex.updateParty(data);
@@ -1521,6 +1562,16 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		return "";
 	}
 
+
+	function getItems()
+	{
+		var items = [];
+		for (var poke in $scope.party)
+		{
+			items.push($scope.party[poke].item);
+		}
+		return items;
+	}
 
 });
 

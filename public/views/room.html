@@ -99,7 +99,7 @@
 					<td>EVs:</td> 
 					<td ng-repeat="ev in evs track by $index">
 						<!-- <span ng-bind="ev"></span>:  -->
-						<select ng-options="n for n in evNums[num][ev]" ng-model="party['pokemon' + $parent.num].EVs[ev]" ng-blur="chooseEV($parent.num, ev)" ></select>
+						<select ng-options="n for n in evNums[num][ev]" ng-model="party['pokemon' + $parent.num].EVs[ev]" ng-change="chooseEV($parent.num, ev)" ng-model-options="{updateOn: 'change blur'}"></select>
 
 					</td>
 				</tr>
@@ -107,7 +107,7 @@
 					<td>IVs:</td> 
 					<td ng-repeat="iv in evs track by $index">
 						<!-- <span ng-bind="iv"></span>:  -->
-						<input size="2" min="0" max="31" ng-model="party['pokemon' + $parent.num].IVs[iv]" ng-keyup="chooseIV($parent.num, iv)"></input>
+						<input size="2" min="0" max="31" ng-model="party['pokemon' + $parent.num].IVs[iv]" ng-change="chooseIV($parent.num, iv)"></input>
 					</td>
 				</tr>
 
