@@ -964,7 +964,8 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		currentInput = "";
 		currentInput = index;
 
-		$scope.r.pokedex = [];
+		// $scope.r.pokedex = [];
+		emptySuggestions();
 
 		var q = $scope.party["pokemon" + currentInput.substring(0, 1)].name;
 		
@@ -1006,8 +1007,8 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		currentInput = "";
 		currentInput = index;
 
-		$scope.r.itemdex = [];
-
+		// $scope.r.itemdex = [];
+		emptySuggestions();
 		var q = $scope.party["pokemon" + currentInput.substring(0, 1)].item;
 		
 
@@ -1046,8 +1047,8 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		currentInput = index; //"pokemon" + index.substring(0, 1) + "." + "move" + index.substring(1);
 	
 
-		$scope.r.movedex = [];
-
+		// $scope.r.movedex = [];
+		emptySuggestions();
 		var q = $scope.party["pokemon" + index.substring(0, 1)]["move" + index.substring(1)];
 		
 
@@ -1088,8 +1089,9 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		$scope.party["pokemon" + currentInput.substring(0, 1)].ability = "";
 	
 		// $scope.showMons($scope.selectedTier);
-		$scope.suggestingMons = false;
-		$scope.r.pokedex = [];
+		// $scope.suggestingMons = false;
+		// $scope.r.pokedex = [];
+		emptySuggestions();
 		var data = {room: post._id, currentInput: currentInput, mon: name};
 		dex.updateParty(data);
 		socket.emit("mon selection", data);
@@ -1112,7 +1114,8 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 			}
 		}
 		$scope.party["pokemon" + currentInput.substring(0, 1)].item = item;
-		$scope.r.itemdex = [];
+		// $scope.r.itemdex = [];
+		emptySuggestions();
 		var data = {room: post._id, currentInput: currentInput, item: item};
 		dex.updateParty(data);
 		socket.emit("item selection", data);
@@ -1125,7 +1128,8 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 	{
 		$scope.party["pokemon" + currentInput.substring(0, 1)]["move" + currentInput.substring(1)] = move;
 	
-		$scope.r.movedex = [];
+		// $scope.r.movedex = [];
+		emptySuggestions();
 		var data = {room: post._id, currentInput: currentInput, move: move};
 		dex.updateParty(data);
 
@@ -1571,6 +1575,14 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 			items.push($scope.party[poke].item);
 		}
 		return items;
+	}
+
+	function emptySuggestions()
+	{
+		$scope.r.pokedex = [];
+		$scope.suggestingMons = false;
+		$scope.r.itemdex = [];
+		$scope.r.movedex = [];
 	}
 
 });
