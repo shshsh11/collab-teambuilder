@@ -180,11 +180,14 @@
   </table>
 </div>
 
-<div ng-repeat="move in r.movedex">
+<div ng-repeat="move in r.movedex" class="dispMoves">
   <table>
     <tr>
       <td>
       	<a href="" ng-click="fillInputMove(move.name)"><span ng-bind="move.name"></span></a>
+      </td>
+      <td>
+      	<span ng-bind="move.canLearn"></span>
       </td>
 <!--  -->
     </tr>

@@ -157,10 +157,14 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 	var itemdex = dex.items;
 	var currentInput = "";
 
+
+
+
 	$scope.tiers = ["Uber", "OU", "BL", "UU", "BL2", "RU", "BL3", "NU", "BL4", "PU", "LC", "NFE", "Level 50"];
 	
 	$scope.colors = ["aqua", "purple", "green", "red", "orange", "gray", "cyan", "black", "magenta", "violet", "darkorchid", "darkturquoise"];
 	$scope.yourCol = $scope.colors[Math.floor(Math.random() * $scope.colors.length)];
+
 
 
 
@@ -204,6 +208,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		return {'color' : $scope.yourCol};
 	}
 
+	// alert(dex.getLearnset("venusaur").toSource());
 
 	$scope.hlSelectedPoke = function(index)
 	{
@@ -676,8 +681,13 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 	var cheatingThis = 0;
 	$scope.changeWhichMon = function(which)
 	{
+		emptySuggestions();
 		if (cheatingThis === 0)
 		{
+
+
+
+
 			cheatingThis++;
 			for (var ev in $scope.evNums[which])
 			{
@@ -698,6 +708,13 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 			$scope.refreshCalcs();
 			$scope.refreshDefCalcs();
 			$scope.calcStatNumbers(which);
+			// var simpMon = stripMonName($scope.party["pokemon" + currentInput.substring(0, 1)].name);
+			// dex.getLearnset(simpMon).success(function(data)
+			// {
+			// 	$scope.learnsetData = data;
+			// })
+
+
 		}
 		else
 		{
@@ -822,7 +839,6 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 
 	/****************************** EVs and IVs ******************************/
 	/*** Code: EVIV ***/
-
 
 
 	/*** Because of EV cap, the options shrink when you start EVing your mons ***/
@@ -1039,35 +1055,80 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		}
 	}
 
+
+	function stripMonName(name)
+	{
+		if (name.indexOf("-Mega") > -1)
+		{
+			return name.replace("-Mega", "").toLowerCase();
+		}
+		else if (name.indexOf("-") > -1)
+		{
+			return name.substring(0, name.indexOf("-")).toLowerCase();
+		}
+		else
+		{
+			return name.toLowerCase();
+		}
+	}
+
+	function stripMoveName(name)
+	{
+		return name.replace(" ", "").replace("-", "").toLowerCase();
+	}
+
+
 	$scope.findRelMoves = function(index, event)
 	{
+		// dex.getLearnset("venusaur").success(function(data)
+		// {
+		// 	alert(data.toSource());
+		// });
 		
+		// alert($scope.learnsetData.toSource());
 
 		currentInput = "";
 		currentInput = index; //"pokemon" + index.substring(0, 1) + "." + "move" + index.substring(1);
 	
-
+		
+		//use .learnset before the move
 		// $scope.r.movedex = [];
 		emptySuggestions();
 		var q = $scope.party["pokemon" + index.substring(0, 1)]["move" + index.substring(1)];
-		
-
-		for (var i = 0; i < movedex.length; i++)
+		var simpMon = stripMonName($scope.party["pokemon" + currentInput.substring(0, 1)].name);
+		if (q.length >= 3)
 		{
-			if (movedex[i].name.indexOf(q) > -1 || movedex[i].name.toLowerCase().indexOf(q) > -1)
+			dex.getLearnset(simpMon).success(function(data)
 			{
-				
-				if (q.length >= 2)
+				// alert(data.learnset["gigadrain"]);
+				for (var i = 0; i < movedex.length; i++)
 				{
-					$scope.r.movedex.push(movedex[i]);
+					if (movedex[i].name.indexOf(q) > -1 || movedex[i].name.toLowerCase().indexOf(q) > -1)
+					{
+						
+						
+						
+							var moveEntry = movedex[i];
+							if (!($scope.learnsetData.learnset[movedex[i].id]))
+							{
+								moveEntry.canLearn = "Illegal";
+							}
+							else
+							{
+								moveEntry.canLearn = "";
+							}
+							$scope.r.movedex.push(moveEntry);
 
+						
+					}
 				}
-			}
-		}
 
-		if (event.keyCode === 13)
-		{
-			$scope.fillInputMove($scope.r.movedex[0].name);
+				if (event.keyCode === 13)
+				{
+					$scope.fillInputMove($scope.r.movedex[0].name);
+				}
+			})
+
 		}
 
 	}
@@ -1091,6 +1152,8 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		// $scope.showMons($scope.selectedTier);
 		// $scope.suggestingMons = false;
 		// $scope.r.pokedex = [];
+
+
 		emptySuggestions();
 		var data = {room: post._id, currentInput: currentInput, mon: name};
 		dex.updateParty(data);
@@ -1098,6 +1161,9 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		$scope.refreshCalcs();
 		$scope.refreshDefCalcs();
 		$scope.calcStatNumbers(currentInput.substring(0, 1));
+
+		
+
 	}
 
 	$scope.fillInputItem = function(item)
@@ -1484,7 +1550,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 
 	function hitsDefense(move)
 	{
-		alert(move.toSource());
+		// alert(move.toSource());
 		if (move.defensiveCategory)
 		{
 			if (move.defensiveCategory === "Physical") return true;

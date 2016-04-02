@@ -5,7 +5,8 @@ angular.module("collabteambuilder").factory("dex", function($http)
 	{
 		dex: [],
 		moves: [],
-		items: []
+		items: [],
+		learnset: []
 	}
 
 	obj.updateParty = function(data)
@@ -19,6 +20,15 @@ angular.module("collabteambuilder").factory("dex", function($http)
 	obj.getAllMoves = function()
 	{
 		
+	}
+
+	obj.getLearnset = function(mon)
+	{
+		//do the parsing beforehand I guess
+		return $http.get("/learnsets/" + mon).success(function(data)
+		{
+			obj.learnset = data;
+		})
 	}
 
 

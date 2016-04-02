@@ -9,6 +9,7 @@ var pokes = require("../public/data/pokedex");
 var moves = require("../public/data/moves");
 var items = require("../public/data/items");
 var formats = require("../public/data/formats-data");
+var learnsets = require("../public/data/learnsets");
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -55,6 +56,11 @@ router.get("/movedex", function(req, res, next)
 	}
 	res.send(movedex);
 });
+
+router.get("/learnsets/:mon", function(req, res, next)
+{
+	res.send(learnsets.BattleLearnsets[req.params.mon]);
+})
 
 router.post("/updateParty", function(req, res, next)
 {
