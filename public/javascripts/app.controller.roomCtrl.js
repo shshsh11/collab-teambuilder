@@ -679,6 +679,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 
 	var mostRecentModded = "";
 	var cheatingThis = 0;
+
 	$scope.changeWhichMon = function(which)
 	{
 		emptySuggestions();
@@ -708,11 +709,9 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 			$scope.refreshCalcs();
 			$scope.refreshDefCalcs();
 			$scope.calcStatNumbers(which);
-			// var simpMon = stripMonName($scope.party["pokemon" + currentInput.substring(0, 1)].name);
-			// dex.getLearnset(simpMon).success(function(data)
-			// {
-			// 	$scope.learnsetData = data;
-			// })
+			var simpMon = stripMonName($scope.party["pokemon" + currentInput.substring(0, 1)].name);
+			
+			getWholeLearnset(simpMon);
 
 
 		}
@@ -723,10 +722,57 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 			document.getElementById(toFocus).select();
 		}
 
-		
-		
-
 	}
+	
+	function getWholeLearnset(simpMon)
+	{
+		var prevoEntry;
+			var preprevoEntry;
+			if (getPrevo(getDexEntry(simpMon)))
+			{
+				prevoEntry = getDexEntry(getPrevo(getDexEntry(simpMon)));
+			}
+			if (getPrevo(prevoEntry))
+			{
+				preprevoEntry = getDexEntry(getPrevo(prevoEntry));
+			}
+			
+
+			dex.getLearnset(simpMon).success(function(data)
+			{
+				$scope.learnsetData = [];
+				for (var move in data.learnset)
+				{
+					$scope.learnsetData.push(move);
+				}
+				if (prevoEntry)
+				{
+					dex.getLearnset(prevoEntry.id).success(function(prevoData)
+					{
+						for (var move in prevoData.learnset)
+						{
+							$scope.learnsetData.push(move);
+						}
+						if (preprevoEntry)
+						{
+							dex.getLearnset(preprevoEntry.id).success(function(prepreData)
+							{
+								
+								for (var move in prepreData.learnset)
+								{
+									$scope.learnsetData.push(move);
+								}
+								
+
+							})
+						}
+						
+					})
+				}
+				
+			})
+	}
+
 	$scope.changeWhichMon2 = function(which)
 	{
 
@@ -794,7 +840,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 	{
 		var mon = $scope.party["pokemon" + num].name;
 		var dexE = getDexEntry(mon);
-		if (dexE.baseSpecies)
+		if (mon.indexOf("Mega") > -1 && dexE.baseSpecies)
 		{
 			mon = dexE.baseSpecies;
 		}
@@ -1058,11 +1104,11 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 
 	function stripMonName(name)
 	{
-		if (name.indexOf("-Mega") > -1)
-		{
-			return name.replace("-Mega", "").toLowerCase();
-		}
-		else if (name.indexOf("-") > -1)
+		// if (name.indexOf("-Mega") > -1)
+		// {
+		// 	return name.replace("-Mega", "").toLowerCase();
+		// }
+		if (name.indexOf("-") > -1)
 		{
 			return name.substring(0, name.indexOf("-")).toLowerCase();
 		}
@@ -1096,9 +1142,11 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		emptySuggestions();
 		var q = $scope.party["pokemon" + index.substring(0, 1)]["move" + index.substring(1)];
 		var simpMon = stripMonName($scope.party["pokemon" + currentInput.substring(0, 1)].name);
+		// alert(getPrevo(getDexEntry(simpMon)));
+
 		if (q.length >= 3)
 		{
-			dex.getLearnset(simpMon).success(function(data)
+			// dex.getLearnset(simpMon).success(function(data)
 			{
 				// alert(data.learnset["gigadrain"]);
 				for (var i = 0; i < movedex.length; i++)
@@ -1109,7 +1157,8 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 						
 						
 							var moveEntry = movedex[i];
-							if (!($scope.learnsetData.learnset[movedex[i].id]))
+							if ($scope.learnsetData.indexOf(moveEntry.id) === -1)
+							// if (!data.learnset[movedex[i].id])
 							{
 								moveEntry.canLearn = "Illegal";
 							}
@@ -1127,7 +1176,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 				{
 					$scope.fillInputMove($scope.r.movedex[0].name);
 				}
-			})
+			}//)
 
 		}
 
@@ -1153,6 +1202,8 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		// $scope.suggestingMons = false;
 		// $scope.r.pokedex = [];
 
+		getWholeLearnset(stripMonName(name));
+		
 
 		emptySuggestions();
 		var data = {room: post._id, currentInput: currentInput, mon: name};
@@ -1649,6 +1700,13 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 		$scope.suggestingMons = false;
 		$scope.r.itemdex = [];
 		$scope.r.movedex = [];
+	}
+
+	
+
+	function getPrevo(dexEntry)
+	{
+		return !!dexEntry.prevo ? dexEntry.prevo : false;
 	}
 
 });

@@ -28,8 +28,9 @@ router.get("/pokedex", function(req, res, next)
 		delete pokes.BattlePokedex[mon]['eggGroups'];
 		delete pokes.BattlePokedex[mon]['color'];
 		// delete pokes.BattlePokedex[mon]['evos'];
-		delete pokes.BattlePokedex[mon]['prevo'];
+		// delete pokes.BattlePokedex[mon]['prevo'];
 		delete pokes.BattlePokedex[mon]['evoLevel'];
+		pokes.BattlePokedex[mon].id = mon;
 		pokedex.push(pokes.BattlePokedex[mon]);
 
 	}
