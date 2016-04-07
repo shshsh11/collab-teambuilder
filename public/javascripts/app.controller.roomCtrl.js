@@ -728,13 +728,18 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 	{
 		var prevoEntry;
 			var preprevoEntry;
+			alert(getPrevo(getDexEntry(simpMon)).toSource());
 			if (getPrevo(getDexEntry(simpMon)))
 			{
 				prevoEntry = getDexEntry(getPrevo(getDexEntry(simpMon)));
 			}
-			if (getPrevo(prevoEntry))
+			if (prevoEntry)
 			{
-				preprevoEntry = getDexEntry(getPrevo(prevoEntry));
+				if (getPrevo(prevoEntry))
+				{
+					preprevoEntry = getDexEntry(getPrevo(prevoEntry));
+				}
+				
 			}
 			
 
