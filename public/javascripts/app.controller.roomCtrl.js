@@ -1,5 +1,28 @@
 'use strict';
+angular.module("collabteambuilder").directive('stateLoadingIndicator', function($rootScope) {
+  return {
+    restrict: 'E',
+    template: 
+    "<div ng-show='isStateLoading' class='loading-indicator loadingStyle'>" +
+    "<div class='loading-indicator-body loadingStyle'>" +
+    "<h3 class='loading-title'>Loading...</h3>" +
+    "<div class='spinner loadingStyle'><wave-spinner></wave-spinner></div>" +
+    "</div>" +
+    "</div>",
+    replace: true,
+    link: function(scope, elem, attrs) {
+      scope.isStateLoading = false;
 
+      $rootScope.$on('$stateChangeStart', function() {
+
+        scope.isStateLoading = true;
+      });
+      $rootScope.$on('$stateChangeSuccess', function() {
+        scope.isStateLoading = false;
+      });
+    }
+  };
+});
 
 angular.module("collabteambuilder").directive('optionsClass', function ($parse) {
   return {
@@ -727,55 +750,55 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 	function getWholeLearnset(simpMon)
 	{
 		var prevoEntry;
-			var preprevoEntry;
-			alert(getPrevo(getDexEntry(simpMon)).toSource());
-			if (getPrevo(getDexEntry(simpMon)))
+		var preprevoEntry;
+		// alert(getPrevo(getDexEntry(simpMon)).toSource());
+		if (getPrevo(getDexEntry(simpMon)))
+		{
+			prevoEntry = getDexEntry(getPrevo(getDexEntry(simpMon)));
+		}
+		if (prevoEntry)
+		{
+			if (getPrevo(prevoEntry))
 			{
-				prevoEntry = getDexEntry(getPrevo(getDexEntry(simpMon)));
+				preprevoEntry = getDexEntry(getPrevo(prevoEntry));
+			}
+			
+		}
+		
+
+		dex.getLearnset(simpMon).success(function(data)
+		{
+			$scope.learnsetData = [];
+			for (var move in data.learnset)
+			{
+				$scope.learnsetData.push(move);
 			}
 			if (prevoEntry)
 			{
-				if (getPrevo(prevoEntry))
+				dex.getLearnset(prevoEntry.id).success(function(prevoData)
 				{
-					preprevoEntry = getDexEntry(getPrevo(prevoEntry));
-				}
-				
+					for (var move in prevoData.learnset)
+					{
+						$scope.learnsetData.push(move);
+					}
+					if (preprevoEntry)
+					{
+						dex.getLearnset(preprevoEntry.id).success(function(prepreData)
+						{
+							
+							for (var move in prepreData.learnset)
+							{
+								$scope.learnsetData.push(move);
+							}
+							
+
+						})
+					}
+					
+				})
 			}
 			
-
-			dex.getLearnset(simpMon).success(function(data)
-			{
-				$scope.learnsetData = [];
-				for (var move in data.learnset)
-				{
-					$scope.learnsetData.push(move);
-				}
-				if (prevoEntry)
-				{
-					dex.getLearnset(prevoEntry.id).success(function(prevoData)
-					{
-						for (var move in prevoData.learnset)
-						{
-							$scope.learnsetData.push(move);
-						}
-						if (preprevoEntry)
-						{
-							dex.getLearnset(preprevoEntry.id).success(function(prepreData)
-							{
-								
-								for (var move in prepreData.learnset)
-								{
-									$scope.learnsetData.push(move);
-								}
-								
-
-							})
-						}
-						
-					})
-				}
-				
-			})
+		})
 	}
 
 	$scope.changeWhichMon2 = function(which)
@@ -881,7 +904,7 @@ angular.module("collabteambuilder").controller("RoomCtrl", function($scope, room
 	{
 		$scope.$apply(function()
 		{
-			$scope.party["pokemon" + currentInput.substring(0, 1)].ability = data.abName;
+			$scope.party["pokemon" + data.currentInput.substring(0, 1)].ability = data.abName;
 		});
 	});
 

@@ -1,4 +1,4 @@
-angular.module("collabteambuilder", ["ui.router", "ngSanitize", "sticky", "ngclipboard", "angular-clipboard"]);
+angular.module("collabteambuilder", ["ui.router", "angular-spinkit", "ngSanitize", "sticky", "ngclipboard", "angular-clipboard"]);
 
 
 

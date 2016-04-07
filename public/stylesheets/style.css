@@ -24,6 +24,11 @@ div
 	margin-top: 10px;
 }
 
+div .loadingStyle
+{
+	margin-top: 0px;
+}
+
 textarea
 {
   font: 14px "Ubuntu", Helvetica, Arial, sans-serif;	
