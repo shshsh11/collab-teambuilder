@@ -4,5 +4,5 @@ var io = socket_io();
 
 io.on("connection", function(socket)
 {
-  console.log("a user connexted");
+  console.log("a user connected");
 });
