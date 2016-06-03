@@ -1,0 +1,273 @@
+html, body 
+{
+  padding: 10px;
+  font: 14px "Ubuntu", Helvetica, Arial, sans-serif;
+  background-color: #F2F6F7;
+}
+
+a 
+{
+  color: #006186;
+}
+
+td 
+{
+	/*width: 150px;*/
+	width: auto;
+	padding: 3px 0px 3px 0px;
+
+
+}
+
+div
+{
+	margin-top: 10px;
+}
+
+div .loadingStyle
+{
+	margin-top: 0px;
+}
+
+textarea
+{
+  font: 14px "Ubuntu", Helvetica, Arial, sans-serif;	
+}
+
+input
+{
+	border-radius: 3px;
+}
+input:focus
+{
+	box-shadow: 2px 2px #8BAED1;
+}
+
+
+
+
+.dispParty
+{
+	
+}
+
+
+.dispParty table
+{
+	
+}
+
+.dispParty table tr
+{
+	
+}
+
+
+
+.dispParty td:first-child
+{
+	border: none;
+	width: auto;
+}
+.dispParty td:first-child:hover
+{
+	background-color: #eff4f5;
+	cursor: default;
+	border: none;
+}
+.dispParty td:first-child:active
+{
+	background-color: #eff4f5;
+	cursor: default;
+	border: none;
+}
+
+.dispParty tr:first-child td:hover
+{
+	background-color: #eff4f5;
+	cursor: default;
+	border: 1px solid gray;
+
+	
+}
+.dispParty tr:first-child td:active
+{
+	background-color: #eff4f5;
+	cursor: default;
+	
+}
+
+.dispParty td
+{
+	padding: 0px 10px 5px 10px;
+	border: 1px solid gray;
+	border-radius: 3px;
+	text-align: center;
+	vertical-align: text-bottom;
+	width: 95px;
+
+}
+
+
+.dispParty td:hover
+{
+	background-color: #b0cacf;
+	cursor: pointer;
+	border: 1px solid black;
+}
+.dispParty td:active
+{
+	background-color: #81a9b1;
+	cursor: pointer;
+	border: 1px solid black;
+}
+
+
+.dispDex
+{
+
+}
+.dispDex tr
+{
+	width: auto;
+
+}
+.dispDex td
+{
+	padding: 0px 5px 0px 5px;
+}
+
+.dispSuggestions td
+{
+	vertical-align: top;
+	padding: 0px 10px 0px 10px;
+}
+
+.dispMoves td
+{
+	width: 150px;
+}
+
+
+.wholeChat
+{
+
+	background-color: #DCE9EC;
+	border: 1px solid gray;
+
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	z-index: 300;
+	margin: 0px 10px 20px 10px;
+	border-radius: 3px;
+}
+.wholeChat:hover
+{
+	/*opacity: 1;*/
+}
+
+.export
+{
+	margin-top: 2px;
+	margin-bottom: 2px;
+	margin-left: 5px;
+/*	position: fixed;
+	bottom: 0;
+	left: 0;
+	z-index: 300;
+	margin: 0px 0px 10px 10px;*/
+}
+
+.topRight
+{
+	float: right;
+	margin-right: 5px;
+}
+
+.showChat
+{
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	z-index: 300;
+	margin: 0px 10px 10px 0px;
+}
+
+.chatNav
+{
+	margin-left: 5px;
+
+}
+
+.chatNav a
+{
+	color: #006186;
+	padding: 0px 2px 0px 2px;
+	border-style: ridge;
+	text-decoration: none;
+	border-radius: 3px;
+}
+
+.wholeChat input
+{
+	margin-top: 5px;
+	
+}
+
+.wholeChat span
+{
+	margin-left: 5px;
+}
+
+
+
+.wholeChat li
+{
+	list-style-type: none;
+	margin: 0px 0px 0px -35px;
+}
+
+.inconsistencies li
+{
+	list-style-type: square;
+	margin-left: -20px;
+}
+
+.wholeChat .inputMes
+{
+	width: 100%;
+	-moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.chat
+{
+	width: 300px;
+	height: 300px;
+	overflow: scroll;
+	overflow-x: hidden;
+	padding: 5px 5px 5px 10px;
+
+
+}
+
+.damageCalc
+{
+	width: 300px;
+	height: 327px;
+	overflow: scroll;
+	overflow-x: hidden;
+	padding: 5px 5px 5px 10px;
+}
+
+.dispDmgCalcs td
+{
+	width: auto;
+}
+
+.statTable td
+{
+	width: auto;
+	padding: 0px 0px 0px 0px;
+}

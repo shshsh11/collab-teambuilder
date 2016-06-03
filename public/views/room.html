@@ -1,0 +1,346 @@
+
+
+
+<!-- <p>The room is <a><span ng-bind="roomID"></span></a>.</p> -->
+
+<div ng-style="randCol()">
+	Your current color, and the room: <span ng-bind="roomID"></span>
+</div>
+<p>Tier: 
+
+
+<!-- 	<select ng-model="tiers">
+		<option value="Uber" ng-click="showMons('Uber')">Uber</option>
+		<option value="OU" ng-click="showMons('OU')">OU</option>
+		<option value="UU" ng-click="showMons('UU')">UU</option>
+		<option value="RU" ng-click="showMons('RU')">RU</option>
+		<option value="NU" ng-click="showMons('NU')">NU</option>
+		<option value="PU" ng-click="showMons('PU')">PU</option>
+		<option value="LC" ng-click="showMons('LC')">LC</option>
+	</select> -->
+
+	<select ng-options="t for t in tiers | filter: '!BL'" ng-model="selectedTier" ng-change="chooseTier(selectedTier)"></select>
+	 <!-- ng-change="showMons()" -->
+
+	<!-- <span ng-bind="selectedTier.name"></span> -->
+</p>
+
+
+
+
+
+<div>
+	<table class="dispParty">
+
+		<tr class="notAsWide">
+			<td style="visibility: hidden;">hi</td><td ng-repeat="ind in partySize"><span ng-style="viewing{{ind}}"><span ng-bind="howManyViewing{{ind}}"></span></span></td>
+		</tr>
+
+		<tr>
+
+			
+				<!-- <td><img ng-src="https://play.pokemonshowdown.com/sprites/bw/sneasel.png" /></td> -->
+
+				<td></td>
+				<td ng-repeat="ind in partySize" ng-style="hlSelectedPoke(ind)" ng-click="changeWhichMon2(ind)">
+					<div class="pokemonUnit">
+					<div>
+						<img ng-src="{{getPokeSprite(ind)}}" />
+					</div>
+<!-- 				</td>
+		</tr>
+
+		<tr>
+			
+				<td></td>
+				<td ng-repeat="ind in partySize"> -->
+					<div>
+						<span ng-bind="party['pokemon' + ind].name || 'Pokemon ' + ind"></span>
+					</div>
+					</div>
+
+				</td>
+			
+
+
+		</tr>
+	</table>
+</div>
+
+
+
+<br />
+<table class="dispSuggestions"><tr>
+	<td>
+<div ng-repeat="num in partySize track by $index">
+	<!--  -->
+	<span ng-show="num === whichMonToShow">
+		<div>
+			Pokemon <span ng-bind="num"></span>: <input id="focusMe{{num}}" focus-on="!!(num === whichMonToShow)" ng-model="party['pokemon' + num].name" ng-keyup="findRelMons(num, $event)" ng-keydown="findRelMonsTab($event)"></input> @ Item: <input ng-model="party['pokemon' + num].item" ng-keyup="findRelItems(num, $event)" ng-keydown="findRelItemsTab($event)"></input>
+		</div>
+
+
+		<div>
+			Ability: <strong><span ng-bind="party['pokemon' + num].ability"></span></strong> <!-- <span ng-bind="getAbility(0, num)"></span> / <span ng-bind="getAbility(1, num)"></span> / <span ng-bind="getAbility(H, num)"></span> (currently just here so you can see the abilities) -->
+
+			| <span ng-repeat="ab in getAbs(num) track by $index"><a href="" ng-bind="ab" ng-click="selectAbility(num, $index, ab)" ng-style="abilitySel{{$index}}"></a> | </span>
+
+		</div>
+
+		<div>
+
+			<table class="statTable">
+				<thead>
+					<td></td>
+					<td ng-repeat="ev in evs"><span ng-bind="ev"></span></td>
+				</thead>
+
+				<tr>
+					<td>EVs:</td> 
+					<td ng-repeat="ev in evs track by $index">
+						<!-- <span ng-bind="ev"></span>:  -->
+						<!-- <select ng-options="n for n in evNums[num][ev]" ng-model="party['pokemon' + $parent.num].EVs[ev]" ng-change="chooseEV($parent.num, ev)" ng-model-options="{updateOn: 'change blur'}"></select> -->
+						<select ng-options="n for n in evNums[num][ev]" ng-model="party['pokemon' + $parent.num].EVs[ev]" ng-blur="chooseEV($parent.num, ev)" ng-change="calcStatNumbers($parent.num)"></select>
+
+
+					</td>
+				</tr>
+				<tr>
+					<td>IVs:</td> 
+					<td ng-repeat="iv in evs track by $index">
+						<!-- <span ng-bind="iv"></span>:  -->
+						<input size="2" min="0" max="31" ng-model="party['pokemon' + $parent.num].IVs[iv]" ng-blur="chooseIV($parent.num, iv)" ng-change="calcStatNumbers($parent.num)"></input>
+					</td>
+				</tr>
+
+				<tr>
+					<td>Stat:</td>
+					<td ng-repeat="stat in r.statNumbers track by $index"><span ng-bind="stat"></span></td>
+				</tr>
+
+			</table>
+		</div>
+
+		<div>
+			<select ng-options="n for n in natureList" ng-model="party['pokemon' + num].nature" ng-change="doNatures(num, party['pokemon' + num].nature)"></select> Nature 
+		</div>
+		
+
+		<div ng-repeat="moveNum in moveSize track by $index">
+
+			Move <span ng-bind="moveNum"></span>: <input ng-model="party['pokemon' + $parent.num]['move' + moveNum]" ng-keyup="findRelMoves($parent.num + moveNum, $event)" ng-keydown="findRelMovesTab($event)"></input>
+
+		</div>
+
+
+
+
+	</span>
+
+</div>
+
+</td>
+<td>
+
+<div>
+  <table class="dispDex">
+  	<tr>
+  		<thead>
+    		<td ng-show="suggestingMons">Tier</td>
+    		<td ng-show="suggestingMons"></td>
+    		<td ng-show="suggestingMons">Name</td>
+    	</thead>
+    </tr>
+    <tr ng-repeat="mon in r.pokedex | orderBy:tierSort">
+
+		<td>
+	  		<span ng-bind="mon.tier"></span>
+		</td>
+		<td>
+			<img ng-src="http://www.smogon.com/dex/media/sprites/xyicons/{{mon.species.toLowerCase()}}.png" />
+		</td>
+
+    	<td>
+      		<a href="" ng-click="fillInput(mon.species)"><span ng-bind="mon.species"></span></a>
+    	</td>
+
+
+    </tr>
+  </table>
+</div>
+
+<div ng-repeat="item in r.itemdex">
+  <table>
+    <tr>
+      <td>
+      	<a href="" ng-click="fillInputItem(item.name)"><span ng-bind="item.name"></span></a>
+      </td>
+
+    </tr>
+  </table>
+</div>
+
+<div ng-repeat="move in r.movedex" class="dispMoves">
+  <table>
+    <tr>
+      <td>
+      	<a href="" ng-click="fillInputMove(move.name)"><span ng-bind="move.name"></span></a>
+      </td>
+      <td>
+      	<span ng-bind="move.canLearn"></span>
+      </td>
+<!--  -->
+    </tr>
+  </table>
+</div>
+
+</tr></table>
+<br />
+
+<span ng-show="exporting">
+	<!-- <a href="" ngclipboard data-clipboard-target="#cptarget">Copy to Clipboard</a> -->
+	<a clipboard text="exported" on-copied="copied()" href="">Copy to Clipboard</a>
+	<span ng-bind="copied2clip"></span>
+	<br />
+	<textarea rows="30" cols="50" ng-bind="exported" id="cptarget"></textarea>
+</span>
+
+<!-- <textarea rows="30" cols="50" ng-keyup="gDocsIt($event)" ng-model="text"></textarea> -->
+
+	
+<div class="showChat" ng-show="hideChat">
+	<a href="" ng-click="hideChat = !hideChat">Show Chat</a>
+</div>
+<div class="wholeChat" ng-hide="hideChat">
+
+	<div class="export">
+		<a href="" ng-click="export()"><span ng-show="exporting">Hide</span> Export Team</a>
+		<a href="" ng-click="hideChat = !hideChat" class="topRight">Hide Chat</a>
+	</div>
+
+	<div ng-hide="attackingCalcActive || defendingCalcActive">
+
+		<div class="chatNav">
+			<a href="" ng-style="{{styleNav()}}" ng-click="attackingCalcActive = false; defendingCalcActive = false;">Chat</a> 
+			<a href="" ng-mousedown="attackingCalcActive = true; defendingCalcActive = false;" ng-mouseup="refreshCalcs()">Attacking Calc</a> 
+			<a href="" ng-mousedown="attackingCalcActive = false; defendingCalcActive = true" ng-mouseup="refreshDefCalcs()">Defending Calc</a> 
+
+		</div>
+
+
+		<span>Name: <span><input ng-model="userNick"></input> 
+
+		<div class="chat" id="cheating">
+				
+			<ul ng-bind-html="messages">
+			
+			</ul>
+
+
+		</div>
+
+		<input class="inputMes" ng-model="chatMessage" ng-keydown="sendMessage($event)"></input>
+	</div>
+	<div ng-show="attackingCalcActive">
+		<div class="chatNav">
+			<a href="" ng-click="attackingCalcActive = false; defendingCalcActive = false;">Chat</a> 
+			<a href="" ng-style="{{styleNav()}}" ng-mousedown="attackingCalcActive = true; defendingCalcActive = false;" ng-mouseup="refreshCalcs()">Attacking Calc</a> 
+			<a href="" ng-mousedown="attackingCalcActive = false; defendingCalcActive = true" ng-mouseup="refreshDefCalcs()">Defending Calc</a> 
+
+		</div>
+
+		<div class="damageCalc">
+			<a ng-bind="test"></a>
+
+
+			<input type="checkbox" ng-model="plateBoost" ng-true-value="1" ng-false-value="0" ng-click="refreshCalcs()"></input> Plate Boost
+
+			<br />
+
+			Atk Boost: <select ng-options="b for b in boostMods" ng-model="AtkBoostMod" ng-change="refreshCalcs()"></select> 
+			SpA Boost: <select ng-options="b for b in boostMods" ng-model="SpABoostMod" ng-change="refreshCalcs()"></select> 
+
+			<br />
+			<u>Defender</u> <br />
+			Name: <input size= "9" ng-model="defenderName" ng-keyup="refreshCalcs()"></input> Item: <input size= "9" ng-model="defenderItem" ng-keyup="refreshCalcs()"></input>
+			<br />
+			HP: <input size="2" ng-model="defHPEVs" ng-keyup="refreshCalcs()"></input>
+			Def: <input size="2" ng-model="dEVs" ng-keyup="refreshCalcs()"></input>
+			SpD: <input size="2" ng-model="spdEVs" ng-keyup="refreshCalcs()"></input>
+			<br />
+			<select ng-options="n for n in natureList" ng-model="defNat" ng-change="refreshCalcs()"></select> Defender Nature 
+			<br />
+			Def Boost: <select ng-options="b for b in boostMods" ng-model="defBoostMod" ng-change="refreshCalcs()"></select> 
+			SpD Boost: <select ng-options="b for b in boostMods" ng-model="spdBoostMod" ng-change="refreshCalcs()"></select> 
+				<!-- <span ng-bind="atkstat"></span> vs <span ng-bind="defstat"></span> -->
+			<div ng-bind-html="damageCalculations">
+
+			</div>
+
+			<!-- <p style="font-size: 10px;">Currently the numbers are off by a bit. Will look into the detailed damage formula before adding defending calcs.</p>  -->
+			<p>If you use Offensive Boost for weather, it slightly underestimates favorable weather and slightly overestimates unfavorable weather.
+			</p>
+
+		</div>
+
+		<input style="visibility: hidden;" class="inputMes"></input>
+
+
+	</div>
+
+	<div ng-show="defendingCalcActive">
+		<div class="chatNav">
+			<a href="" ng-click="attackingCalcActive = false; defendingCalcActive = false;">Chat</a> 
+			<a href="" ng-mousedown="attackingCalcActive = true; defendingCalcActive = false;" ng-mouseup="refreshCalcs()">Attacking Calc</a> 
+			<a href="" ng-style="{{styleNav()}}" ng-mousedown="attackingCalcActive = false; defendingCalcActive = true" ng-mouseup="refreshDefCalcs()">Defending Calc</a> 
+
+		</div>
+
+		<div class="damageCalc">
+			<!-- <a ng-bind="test"></a> -->
+			<u>Attacker</u> <br />
+			Name: <input size= "9" ng-model="attacker.name" ng-keyup="refreshDefCalcs()"></input> Item: <input size= "9" ng-model="attacker.item" ng-keyup="refreshDefCalcs()"></input>
+			<br />
+			Ability: <input ng-model="attacker.ability" ng-keyup="refreshDefCalcs()"></input>
+
+			<br />
+			Atk: <input size="2" ng-model="attacker.EVs.Atk" ng-keyup="refreshDefCalcs()"></input>
+			SpA: <input size="2" ng-model="attacker.EVs.SpA" ng-keyup="refreshDefCalcs()"></input>
+			<br />
+			<select ng-options="n for n in natureList" ng-model="attacker.nature" ng-change="refreshDefCalcs()"></select> Attacker Nature 
+			<br />
+			Atk Boost: <select ng-options="b for b in boostMods" ng-model="attackerBoostMod" ng-change="refreshDefCalcs()"></select> 
+			SpA Boost: <select ng-options="b for b in boostMods" ng-model="sattackerBoostMod" ng-change="refreshDefCalcs()"></select> <br />
+			<input type="checkbox" ng-model="attackerPlateBoost" ng-true-value="1" ng-false-value="0" ng-click="refreshDefCalcs()"></input> Plate Boost
+
+			<br />
+
+			Move 1: <input size="9" ng-model="attacker.move1" ng-keyup="refreshDefCalcs()"></input> 
+			Move 2: <input size="9" ng-model="attacker.move2" ng-keyup="refreshDefCalcs()"></input> <br />
+			Move 3: <input size="9" ng-model="attacker.move3" ng-keyup="refreshDefCalcs()"></input> 
+			Move 4: <input size="9" ng-model="attacker.move4" ng-keyup="refreshDefCalcs()"></input> <br />
+
+			Def Boost: <select ng-options="b for b in boostMods" ng-model="defenderBoostMod" ng-change="refreshDefCalcs()"></select> 
+			SpD Boost: <select ng-options="b for b in boostMods" ng-model="sdefenderBoostMod" ng-change="refreshDefCalcs()"></select> 
+
+			<br />
+
+				<!-- <span ng-bind="atkstat"></span> vs <span ng-bind="defstat"></span> -->
+			<div ng-bind-html="defendingCalculations">
+
+			</div>
+
+			<p>
+				Make sure to capitalize and space correctly.
+			</p>
+
+		</div>
+
+		<input style="visibility: hidden;" class="inputMes"></input>
+
+
+	</div>
+
+
+</div>
+<!-- <link rel='stylesheet' href='/stylesheets/style.css'></link> -->
